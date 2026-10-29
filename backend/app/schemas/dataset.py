@@ -1,6 +1,7 @@
 """Pydantic schemas for scam patterns and labelled evaluation datasets."""
 
-from typing import List, Literal, Optional
+from typing import Literal
+
 from pydantic import BaseModel, Field, field_validator
 
 VALID_SCAM_TYPES = {
@@ -21,12 +22,12 @@ class Pattern(BaseModel):
     scam_type: str = Field(..., description="Type of scam this pattern indicates")
     name: str = Field(..., description="Short descriptive name of the pattern")
     description: str = Field(..., description="Detailed description of what this pattern catches")
-    keywords_en: List[str] = Field(default_factory=list, description="English keywords or phrases")
-    keywords_hi: List[str] = Field(
+    keywords_en: list[str] = Field(default_factory=list, description="English keywords or phrases")
+    keywords_hi: list[str] = Field(
         default_factory=list,
         description="Hindi keywords or phrases in Devanagari script and Hinglish transliteration",
     )
-    regexes: List[str] = Field(default_factory=list, description="Regex patterns for matching")
+    regexes: list[str] = Field(default_factory=list, description="Regex patterns for matching")
     red_flag_category: str = Field(
         ...,
         description="High-level category of red flag, e.g. urgency, authority impersonation, OTP demand",
@@ -48,7 +49,7 @@ class TestMessage(BaseModel):
     text: str = Field(..., description="Full message text")
     language: Literal["en", "hi", "hinglish"] = Field(..., description="Language of the message")
     label: Literal["scam", "genuine"] = Field(..., description="Classification ground truth")
-    scam_type: Optional[str] = Field(
+    scam_type: str | None = Field(
         default=None,
         description="Scam category if label is 'scam', or None if 'genuine'",
     )
@@ -56,7 +57,7 @@ class TestMessage(BaseModel):
 
     @field_validator("scam_type")
     @classmethod
-    def validate_scam_type(cls, value: Optional[str], info) -> Optional[str]:
+    def validate_scam_type(cls, value: str | None, info) -> str | None:
         label = info.data.get("label")
         if label == "genuine" and value is not None:
             raise ValueError("Genuine messages must have scam_type=None")

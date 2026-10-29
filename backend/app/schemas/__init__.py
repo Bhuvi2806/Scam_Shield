@@ -1,5 +1,5 @@
 # backend/app/schemas
 
-from app.schemas.dataset import Pattern, TestMessage, VALID_SCAM_TYPES
+from app.schemas.dataset import VALID_SCAM_TYPES, Pattern, TestMessage
 
-__all__ = ["Pattern", "TestMessage", "VALID_SCAM_TYPES"]
+__all__ = ["VALID_SCAM_TYPES", "Pattern", "TestMessage"]

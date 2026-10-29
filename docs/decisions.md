@@ -12,3 +12,7 @@
 | 8 | 70 test messages (35 scam, 35 genuine) across 3 languages | Exceeds the 60-message minimum with balanced English, Hindi, and Hinglish representation and tricky genuine edge cases (real OTP disclaimers, utility bills). |
 | 9 | Strict cross-field validation on `TestMessage` | Enforces `scam_type is None` for genuine messages and valid `scam_type` for scam messages at schema parsing time. |
 | 10 | `TypeError` for non-list JSON root in dataset loaders | Adheres to Ruff's `TRY004` recommendation for type-checking exceptions. |
+| 11 | Centralized thresholds and disclaimers in `app/core/constants.py` | Eliminates magic numbers across the codebase and guarantees exact safety disclaimer wording. |
+| 12 | Contextual protective negation filter in `RuleDetector` | Checks 80-char surrounding window for anti-fraud warnings (e.g., "never share OTP with bank staff", government advisories) to eliminate false positives on authentic alerts. |
+| 13 | Local heuristic URL checks for APKs, raw IPs, and deceptive domains | Flags high-risk URL patterns without calling external APIs (preserving privacy and latency). |
+| 14 | Base-weight scoring model with non-linear flag aggregation | Weight 5 flags immediately trigger score >= 60 (`likely_scam`), while minor flags yield `suspicious` unless corroborated. |

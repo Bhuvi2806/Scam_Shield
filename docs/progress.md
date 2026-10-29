@@ -13,8 +13,19 @@
 
 ### Phase Log
 - [Phase 0] Understand: Read AGENT.md and verified Step 1 completion. Task is M1 Step 2 — dataset schemas, >= 30 patterns, >= 60 test messages, loaders, and tests.
-- [Phase 1] Plan: Written above.
-- [Phase 2] Implement: In progress...
+- [Phase 1] Plan: Defined schemas, 35 patterns across 7 scam types, 70 synthetic messages, loaders, and tests.
+- [Phase 2] Implement: Created `app/schemas/dataset.py`, populated 35 patterns in `patterns.json`, 70 synthetic messages (35 scam / 35 genuine) in `test_set.json`, loader utilities in `app/core/dataset.py`, and `backend/data/README.md`.
+- [Phase 3] Test: tests: 10 passed, 0 failed (`pytest tests/ -v`), ruff check clean on `app/` and `tests/`.
+- [Phase 4] Review: Re-read diff; confirmed strictly synthetic placeholders (no real personal or banking data), valid UTF-8, and clean schemas.
+- [Phase 5] Document & Report: Updated README and `docs/progress.md` with full phase logs and Definition of Done.
+
+### Definition of Done Checklist (Section 9)
+- [x] Code runs locally without errors
+- [x] Tests added/updated and passing; linters clean (10/10 passed, ruff clean)
+- [x] Privacy and "never 100% safe" rules respected (synthetic data only, no real numbers/names/accounts)
+- [x] No secrets in the repo (.env gitignored, placeholders only)
+- [x] `docs/progress.md` and README updated
+- [x] Final report delivered in Section 7 format
 
 ---
 

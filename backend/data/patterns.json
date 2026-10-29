@@ -1,1 +1,876 @@
-[]
+[
+  {
+    "id": "PAT-001",
+    "scam_type": "digital arrest",
+    "name": "Law enforcement agency impersonation",
+    "description": "Scammer poses as CBI, Narcotics Control Bureau, Mumbai Police or Cyber Crime cell.",
+    "keywords_en": [
+      "cbi officer",
+      "cyber crime department",
+      "mumbai police",
+      "delhi police",
+      "narcotics control bureau",
+      "ncb",
+      "enforcement directorate",
+      "customs department"
+    ],
+    "keywords_hi": [
+      "सीबीआई",
+      "साइबर क्राइम",
+      "पुलिस अधिकारी",
+      "नारकोटिक्स",
+      "कस्टम विभाग",
+      "cbi adhikari",
+      "police vibhag",
+      "thana",
+      "cyber thana"
+    ],
+    "regexes": [
+      "(?i)\\b(cbi|ncb|enforcement\\s*directorate|cyber\\s*crime\\s*branch|customs\\s*department)\\b"
+    ],
+    "red_flag_category": "authority impersonation",
+    "weight": 5
+  },
+  {
+    "id": "PAT-002",
+    "scam_type": "digital arrest",
+    "name": "Digital arrest or virtual custody threat",
+    "description": "Claims victim is placed under digital arrest or non-bailable arrest warrant.",
+    "keywords_en": [
+      "digital arrest",
+      "under virtual custody",
+      "arrest warrant issued",
+      "non-bailable warrant",
+      "supreme court order",
+      "parcel detained with drugs"
+    ],
+    "keywords_hi": [
+      "डिजिटल अरेस्ट",
+      "गिरफ्तारी वारंट",
+      "वारंट जारी",
+      "गिरफ्तार कर लिया जाएगा",
+      "digital arrest",
+      "giraftar",
+      "warrant jari",
+      "hiraasat"
+    ],
+    "regexes": [
+      "(?i)\\b(digital\\s*arrest|virtual\\s*custody|arrest\\s*warrant|non[- ]?bailable\\s*warrant)\\b"
+    ],
+    "red_flag_category": "threats of arrest/disconnection",
+    "weight": 5
+  },
+  {
+    "id": "PAT-003",
+    "scam_type": "digital arrest",
+    "name": "Compelled continuous video call verification",
+    "description": "Demands the victim stay on continuous Skype or WhatsApp video call with camera on.",
+    "keywords_en": [
+      "stay on skype video call",
+      "remain on whatsapp video call",
+      "do not disconnect call",
+      "keep camera on",
+      "virtual investigation",
+      "video interrogation"
+    ],
+    "keywords_hi": [
+      "वीडियो कॉल पर बने रहें",
+      "कॉल मत काटना",
+      "कैमरा चालू रखो",
+      "skype call par raho",
+      "video call disconnect mat karna",
+      "camera on rakho"
+    ],
+    "regexes": [
+      "(?i)(stay\\s+on|do\\s+not\\s+disconnect|remain\\s+on)\\s+(the\\s+)?(video\\s+call|skype|whatsapp\\s+call)"
+    ],
+    "red_flag_category": "stay on video call",
+    "weight": 5
+  },
+  {
+    "id": "PAT-004",
+    "scam_type": "digital arrest",
+    "name": "TRAI / SIM suspension warning for crime",
+    "description": "Threatens mobile SIM will be terminated by TRAI or DoT within hours due to harassment or cybercrime.",
+    "keywords_en": [
+      "trai notice",
+      "sim card will be blocked",
+      "sim deactivation within 2 hours",
+      "department of telecommunications",
+      "illegal activity on your mobile number"
+    ],
+    "keywords_hi": [
+      "ट्राई नोटिस",
+      "सिम ब्लॉक हो जाएगा",
+      "दूरसंचार विभाग",
+      "trai notice",
+      "sim band ho jayega",
+      "2 ghante me sim block"
+    ],
+    "regexes": [
+      "(?i)\\b(trai|department\\s+of\\s+telecommunications|telecom\\s+department)\\b.*(block|suspend|deactivat)"
+    ],
+    "red_flag_category": "authority impersonation",
+    "weight": 4
+  },
+  {
+    "id": "PAT-005",
+    "scam_type": "digital arrest",
+    "name": "Security deposit / secret bail fund demand",
+    "description": "Forces victim to transfer money to a secret verification account or RBI clearance account.",
+    "keywords_en": [
+      "transfer security deposit for verification",
+      "send funds to rbi secret account",
+      "refundable clearance fee",
+      "deposit money to avoid arrest",
+      "court clearance bond"
+    ],
+    "keywords_hi": [
+      "सत्यापन के लिए पैसे ट्रांसफर करें",
+      "जमानत राशि जमा करें",
+      "पैसे वापस मिल जाएंगे",
+      "paise transfer karo",
+      "security deposit jama karo",
+      "bail ke liye paise"
+    ],
+    "regexes": [
+      "(?i)(transfer|deposit|send)\\s+.*(avoid\\s+arrest|bail|rbi\\s+account|clearance|verification\\s+account)"
+    ],
+    "red_flag_category": "money transfer demand",
+    "weight": 5
+  },
+  {
+    "id": "PAT-033",
+    "scam_type": "digital arrest",
+    "name": "Secrecy directive during fake investigation",
+    "description": "Instructs victim not to inform family, lawyers, or anyone under threat of severe penalties.",
+    "keywords_en": [
+      "maintain national security secrecy",
+      "do not inform family members or lawyer",
+      "confidential case under official secrets act",
+      "talking to anyone will violate bail conditions"
+    ],
+    "keywords_hi": [
+      "किसी को मत बताना गोपनीय मामला है",
+      "वकील या परिवार से बात मत करना",
+      "राष्ट्रीय सुरक्षा का मामला",
+      "kisi ko mat batana",
+      "family ya lawyer se baat mat karna",
+      "national security secret"
+    ],
+    "regexes": [
+      "(?i)(do\\s+not\\s+inform|keep\\s+this\\s+secret|confidential).*?\\b(family|lawyer|anyone|secrets\\s*act)\\b"
+    ],
+    "red_flag_category": "urgency",
+    "weight": 5
+  },
+  {
+    "id": "PAT-006",
+    "scam_type": "fake KYC",
+    "name": "Bank account KYC suspension urgency",
+    "description": "Creates panic that bank account, debit card, or wallet is being blocked today due to pending KYC.",
+    "keywords_en": [
+      "kyc pending",
+      "account suspended today",
+      "pan card not linked",
+      "aadhaar verification overdue",
+      "account will be blocked within 24 hours",
+      "update kyc immediately"
+    ],
+    "keywords_hi": [
+      "केवाईसी पेंडिंग",
+      "खाता आज बंद हो जाएगा",
+      "पैन कार्ड लिंक नहीं",
+      "तुरंत केवाईसी अपडेट करें",
+      "kyc update karein",
+      "khata block ho jayega",
+      "pan link karo"
+    ],
+    "regexes": [
+      "(?i)\\b(kyc|pan|aadhaar)\\b.*?\\b(suspend|block|deactivat|hold)\\b.*?\\b(today|immediate|24\\s*h|urgent)"
+    ],
+    "red_flag_category": "urgency",
+    "weight": 4
+  },
+  {
+    "id": "PAT-007",
+    "scam_type": "fake KYC",
+    "name": "Phishing link for KYC update",
+    "description": "Provides an unofficial link or shortened URL claiming to be an official bank KYC portal.",
+    "keywords_en": [
+      "click here to update kyc",
+      "visit link to verify pan",
+      "complete netbanking kyc",
+      "http bit ly kyc",
+      "update-bank-kyc.com"
+    ],
+    "keywords_hi": [
+      "केवाईसी के लिए लिंक पर क्लिक करें",
+      "यहाँ क्लिक करके पैन अपडेट करें",
+      "link par click karke kyc karein",
+      "pan card update link"
+    ],
+    "regexes": [
+      "(?i)(click|visit|link).*?\\b(kyc|pan|aadhaar|netbanking)\\b.*?(https?://|bit\\.ly|tinyurl)"
+    ],
+    "red_flag_category": "suspicious link/APK",
+    "weight": 5
+  },
+  {
+    "id": "PAT-008",
+    "scam_type": "fake KYC",
+    "name": "Demanding OTP/PIN for KYC verification",
+    "description": "Asks for OTP, ATM PIN, or CVV under the guise of unblocking account or completing KYC.",
+    "keywords_en": [
+      "share otp for kyc",
+      "enter 6-digit pin for verification",
+      "tell kyc executive your otp",
+      "verify kyc with cv number",
+      "read out authentication code"
+    ],
+    "keywords_hi": [
+      "केवाईसी के लिए ओटीपी बताएं",
+      "सत्यापन कोड शेयर करें",
+      "पिन दर्ज करें",
+      "kyc ke liye otp share karo",
+      "otp batao",
+      "pin number bhejo"
+    ],
+    "regexes": [
+      "(?i)(share|enter|send|provide|tell)\\s+.*?\\b(otp|pin|cvv|password)\\b.*?\\b(kyc|verification|unblock)\\b"
+    ],
+    "red_flag_category": "OTP/PIN/CVV demand",
+    "weight": 5
+  },
+  {
+    "id": "PAT-009",
+    "scam_type": "fake KYC",
+    "name": "Malicious APK download for bank support",
+    "description": "Prompts victim to install third-party APK or remote access software (AnyDesk, QuickSupport).",
+    "keywords_en": [
+      "download sbi support apk",
+      "install anydesk for kyc",
+      "download quicksupport",
+      "install bank kyc app from link",
+      "download .apk file to complete documents"
+    ],
+    "keywords_hi": [
+      "एपीके फाइल डाउनलोड करें",
+      "एनीडेस्क इनस्टॉल करें",
+      "बैंक ऐप डाउनलोड लिंक",
+      "apk download karein",
+      "anydesk install karo",
+      "quicksupport load karo"
+    ],
+    "regexes": [
+      "(?i)(download|install)\\b.*?\\b(\\.apk|anydesk|teamviewer|quicksupport|rustdesk)"
+    ],
+    "red_flag_category": "suspicious link/APK",
+    "weight": 5
+  },
+  {
+    "id": "PAT-010",
+    "scam_type": "fake KYC",
+    "name": "Credit card reward points expiring / KYC required",
+    "description": "Lures with cash redemption of reward points before midnight, linking to fake credential harvester.",
+    "keywords_en": [
+      "credit card points expiring today",
+      "redeem cash worth rs",
+      "convert reward points to cash",
+      "card blocked submit kyc to claim"
+    ],
+    "keywords_hi": [
+      "क्रेडिट कार्ड रिवॉर्ड पॉइंट समाप्त",
+      "कैश में बदलें",
+      "रिवॉर्ड पॉइंट क्लेम करें",
+      "reward points expire ho rahe hain",
+      "cash redeem karein"
+    ],
+    "regexes": [
+      "(?i)\\b(credit\\s*card|reward\\s*points?)\\b.*?\\b(expir|redeem|cash)\\b.*?(click|link|today)"
+    ],
+    "red_flag_category": "urgency",
+    "weight": 4
+  },
+  {
+    "id": "PAT-032",
+    "scam_type": "fake KYC",
+    "name": "SIM swap / eSIM activation fraud",
+    "description": "Tricks victim into forwarding 1900 portability/eSIM requests under threat of disconnection.",
+    "keywords_en": [
+      "forward this 1900 sms to activate esim",
+      "reply with 32 digit sim number to continue service",
+      "send esim confirmation code to retain 5g connection"
+    ],
+    "keywords_hi": [
+      "ई-सिम एक्टिवेशन के लिए एसएमएस फॉरवर्ड करें",
+      "सिम नंबर भेजें",
+      "esim activation ke liye message bhejo",
+      "1900 sms forward karo"
+    ],
+    "regexes": [
+      "(?i)(forward|send|reply).*?\\b(esim|1900|sim\\s*number|sim\\s*swap)\\b"
+    ],
+    "red_flag_category": "urgency",
+    "weight": 4
+  },
+  {
+    "id": "PAT-011",
+    "scam_type": "UPI refund",
+    "name": "Accidental payment refund request",
+    "description": "Claims money was sent by mistake and pressures victim to return it via UPI without checking bank statement.",
+    "keywords_en": [
+      "sent money by mistake",
+      "refund my gpay amount",
+      "transferred 25000 accidentally to your upi",
+      "please return my phonepe money",
+      "enter upi pin to receive refund"
+    ],
+    "keywords_hi": [
+      "गलती से पैसे भेज दिए",
+      "वापस भेज दीजिए",
+      "रिफंड पाने के लिए यूपीआई पिन डालें",
+      "galti se paise transfer ho gaye",
+      "refund ke liye upi pin dalein",
+      "paise wapas karo"
+    ],
+    "regexes": [
+      "(?i)(by\\s+mistake|accidentally)\\s+(sent|transferred|credited).*?\\b(refund|return|send\\s+back)"
+    ],
+    "red_flag_category": "money transfer demand",
+    "weight": 4
+  },
+  {
+    "id": "PAT-012",
+    "scam_type": "UPI refund",
+    "name": "Enter UPI PIN to receive money trap",
+    "description": "Tells user to enter UPI PIN or accept collect request to receive money or refunds.",
+    "keywords_en": [
+      "enter upi pin to receive money",
+      "accept collect request to credit money",
+      "enter secret pin to claim cashback",
+      "scan qr code to receive payment into account"
+    ],
+    "keywords_hi": [
+      "पैसे प्राप्त करने के लिए यूपीआई पिन डालें",
+      "क्यूआर कोड स्कैन करके पैसे लें",
+      "कैशबैक के लिए पिन डालें",
+      "paise lene ke liye pin dalein",
+      "qr code scan karke payment lo"
+    ],
+    "regexes": [
+      "(?i)(enter|input|type)\\s+.*?\\b(upi\\s*pin|pin)\\b.*?\\b(receive|credit|claim|accept\\s+money)\\b"
+    ],
+    "red_flag_category": "OTP/PIN/CVV demand",
+    "weight": 5
+  },
+  {
+    "id": "PAT-013",
+    "scam_type": "UPI refund",
+    "name": "Overpayment cashback / merchant refund claim",
+    "description": "Claims failed online order refund is approved and directs user to a fraudulent approval link.",
+    "keywords_en": [
+      "swiggy refund pending",
+      "amazon pay refund waiting",
+      "phonepe cashback credited approve now",
+      "paytm failed transaction refund approved click link"
+    ],
+    "keywords_hi": [
+      "अमेज़न रिफंड अप्रूव हुआ",
+      "पेटीएम रिफंड लिंक",
+      "कैशबैक क्लेम करने के लिए क्लिक करें",
+      "refund pending approve karein",
+      "paytm refund link"
+    ],
+    "regexes": [
+      "(?i)\\b(phonepe|paytm|gpay|google\\s*pay|amazon\\s*pay)\\b.*?\\b(refund|cashback)\\b.*?(click|approve|link)"
+    ],
+    "red_flag_category": "urgency",
+    "weight": 4
+  },
+  {
+    "id": "PAT-014",
+    "scam_type": "UPI refund",
+    "name": "Fake customer care helpline number",
+    "description": "Phony toll-free or mobile number claiming to be official UPI or wallet resolution helpline.",
+    "keywords_en": [
+      "call gpay customer care at",
+      "phonepe official toll free number",
+      "paytm dispute resolution desk",
+      "call our executive for payment reversal"
+    ],
+    "keywords_hi": [
+      "कस्टमर केयर नंबर पर संपर्क करें",
+      "टोल फ्री नंबर",
+      "पेमेंट रिवर्सल के लिए कॉल करें",
+      "customer care helpline number",
+      "call karein payment wapas lene ke liye"
+    ],
+    "regexes": [
+      "(?i)(call|contact)\\s+(toll[- ]?free|helpline|support|customer\\s*care)\\s+(at|on)?\\s*(\\+91|0)?[6-9]\\d{9}"
+    ],
+    "red_flag_category": "authority impersonation",
+    "weight": 3
+  },
+  {
+    "id": "PAT-034",
+    "scam_type": "UPI refund",
+    "name": "QR code scanner to receive cashback",
+    "description": "Instructs victim to scan a QR code using banking or UPI app to receive funds.",
+    "keywords_en": [
+      "scan this qr code to receive prize money",
+      "scan qr code to credit 2000 in account",
+      "attached qr code for pending refund"
+    ],
+    "keywords_hi": [
+      "रिफंड पाने के लिए क्यूआर कोड स्कैन करें",
+      "क्यूआर कोड स्कैन करके 2000 पाएं",
+      "qr code scan karke cashback lo",
+      "refund ke liye qr scan karo"
+    ],
+    "regexes": [
+      "(?i)scan\\s+(this\\s+)?qr\\s*code\\s+.*?(receive|credit|cashback|refund)"
+    ],
+    "red_flag_category": "suspicious link/APK",
+    "weight": 4
+  },
+  {
+    "id": "PAT-015",
+    "scam_type": "job/task scam",
+    "name": "YouTube video like / review paid task",
+    "description": "Offers implausible daily income (Rs 2,000-8,000) for simple actions like liking videos or rating hotels.",
+    "keywords_en": [
+      "earn rs 3000 to 5000 daily by liking youtube videos",
+      "part time work from home rating hotels",
+      "get paid per review",
+      "simple 10 minute task daily income",
+      "subscribe channel get 50 rupees per task"
+    ],
+    "keywords_hi": [
+      "घर बैठे यूट्यूब वीडियो लाइक करके कमाएं",
+      "प्रतिदिन 3000 से 5000 की कमाई",
+      "होटल रिव्यू करके पैसे कमाएं",
+      "ghar baithe kamai",
+      "youtube video like karke paise kamao",
+      "part time online job"
+    ],
+    "regexes": [
+      "(?i)(earn|make)\\s+(rs\\.?|inr)?\\s*\\d{3,5}\\s+(daily|per\\s+day).*?\\b(liking|review|hotel|youtube|task)\\b"
+    ],
+    "red_flag_category": "too-good-to-be-true reward",
+    "weight": 4
+  },
+  {
+    "id": "PAT-016",
+    "scam_type": "job/task scam",
+    "name": "Telegram task group recruitment",
+    "description": "Directs applicant to private Telegram channel or group to receive tasks and salary disbursement.",
+    "keywords_en": [
+      "join telegram channel for tasks",
+      "message receptionist on telegram",
+      "t.me/ task manager",
+      "contact hr manager on telegram to start prepaid tasks"
+    ],
+    "keywords_hi": [
+      "टेलीग्राम चैनल से जुड़ें",
+      "टेलीग्राम पर एचआर से संपर्क करें",
+      "टास्क के लिए टेलीग्राम मैसेज करें",
+      "telegram channel join karein",
+      "telegram par message bhejo hr ko"
+    ],
+    "regexes": [
+      "(?i)\\b(telegram|t\\.me/)\\b.*?\\b(task|job|salary|income|receptionist|hr)\\b"
+    ],
+    "red_flag_category": "suspicious link/APK",
+    "weight": 4
+  },
+  {
+    "id": "PAT-017",
+    "scam_type": "job/task scam",
+    "name": "Prepaid / crypto investment task demand",
+    "description": "Requires candidate to deposit personal funds to unlock higher task commissions or withdraw earned money.",
+    "keywords_en": [
+      "deposit 1000 to unlock 5000 reward",
+      "crypto trading task investment",
+      "vip task level upgrade fee",
+      "recharge wallet to withdraw task earnings"
+    ],
+    "keywords_hi": [
+      "टास्क अनलॉक करने के लिए पैसे जमा करें",
+      "कमीशन निकालने के लिए रीचार्ज करें",
+      "वीआईपी लेवल अपग्रेड फीस",
+      "deposit karke earnings withdraw karein",
+      "vip task upgrade fee"
+    ],
+    "regexes": [
+      "(?i)(deposit|recharge|invest)\\s+.*?(unlock|withdraw|commission|level\\s*upgrade|crypto)"
+    ],
+    "red_flag_category": "money transfer demand",
+    "weight": 5
+  },
+  {
+    "id": "PAT-018",
+    "scam_type": "job/task scam",
+    "name": "Fake international company / HR job offer",
+    "description": "Unsolicited job offer claiming to be from Amazon, Google, or international firms with guaranteed daily payout.",
+    "keywords_en": [
+      "congratulations selected for amazon online job",
+      "work from home remote assistant offer",
+      "daily settlement salary 8000 inr",
+      "no experience required weekly payout"
+    ],
+    "keywords_hi": [
+      "अमेज़न वर्क फ्रॉम होम के लिए चयनित",
+      "बिना अनुभव घर बैठे काम",
+      "प्रतिदिन वेतन",
+      "amazon job offer bina interview",
+      "daily payment work from home"
+    ],
+    "regexes": [
+      "(?i)(selected\\s+for|offer\\s+letter).*?\\b(work\\s+from\\s+home|remote\\s+job|daily\\s+salary)\\b"
+    ],
+    "red_flag_category": "authority impersonation",
+    "weight": 3
+  },
+  {
+    "id": "PAT-035",
+    "scam_type": "job/task scam",
+    "name": "Freelance data entry registration security deposit",
+    "description": "Demands advance refundable deposit for sending raw typing sheets or online data entry software.",
+    "keywords_en": [
+      "data entry project earn 25000 monthly",
+      "pay refundable security deposit of 1500 to get raw data files",
+      "typing job contract penalty threat"
+    ],
+    "keywords_hi": [
+      "डाटा एंट्री काम 25000 महीना",
+      "रिफंडेबल सिक्योरिटी डिपाजिट 1500 जमा करें",
+      "टाइपिंग काम रजिस्ट्रेशन फीस",
+      "data entry job monthly earning",
+      "refundable security deposit jama karo"
+    ],
+    "regexes": [
+      "(?i)(data\\s*entry|typing\\s*job)\\b.*?(security\\s*deposit|registration\\s*fee|refundable)"
+    ],
+    "red_flag_category": "money transfer demand",
+    "weight": 4
+  },
+  {
+    "id": "PAT-019",
+    "scam_type": "lottery/prize",
+    "name": "KBC lottery winner notification",
+    "description": "Claims victim's phone number has won 25 lakh or huge prize in Kaun Banega Crorepati lucky draw.",
+    "keywords_en": [
+      "kbc lucky draw winner 25 lakh",
+      "kaun banega crorepati lottery",
+      "whatsapp lucky draw winner",
+      "congratulations your number won first prize",
+      "cheque ready for dispatch"
+    ],
+    "keywords_hi": [
+      "केबीसी 25 लाख लॉटरी विजेता",
+      "कौन बनेगा करोड़पति लकी ड्रा",
+      "व्हाट्सएप नंबर पर इनाम",
+      "kbc lottery winner 25 lakh",
+      "kbc lucky draw jeeta",
+      "whatsapp lottery"
+    ],
+    "regexes": [
+      "(?i)\\b(kbc|kaun\\s+banega\\s+crorepati|lucky\\s+draw)\\b.*?\\b(lakh|crore|prize|winner)\\b"
+    ],
+    "red_flag_category": "too-good-to-be-true reward",
+    "weight": 5
+  },
+  {
+    "id": "PAT-020",
+    "scam_type": "lottery/prize",
+    "name": "Advance processing fee / GST fee for prize release",
+    "description": "Demands upfront payment for government GST, customs duty, or bank registration before lottery dispatch.",
+    "keywords_en": [
+      "pay 12500 gst to release 25 lakh lottery",
+      "pay customs clearance fee to claim prize",
+      "transfer registration fee to claim car prize",
+      "bank processing charge for jackpot money"
+    ],
+    "keywords_hi": [
+      "इनाम पाने के लिए 12500 टैक्स भरें",
+      "कस्टम्स क्लीयरेंस फीस जमा करें",
+      "लॉटरी राशि के लिए रजिस्ट्रेशन फीस",
+      "gst fee bharo lottery ke liye",
+      "registration charges jama karo"
+    ],
+    "regexes": [
+      "(?i)(pay|deposit|transfer)\\s+.*?(gst|tax|processing\\s+fee|clearance|registration\\s+fee)\\s+.*?(claim|prize|lottery|jackpot)"
+    ],
+    "red_flag_category": "money transfer demand",
+    "weight": 5
+  },
+  {
+    "id": "PAT-021",
+    "scam_type": "lottery/prize",
+    "name": "WhatsApp prize claim helpline manager",
+    "description": "Directs user to contact a specific fake officer on WhatsApp only to process prize claim.",
+    "keywords_en": [
+      "call kbc manager rana pratap singh",
+      "whatsapp lottery officer mr sharma",
+      "contact prize claim department immediately",
+      "call our head office manager to verify lottery coupon"
+    ],
+    "keywords_hi": [
+      "केबीसी मैनेजर से तुरंत बात करें",
+      "लॉटरी अधिकारी को व्हाट्सएप कॉल करें",
+      "हेड ऑफिस मैनेजर नंबर",
+      "kbc manager ko call karein",
+      "lottery officer whatsapp number"
+    ],
+    "regexes": [
+      "(?i)(kbc\\s+manager|lottery\\s+officer|prize\\s+department).*?\\b(whatsapp|call|contact)\\b"
+    ],
+    "red_flag_category": "authority impersonation",
+    "weight": 4
+  },
+  {
+    "id": "PAT-022",
+    "scam_type": "lottery/prize",
+    "name": "Expensive smartphone / car lucky gift link",
+    "description": "Claims recipient has won a free iPhone, car, or festive gift basket via suspicious link.",
+    "keywords_en": [
+      "you won iphone 16 pro free",
+      "spin the wheel win tata harrier",
+      "claim your diwali free gift now",
+      "click link to get free samsung galaxy"
+    ],
+    "keywords_hi": [
+      "मुफ्त आईफोन 16 जीता",
+      "स्पिन व्हील कार जीतें",
+      "फ्री गिफ्ट क्लेम लिंक",
+      "free iphone jeeta",
+      "spin and win gift link",
+      "muft uphar claim karein"
+    ],
+    "regexes": [
+      "(?i)(won|win|free)\\s+(an?\\s+)?(iphone|samsung|car|smartphone|gift).*?\\b(claim|link|click)\\b"
+    ],
+    "red_flag_category": "suspicious link/APK",
+    "weight": 4
+  },
+  {
+    "id": "PAT-023",
+    "scam_type": "electricity-bill threat",
+    "name": "Tonight electricity disconnection threat",
+    "description": "Threatens power cutoff tonight at 9:30 PM due to unpaid bill unless an officer is contacted immediately.",
+    "keywords_en": [
+      "electricity power will be disconnected tonight at 9:30 pm",
+      "power cutoff notice",
+      "bill not updated power disconnected immediately",
+      "electricity supply will be terminated today",
+      "urgent power disconnection alert"
+    ],
+    "keywords_hi": [
+      "आज रात 9:30 बजे बिजली काट दी जाएगी",
+      "बिजली कनेक्शन काटा जाएगा",
+      "बिजली बिल अपडेट नहीं है",
+      "aaj raat 9:30 baje bijli kaat di jayegi",
+      "power disconnect ho jayegi",
+      "bijli supply terminate"
+    ],
+    "regexes": [
+      "(?i)(electricity|power\\s+supply|power).*?\\b(disconnected|cut\\s*off|terminated)\\b.*?\\b(tonight|today|at\\s*\\d{1,2}[:.]?\\d{0,2}\\s*(pm|am)?)"
+    ],
+    "red_flag_category": "threats of arrest/disconnection",
+    "weight": 5
+  },
+  {
+    "id": "PAT-024",
+    "scam_type": "electricity-bill threat",
+    "name": "Fake electricity officer contact directive",
+    "description": "Instructs consumer to dial an unofficial personal mobile number to prevent immediate power cutoff.",
+    "keywords_en": [
+      "contact electricity officer mr verma",
+      "call bijli vibhag officer at",
+      "call our power department helpline",
+      "reach electricity sub-station engineer immediately"
+    ],
+    "keywords_hi": [
+      "बिजली अधिकारी वर्मा जी से संपर्क करें",
+      "बिजली विभाग अधिकारी नंबर",
+      "सब स्टेशन इंजीनियर को कॉल करें",
+      "bijli vibhag officer ko phone karein",
+      "electricity officer contact number"
+    ],
+    "regexes": [
+      "(?i)(electricity\\s+officer|bijli\\s+vibhag|power\\s+department).*?\\b(contact|call|reach)\\b"
+    ],
+    "red_flag_category": "authority impersonation",
+    "weight": 4
+  },
+  {
+    "id": "PAT-025",
+    "scam_type": "electricity-bill threat",
+    "name": "Bill payment via APK link or personal mobile number",
+    "description": "Instructs consumer to pay pending power bill via suspicious web link, APK download, or direct mobile number.",
+    "keywords_en": [
+      "download bijli bill update apk",
+      "pay bill immediately on this mobile upi",
+      "update electricity bill via this link to restore connection",
+      "install discom quick pay application"
+    ],
+    "keywords_hi": [
+      "बिजली बिल अपडेट एपीके डाउनलोड करें",
+      "इस लिंक से तुरंत बिल भरें",
+      "मोबाइल नंबर पर यूपीआई ट्रांसफर करें",
+      "bijli bill apk download karein",
+      "link se bill pay karo connection ke liye"
+    ],
+    "regexes": [
+      "(?i)(electricity|bijli|power).*?\\b(bill)\\b.*?(download|\\.apk|bit\\.ly|pay\\s+on\\s+\\d{10})"
+    ],
+    "red_flag_category": "suspicious link/APK",
+    "weight": 5
+  },
+  {
+    "id": "PAT-026",
+    "scam_type": "electricity-bill threat",
+    "name": "Zero balance overdue panic threat",
+    "description": "States bill was rejected on server and disconnection order has already been signed by senior discom engineer.",
+    "keywords_en": [
+      "previous month bill unpaid status pending",
+      "disconnection order issued by state electricity board",
+      "call immediately within 30 minutes to stop disconnection"
+    ],
+    "keywords_hi": [
+      "पिछले महीने का बिल बाकी है",
+      "डिस्कनेक्शन ऑर्डर जारी हुआ",
+      "30 मिनट के अंदर संपर्क करें",
+      "pichle mahine ka bill pending",
+      "disconnection order jari",
+      "30 minute me call karein"
+    ],
+    "regexes": [
+      "(?i)(disconnection\\s+order|bill\\s+not\\s+updated).*?\\b(within\\s*\\d+\\s*(minutes?|hours?)|call\\s+immediately)\\b"
+    ],
+    "red_flag_category": "urgency",
+    "weight": 4
+  },
+  {
+    "id": "PAT-027",
+    "scam_type": "other",
+    "name": "Courier parcel containing contraband / customs seizure",
+    "description": "Claims international courier (FedEx, DHL) in recipient's name was detained with passports and illicit substances.",
+    "keywords_en": [
+      "fedex parcel seized at airport",
+      "dhl package contains passport and narcotics",
+      "customs detention notice for foreign parcel",
+      "parcel sent in your name to taiwan seized"
+    ],
+    "keywords_hi": [
+      "फेडेक्स पार्सल एयरपोर्ट पर जब्त",
+      "पार्सल में ड्रग्स और पासपोर्ट पाए गए",
+      "कस्टम्स हिरासत नोटिस",
+      "fedex parcel me drugs mile",
+      "customs parcel seized",
+      "dhl courier detain"
+    ],
+    "regexes": [
+      "(?i)\\b(fedex|dhl|bluedart|customs)\\b.*?\\b(parcel|package|courier)\\b.*?\\b(seized|drugs|narcotics|detained|contraband)\\b"
+    ],
+    "red_flag_category": "authority impersonation",
+    "weight": 5
+  },
+  {
+    "id": "PAT-028",
+    "scam_type": "other",
+    "name": "Challan / traffic court penalty scam",
+    "description": "Fake traffic fine notice urging victim to download an APK or visit a malicious domain to prevent court seizure.",
+    "keywords_en": [
+      "traffic echallan pending pay now",
+      "court notice for pending echallan",
+      "pay vehicle fine before impoundment click link",
+      "download echallan.apk to clear fine"
+    ],
+    "keywords_hi": [
+      "ट्रैफिक ई-चालान पेंडिंग",
+      "कोर्ट नोटिस गाड़ी जब्त होने से बचाएं",
+      "चालान भरने के लिए लिंक पर क्लिक करें",
+      "traffic echallan link",
+      "challan payment apk",
+      "court notice vehicle fine"
+    ],
+    "regexes": [
+      "(?i)\\b(echallan|traffic\\s*challan|vehicle\\s*fine)\\b.*?(pay|click|link|\\.apk)"
+    ],
+    "red_flag_category": "suspicious link/APK",
+    "weight": 4
+  },
+  {
+    "id": "PAT-029",
+    "scam_type": "other",
+    "name": "Family member emergency medical / arrest distress call",
+    "description": "Panic scam claiming child or relative is admitted to hospital or arrested, demanding immediate transfer.",
+    "keywords_en": [
+      "your son is in police custody send money",
+      "daughter had severe accident hospital emergency transfer money immediately",
+      "do not call anyone transfer 50000 now"
+    ],
+    "keywords_hi": [
+      "आपका बेटा पुलिस हिरासत में है पैसे भेजें",
+      "बेटी का गंभीर एक्सीडेंट हुआ है अस्पताल में पैसे जमा करो",
+      "किसी को मत बताना तुरंत पैसे ट्रांसफर करो",
+      "beta police custody me hai",
+      "accident ho gaya paise transfer karo"
+    ],
+    "regexes": [
+      "(?i)(son|daughter|brother|relative)\\b.*?\\b(police\\s+custody|accident|hospital|emergency)\\b.*?(send|transfer|money)"
+    ],
+    "red_flag_category": "urgency",
+    "weight": 5
+  },
+  {
+    "id": "PAT-030",
+    "scam_type": "other",
+    "name": "Sextortion / compromising video leak blackmail",
+    "description": "Threatens to upload recorded private video call to contacts or social platforms unless extortion sum is paid.",
+    "keywords_en": [
+      "recorded your video call will upload to youtube",
+      "send 20000 to delete your explicit video",
+      "cyber police officer calling on behalf of victim pay settlement"
+    ],
+    "keywords_hi": [
+      "तुम्हारा वीडियो यूट्यूब पर डाल दूंगा",
+      "वीडियो डिलीट करने के लिए 20000 दो",
+      "साइबर सेल से बोल रहा हूँ समझौता करो",
+      "video viral kar dunga",
+      "paise do video delete karne ke",
+      "cyber cell settlement"
+    ],
+    "regexes": [
+      "(?i)(recorded|viral|upload)\\b.*?\\b(video|explicit|mms)\\b.*?(pay|send|money|delete)"
+    ],
+    "red_flag_category": "money transfer demand",
+    "weight": 5
+  },
+  {
+    "id": "PAT-031",
+    "scam_type": "other",
+    "name": "Loan approved without documentation trap",
+    "description": "Pre-approved loan scam requiring upfront processing fee or insurance fee before funds release.",
+    "keywords_en": [
+      "pre-approved loan of 5 lakh with no cibil check",
+      "instant personal loan without documents click to apply",
+      "pay 2000 loan processing fee to disburse amount"
+    ],
+    "keywords_hi": [
+      "बिना किसी सिबिल के 5 लाख का लोन स्वीकृत",
+      "बिना दस्तावेज तुरंत पर्सनल लोन",
+      "प्रोसेसिंग फीस जमा करके लोन पाएं",
+      "bina cibil 5 lakh loan pass",
+      "instant loan bina documents",
+      "processing fee jama karo"
+    ],
+    "regexes": [
+      "(?i)(pre[- ]?approved|instant)\\s+loan\\s+.*?(no\\s+cibil|no\\s+documents?|processing\\s+fee)"
+    ],
+    "red_flag_category": "too-good-to-be-true reward",
+    "weight": 4
+  }
+]

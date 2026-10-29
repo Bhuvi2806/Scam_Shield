@@ -1,1 +1,562 @@
-[]
+[
+  {
+    "id": "MSG-001",
+    "text": "URGENT: Non-bailable arrest warrant has been issued against you by Cyber Crime Branch Mumbai. A FedEx parcel sent in your name containing 5 Passports and MDMA drugs was seized at airport. You are placed under digital arrest. Connect immediately on Skype video call with Officer Rajesh Kumar: skype.example.com/cbi-investigation or face immediate police custody.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "digital arrest",
+    "notes": "Classic digital arrest scam: fake CBI/police impersonation, drugs in parcel, video call interrogation demand."
+  },
+  {
+    "id": "MSG-002",
+    "text": "सीबीआई और नारकोटिक्स कंट्रोल ब्यूरो द्वारा आपके खिलाफ गैर-जमानती वारंट जारी किया गया है। आपके आधार कार्ड से जुड़े खाते से 2 करोड़ की मनी लॉन्ड्रिंग हुई है। तुरंत व्हाट्सएप वीडियो कॉल पर बने रहें और कैमरा चालू रखें। कॉल डिस्कनेक्ट करने पर स्थानीय पुलिस आपको 1 घंटे में गिरफ्तार कर लेगी।",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "digital arrest",
+    "notes": "Digital arrest scam in Hindi: CBI/NCB threat, money laundering allegation, mandatory continuous video call."
+  },
+  {
+    "id": "MSG-003",
+    "text": "Notice from Department of Telecommunications (DoT): Aapka mobile number criminal cyber fraud me involved paya gaya hai. Agle 2 ghante me aapka SIM card permanently suspend kar diya jayega. Immediate verification ke liye hamare Cyber Crime Nodal Officer ko Skype video call par connect karein aur apna kamra lock rakhein.",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "digital arrest",
+    "notes": "TRAI/DoT impersonation in Hinglish leading to virtual custody and video call."
+  },
+  {
+    "id": "MSG-004",
+    "text": "Supreme Court order: You have been placed under virtual custody in National Security Case #CR-9821. To verify innocence and avoid jail, transfer Rs 95,000 refundable security deposit to RBI secret verification account IFSC: BKID000XXXX A/C: XXXXXXXX within 30 minutes. Keep this strictly confidential.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "digital arrest",
+    "notes": "Demands money transfer to 'RBI secret verification account' to avoid jail under virtual arrest."
+  },
+  {
+    "id": "MSG-005",
+    "text": "Aapke naam se Mumbai Police Cyber Cell me case darj hua hai. Aapko digital arrest kiya gaya hai. Agar aapne kisi ko bataya ya lawyer ko phone kiya toh Official Secrets Act ke tehat turant jail bhejenge. Turant is WhatsApp link par join karke statement record karayein.",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "digital arrest",
+    "notes": "Digital arrest with secrecy order forbidding informing family or lawyers."
+  },
+  {
+    "id": "MSG-006",
+    "text": "Dear Customer, Your SBI Bank account and ATM card will be BLOCKED today because your PAN card is not linked. To prevent immediate deactivation, update your KYC online now: http://bit.ly/sbi-kyc-verify-portal",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "fake KYC",
+    "notes": "Urgent bank account suspension threat with phishing bit.ly link."
+  },
+  {
+    "id": "MSG-007",
+    "text": "प्रिय ग्राहक, आपका बैंक खाता आज रात निलंबित कर दिया जाएगा क्योंकि आपकी ई-केवाईसी अधूरी है। तुरंत इस लिंक पर क्लिक करके अपना आधार और पैन विवरण दर्ज करें और सत्यापन हेतु प्राप्त 6 अंकों का ओटीपी साझा करें: http://update-kyc.example.com",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "fake KYC",
+    "notes": "Hindi KYC phishing demanding OTP and credentials via fake link."
+  },
+  {
+    "id": "MSG-008",
+    "text": "HDFC Alert: Aapka debit card expire ho raha hai aur 25,000 reward points expire ho rahe hain. Cash 12,500 INR redeem karne aur KYC complete karne ke liye ye support APK download karein: http://cdn.example.com/hdfc-quicksupport.apk",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "fake KYC",
+    "notes": "Malicious APK download for KYC and reward points."
+  },
+  {
+    "id": "MSG-009",
+    "text": "Urgent KYC notice: Telecom department requires biometric re-verification. Forward this SMS with text 'ESIM 98XXXXXXXX' to 1900 within 2 hours or your mobile SIM will be permanently disconnected.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "fake KYC",
+    "notes": "SIM swap fraud disguised as mandatory KYC update."
+  },
+  {
+    "id": "MSG-010",
+    "text": "Bank Customer Care: Aapka PNB khata band ho chuka hai. Verification executive aapko call karega. Account unblock karne ke liye apne mobile par aane wala 6 digit OTP executive ko batayein.",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "fake KYC",
+    "notes": "Demanding OTP disclosure over phone to unblock account."
+  },
+  {
+    "id": "MSG-011",
+    "text": "Sir, I sent Rs 15,000 by mistake to your Google Pay number instead of my brother's medical shop. Please return my hard-earned money immediately. Open your PhonePe, click the collect request and enter your UPI PIN to approve the refund.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "UPI refund",
+    "notes": "Accidental payment trap instructing victim to enter UPI PIN to refund."
+  },
+  {
+    "id": "MSG-012",
+    "text": "नमस्ते जी, गलती से आपके गूगल पे पर 25,000 रुपये ट्रांसफर हो गए हैं। मेरी माँ अस्पताल में भर्ती हैं, कृपया तुरंत फोनपे में आई कलेक्ट रिक्वेस्ट स्वीकार करके अपना यूपीआई पिन डालकर पैसे वापस भेज दें।",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "UPI refund",
+    "notes": "Hindi emotional plea claiming mistake and telling victim to enter UPI PIN."
+  },
+  {
+    "id": "MSG-013",
+    "text": "PhonePe Notification: Aapka Rs 2,999 ka cashback approve ho gaya hai. Paise apne bank account me lene ke liye niche diye gaye QR code ko PhonePe app me scan karein aur apna 4 digit UPI PIN enter karein.",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "UPI refund",
+    "notes": "Scanning QR code and typing UPI PIN to receive cashback."
+  },
+  {
+    "id": "MSG-014",
+    "text": "Swiggy Support: Your failed food order transaction refund of Rs 1,480 is approved. To receive direct credit, click the refund gateway link: http://swiggy-refund-portal.example.com and authorize your bank UPI PIN.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "UPI refund",
+    "notes": "Fake merchant refund link asking for UPI PIN authorization."
+  },
+  {
+    "id": "MSG-015",
+    "text": "Paytm Dispute Desk: If you did not authorize payment of Rs 8,500, call our immediate dispute helpline at 98XXXXXXXX. Our support agent will assist you to reverse charges via AnyDesk.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "UPI refund",
+    "notes": "Fake payment reversal helpline using remote access software."
+  },
+  {
+    "id": "MSG-016",
+    "text": "Exciting Opportunity! Earn Rs 3,500 - 8,000 daily from home by simply liking YouTube videos and rating Google Maps locations. No experience required. Daily payout via UPI. Contact HR Manager on Telegram: @parttime_jobs_manager or visit t.me/task_earn_online",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "job/task scam",
+    "notes": "Video liking / rating paid task scam directing to Telegram."
+  },
+  {
+    "id": "MSG-017",
+    "text": "घर बैठे ऑनलाइन काम करके प्रतिदिन 2000 से 5000 रुपये कमाएं। केवल होटल और यूट्यूब वीडियो को लाइक करना है। पहले 3 टास्क पूरे करने पर तुरंत 300 रुपये का भुगतान। टेलीग्राम पर रिसेप्शनिस्ट से संपर्क करें: t.me/online_work_india",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "job/task scam",
+    "notes": "Hindi task scam promising daily earnings for liking videos."
+  },
+  {
+    "id": "MSG-018",
+    "text": "Congratulations! You have completed Task 5. Your virtual wallet balance is Rs 18,500. To withdraw this amount to your bank account, you must complete the VIP Level-3 prepaid crypto investment task by depositing Rs 5,000 to our merchant wallet.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "job/task scam",
+    "notes": "Prepaid task scam requiring funds deposit to withdraw earned money."
+  },
+  {
+    "id": "MSG-019",
+    "text": "Amazon Online Hiring: Dear candidate, aapka resume shortlist hua hai Work-From-Home Product Reviewer post ke liye. Monthly salary Rs 45,000 guaranteed. Registration confirm karne aur training material lene ke liye Rs 1,200 refundable deposit jama karein.",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "job/task scam",
+    "notes": "Fake Amazon job requiring advance refundable registration fee."
+  },
+  {
+    "id": "MSG-020",
+    "text": "Online Data Entry Job: Type 50 pages daily and earn Rs 25,000 every week. Security deposit of Rs 1,500 required before dispatching project files. Failure to submit within 48 hours will incur Rs 10,000 legal penalty.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "job/task scam",
+    "notes": "Data entry scam with upfront deposit and legal penalty threats."
+  },
+  {
+    "id": "MSG-021",
+    "text": "Dear WhatsApp User, Congratulations! Your mobile number has won 1st Prize of Rs 25,00,000 in KBC Kaun Banega Crorepati All-India Lucky Draw 2026. To claim your cheque, call KBC Head Office Manager Rana Pratap Singh on WhatsApp only: +91-98XXXXXXXX. Lottery No: KBC-7890.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "lottery/prize",
+    "notes": "Classic KBC 25 lakh WhatsApp lottery with fake manager contact."
+  },
+  {
+    "id": "MSG-022",
+    "text": "बधाई हो! आपके मोबाइल नंबर ने कौन बनेगा करोड़पति लकी ड्रा में 25 लाख रुपये का नकद पुरस्कार जीता है। अपनी पुरस्कार राशि प्राप्त करने के लिए तुरंत केबीसी लॉटरी अधिकारी से संपर्क करें और भारत सरकार का 12,500 रुपये जीएसटी शुल्क जमा करें।",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "lottery/prize",
+    "notes": "Hindi KBC lottery scam demanding advance GST fee."
+  },
+  {
+    "id": "MSG-023",
+    "text": "Diwali Mega Lucky Winner! Aapke number par nikla hai Brand New Mahindra Thar ya 15 Lakh Cash. Apna prize claim karne ke liye is link par click karein aur delivery registration charge Rs 3,500 pay karein: http://win-car-festival.example.com",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "lottery/prize",
+    "notes": "Fake car prize lottery demanding registration fee via link."
+  },
+  {
+    "id": "MSG-024",
+    "text": "Special Gift: You have been chosen as today's lucky shopper to receive a free Apple iPhone 16 Pro Max! Spin the wheel and claim your gadget now before offer expires in 15 minutes: http://claim-free-iphone.example.com",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "lottery/prize",
+    "notes": "Free iPhone prize phishing link with artificial countdown."
+  },
+  {
+    "id": "MSG-025",
+    "text": "International Customs Clearing Notice: A cash consignment parcel of USD 50,000 in your name is being held at Delhi Airport. Pay customs clearance stamp duty fee Rs 22,000 into our clearing agent account to release consignment.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "lottery/prize",
+    "notes": "Foreign parcel / cash prize clearance fee scam."
+  },
+  {
+    "id": "MSG-026",
+    "text": "ELECTRICITY NOTICE: Dear consumer, your electricity power supply will be disconnected tonight at 9:30 PM from the power station because your previous month's bill was not updated. Immediately contact our electricity officer Mr. Sharma at 98XXXXXXXX to avoid disconnection.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "electricity-bill threat",
+    "notes": "Panic electricity disconnection threat tonight with fake officer mobile."
+  },
+  {
+    "id": "MSG-027",
+    "text": "प्रिय उपभोक्ता, आज रात 9:30 बजे बिजली विभाग द्वारा आपके घर की बिजली काट दी जाएगी क्योंकि आपका पिछला बिल अपडेट नहीं है। तुरंत बिजली अधिकारी श्री वर्मा से संपर्क करें मोबाइल नंबर 98XXXXXXXX पर अन्यथा कनेक्शन स्थायी रूप से काट दिया जाएगा।",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "electricity-bill threat",
+    "notes": "Hindi electricity disconnection threat today with personal phone number."
+  },
+  {
+    "id": "MSG-028",
+    "text": "Bijli Vibhag Alert: Aapka electricity bill update nahi hua hai. Aaj raat power disconnect ho jayegi. Disconnection rokne ke liye turant is link se Bijli Pay APK download karke bill update karein: http://bit.ly/bijli-bill-update",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "electricity-bill threat",
+    "notes": "Electricity bill panic leading to malicious APK download."
+  },
+  {
+    "id": "MSG-029",
+    "text": "State Discom Warning: Disconnection order #EB-4412 has been issued for Consumer #XXXXXXXX due to unpaid arrears of Rs 4,890. Call Sub-Station Executive immediately at 98XXXXXXXX within 20 minutes to pay via UPI and prevent physical line disconnection.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "electricity-bill threat",
+    "notes": "Fake disconnection order demanding immediate UPI transfer to prevent line cutoff."
+  },
+  {
+    "id": "MSG-030",
+    "text": "Power Board Notice: Dear customer, your meter reading failed online verification. Send Rs 100 verification fee to electricity department UPI id bill.discom@upi or power will be terminated today at 8:00 PM.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "electricity-bill threat",
+    "notes": "Electricity meter verification fee threat demanding UPI transfer."
+  },
+  {
+    "id": "MSG-031",
+    "text": "Traffic Police E-Challan Alert: A court notice has been issued against vehicle DL-01-XXXX for unpaid traffic fine Rs 2,500. Pay fine immediately before vehicle impoundment. Download official E-Challan app: http://traffic-echallan.example.com/pay.apk",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "other",
+    "notes": "Fake traffic challan notice distributing malicious APK."
+  },
+  {
+    "id": "MSG-032",
+    "text": "आपातकालीन सूचना: आपका बेटा कॉलेज से लौटते समय गंभीर सड़क दुर्घटना में घायल हो गया है और उसे आपातकालीन आईसीयू में भर्ती कराया गया है। तुरंत ऑपरेशन के लिए इस खाते में 50,000 रुपये ट्रांसफर करें। किसी को फोन मत करना डॉक्टर ऑपरेशन थिएटर में हैं।",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "other",
+    "notes": "Hindi emergency medical scam demanding urgent fund transfer."
+  },
+  {
+    "id": "MSG-033",
+    "text": "We have recorded a video of you on video call. If you do not pay Rs 25,000 to UPI ID pay.settlement@upi within 2 hours, this compromising video will be sent to all your Facebook friends and YouTube.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "other",
+    "notes": "Sextortion blackmail demanding money under threat of video leak."
+  },
+  {
+    "id": "MSG-034",
+    "text": "Pre-Approved Loan: Badhai ho! Aapke liye bina kisi CIBIL score check ke Rs 5,00,000 ka personal loan approve kiya gaya hai. File charge Rs 2,500 jama karein aur 30 minute me loan amount apne bank account me payein: http://instant-loan.example.com",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "other",
+    "notes": "Fake pre-approved loan with upfront file charge."
+  },
+  {
+    "id": "MSG-035",
+    "text": "DHL Express: Your international courier consignment #XXXXXXXX has been seized by Indian Customs. Parcel contains undeclared currency and gold coins. Pay custom penalty Rs 35,000 immediately to avoid formal court summons.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "other",
+    "notes": "Customs parcel seizure scam demanding penalty."
+  },
+  {
+    "id": "MSG-036",
+    "text": "Your SBI OTP for transaction of INR 1,500.00 at Retail Store is 839201. Valid for 10 mins. Do not share this OTP with anyone, including bank staff or callers. SBI never asks for OTP or PIN.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate bank OTP alert with explicit security warning not to share."
+  },
+  {
+    "id": "MSG-037",
+    "text": "प्रिय ग्राहक, आपके बैंक खाते में नेटबैंकिंग लॉगिन के लिए आपका वन टाइम पासवर्ड (OTP) 492018 है। यह 5 मिनट के लिए वैध है। सुरक्षा कारणों से कृपया अपना ओटीपी या पासवर्ड किसी के साथ साझा न करें।",
+    "language": "hi",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic Hindi netbanking OTP alert with safety instructions."
+  },
+  {
+    "id": "MSG-038",
+    "text": "Dear customer, OTP for UPI registration on ICICI Bank A/C ending XXXXXXXX is 741029. NEVER share this OTP with bank employee or anyone calling you. Call 1800-XXX-XXXX if not requested by you.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic UPI registration OTP alert emphasizing never sharing."
+  },
+  {
+    "id": "MSG-039",
+    "text": "HDFC Bank: 628194 is your OTP for adding beneficiary Rahul Sharma on netbanking. Valid for 3 mins. Bank officials never call asking for OTP, CVV or password.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Beneficiary addition OTP with authentic bank disclaimer."
+  },
+  {
+    "id": "MSG-040",
+    "text": "Axis Bank Alert: 301948 is secret OTP for password reset of your account. Do not share with anyone. If not initiated by you, SMS STOP to 561616 immediately.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate password reset notification with fraud reporting SMS."
+  },
+  {
+    "id": "MSG-041",
+    "text": "Your A/C XXXXXXXX is debited for INR 450.00 at Grocery Supermarket on 28-OCT-2026. Avail Bal: INR 14,230.12. If not done by you, forward this SMS to 567676 or call 1800-XXX-XXXX to block card.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic debit transaction alert with balance and card block mechanism."
+  },
+  {
+    "id": "MSG-042",
+    "text": "आपके बैंक खाते XXXXXXXX से INR 2,100.00 का भुगतान किया गया है। शेष राशि: INR 45,320.00। यदि यह लेनदेन आपने नहीं किया तो तुरंत अपने बैंक को सूचित करें।",
+    "language": "hi",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic Hindi debit alert with account balance."
+  },
+  {
+    "id": "MSG-043",
+    "text": "Alert: Rs 5,000.00 credited to your HDFC bank account XXXXXXXX via NEFT ref XXXXXXXX on 27-OCT-2026. Net available balance: INR 23,800.00.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic NEFT salary/credit confirmation alert."
+  },
+  {
+    "id": "MSG-044",
+    "text": "Aapke SBI account XXXXXXXX se ATM withdrawal of INR 2,000.00 kiya gaya hai. Available balance INR 8,450.00. Agar aapne nahi kiya toh SMS BLOCK ATM to 567676.",
+    "language": "hinglish",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic ATM cash withdrawal message in Hinglish."
+  },
+  {
+    "id": "MSG-045",
+    "text": "Credit Card Alert: Transaction of INR 1,299.00 spent on your Card ending XXXXXXXX at BookMyShow on 28-OCT-2026. Available limit: INR 85,000.00.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic credit card transaction swipe alert."
+  },
+  {
+    "id": "MSG-046",
+    "text": "Your Amazon package with tracking XXXXXXXX is out for delivery today. Share delivery verification code 3819 with agent at doorstep upon receiving parcel.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate Amazon delivery update with doorstep OTP."
+  },
+  {
+    "id": "MSG-047",
+    "text": "आपका फ्लिपकार्ट ऑर्डर XXXXXXXX आज डिलीवर होने वाला है। डिलीवरी बॉय को ओटीपी 9182 बताएं जब पार्सल आपके हाथ में मिल जाए।",
+    "language": "hi",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic Hindi Flipkart parcel delivery notification."
+  },
+  {
+    "id": "MSG-048",
+    "text": "BlueDart courier tracking XXXXXXXX has arrived at regional hub and will be delivered by tomorrow evening. Track live in the official BlueDart app.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic courier status update without suspicious links."
+  },
+  {
+    "id": "MSG-049",
+    "text": "Aapka Delhivery package tracking XXXXXXXX dispatch ho chuka hai. Delivery agent aaj 4:00 PM tak deliver karega. Agent ko physical parcel milne par hi OTP de.",
+    "language": "hinglish",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate courier update in Hinglish."
+  },
+  {
+    "id": "MSG-050",
+    "text": "India Post: Consignment XXXXXXXX delivered successfully at Sub Post Office on 28/10/2026. Thank you for using Department of Posts.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic postal delivery completion confirmation."
+  },
+  {
+    "id": "MSG-051",
+    "text": "Dear Consumer XXXXXXXX, your electricity bill of Rs 1,420 for billing month OCT-2026 is due on 15-NOV-2026. Pay safely at official portal mahadiscom.in or authorized billing centers. Discom never asks for money on personal mobile numbers.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic discom bill reminder with official website and anti-fraud warning."
+  },
+  {
+    "id": "MSG-052",
+    "text": "प्रिय बिजली उपभोक्ता XXXXXXXX, माह अक्टूबर का बिजली बिल रु 980 नियत तिथि 10-नवंबर तक देय है। सुरक्षित ऑनलाइन भुगतान के लिए आधिकारिक वेबसाइट bijliboard.gov.in या नजदीकी केंद्र का उपयोग करें।",
+    "language": "hi",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic Hindi electricity board bill reminder with .gov.in domain."
+  },
+  {
+    "id": "MSG-053",
+    "text": "Tata Power: Bill for Consumer ID XXXXXXXX is generated. Amount Rs 2,340 due on 12-Nov-2026. To pay, visit customer portal at portal.example.com or use verified banking apps.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate utility bill generation notice with reasonable due date."
+  },
+  {
+    "id": "MSG-054",
+    "text": "BSES Yamuna Power Ltd: Bill payment of Rs 1,850 received for CA Number XXXXXXXX on 26-OCT-2026. Thank you for paying on time.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic bill payment acknowledgment receipt."
+  },
+  {
+    "id": "MSG-055",
+    "text": "Bijli bill update: Consumer no XXXXXXXX ka Oct month bill Rs 1,120 generate ho gaya hai. Last date 20-Nov hai. Bill payment ke liye official Bijli app ya suvidha center use karein.",
+    "language": "hinglish",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic electricity reminder in Hinglish."
+  },
+  {
+    "id": "MSG-056",
+    "text": "Dear customer, per RBI guidelines, please update your KYC periodically by visiting your nearest home branch or via official netbanking at netbanking.example.com. Bank never asks for OTP, PIN or CVV over call/SMS.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Official KYC compliance reminder advising branch visit, with fraud warning."
+  },
+  {
+    "id": "MSG-057",
+    "text": "प्रिय ग्राहक, भारतीय रिज़र्व बैंक के निर्देशानुसार अपने बैंक खाते की समय-समय पर केवाईसी शाखा जाकर पूरी करें। बैंक कभी भी फोन या एसएमएस पर पासवर्ड, ओटीपी या कार्ड विवरण नहीं मांगता।",
+    "language": "hi",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic Hindi KYC compliance notice with explicit disclaimer."
+  },
+  {
+    "id": "MSG-058",
+    "text": "Notice: Periodic Re-KYC is due for your savings account XXXXXXXX. Submit identity documents at any authorized branch or through our verified mobile app. Never click third-party links or share authentication codes.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate re-KYC due reminder with clear instructions to use branch or official app."
+  },
+  {
+    "id": "MSG-059",
+    "text": "Aapke bank account XXXXXXXX me PAN card successfully update ho chuka hai. Agar ye request aapne nahi di thi, toh turant branch manager se sampark karein.",
+    "language": "hinglish",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic KYC update confirmation in Hinglish."
+  },
+  {
+    "id": "MSG-060",
+    "text": "Govt of India cyber safety awareness: Never share OTP, UPI PIN, or bank passwords with anyone. In case of financial cyber fraud, report immediately within 24 hours at 1930 or cybercrime.gov.in.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Official government cybersecurity public awareness SMS."
+  },
+  {
+    "id": "MSG-061",
+    "text": "साइबर सुरक्षा सूचना: अनजान नंबर से आई कॉल पर कभी भी कोई ऐप (AnyDesk / QuickSupport) इंस्टॉल न करें। साइबर अपराध की शिकायत हेतु 1930 डायल करें। - गृह मंत्रालय",
+    "language": "hi",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic Hindi Ministry of Home Affairs cyber awareness alert."
+  },
+  {
+    "id": "MSG-062",
+    "text": "Aadhaar authentication successful for service ref XXXXXXXX at 14:22 hrs on 28-OCT-2026. If not done by you, visit uidai.gov.in or call 1947.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Official UIDAI Aadhaar authentication audit alert."
+  },
+  {
+    "id": "MSG-063",
+    "text": "Dear user, your daily 2GB high speed data quota on Jio connection is 50% consumed. Check detailed usage or recharge on MyJio app.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Routine telecom data usage alert."
+  },
+  {
+    "id": "MSG-064",
+    "text": "Jio alert: Aapka daily high-speed 1.5GB data khatam ho gaya hai. Normal speed 64Kbps par chalu rahegi. Extra data add-on ke liye MyJio app open karein.",
+    "language": "hinglish",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Routine telecom data limit message in Hinglish."
+  },
+  {
+    "id": "MSG-065",
+    "text": "Dear passenger, PNR XXXXXXXX train 12952 is running on time. Chart prepared, coach B3 berth 42. Happy journey from Indian Railways.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic IRCTC train confirmation alert."
+  },
+  {
+    "id": "MSG-066",
+    "text": "IRCTC alert: Aapka ticket PNR XXXXXXXX confirm ho gaya hai. Seat number S4-24. Shubh yatra! Live status check karne ke liye 139 par call karein.",
+    "language": "hinglish",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "IRCTC booking confirmation in Hinglish."
+  },
+  {
+    "id": "MSG-067",
+    "text": "Swiggy order confirmed! Restaurant is preparing your food. Track live delivery status in real-time on the Swiggy mobile app.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Routine food delivery confirmation."
+  },
+  {
+    "id": "MSG-068",
+    "text": "Google Security Alert: New sign-in to your Google Account on Windows PC. If this was you, no action is needed. If not, secure your account at myaccount.google.com.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate Google security sign-in notification."
+  },
+  {
+    "id": "MSG-069",
+    "text": "Gas agency update: LPG cylinder refill booking ref XXXXXXXX confirmed for consumer XXXXXXXX. Cash on delivery amount Rs 850. Delivery within 2 working days.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic LPG cylinder booking confirmation."
+  },
+  {
+    "id": "MSG-070",
+    "text": "Credit card monthly statement for card ending XXXXXXXX generated. Minimum amount due Rs 1,200 by 18-Nov-2026. View detailed e-statement securely in official banking app.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic credit card statement due reminder."
+  }
+]

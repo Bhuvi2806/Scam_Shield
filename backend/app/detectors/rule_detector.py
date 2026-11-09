@@ -20,47 +20,16 @@ from app.core.constants import (
     VERDICT_SUSPICIOUS,
 )
 from app.core.dataset import load_patterns
+from app.core.url_utils import URL_PATTERN, check_local_url_heuristics, load_url_rules
 from app.schemas.analysis import RedFlag, RuleResult
 from app.schemas.dataset import Pattern
 
-# Regex to extract URLs
-URL_REGEX = re.compile(r"https?://[^\s<>\"')]+|www\.[^\s<>\"')]+", re.IGNORECASE)
-
-# Known URL shorteners
-SHORTENER_DOMAINS = {
-    "bit.ly",
-    "tinyurl.com",
-    "is.gd",
-    "cutt.ly",
-    "t.co",
-    "rb.gy",
-    "ow.ly",
-    "buff.ly",
-    "shorturl.at",
-}
-
-# Deceptive keywords in domains that are not official government or legitimate bank portals
-DECEPTIVE_DOMAIN_KEYWORDS = [
-    "sbi",
-    "hdfc",
-    "icici",
-    "pnb",
-    "kyc",
-    "police",
-    "cbi",
-    "echallan",
-    "challan",
-    "bijli",
-    "bill-update",
-    "refund",
-    "cashback",
-    "lucky",
-    "lottery",
-    "iphone",
-]
-
-# Legitimate TLDs / domains for exclusions
-TRUSTED_SUFFIXES = (".gov.in", ".nic.in")
+# Load data-driven URL rules from backend/data/url_rules.json
+_url_rules = load_url_rules()
+SHORTENER_DOMAINS = set(_url_rules.get("shortener_domains", []))
+DECEPTIVE_DOMAIN_KEYWORDS = _url_rules.get("deceptive_domain_keywords", [])
+TRUSTED_SUFFIXES = tuple(_url_rules.get("trusted_suffixes", [".gov.in", ".nic.in"]))
+URL_REGEX = URL_PATTERN
 
 # Protective context phrases (e.g. in authentic bank OTP alerts)
 # When these appear around an OTP or PIN mention, it indicates an anti-fraud warning rather than a demand.
@@ -133,15 +102,14 @@ class RuleDetector:
         flags: list[RedFlag] = []
 
         for match in URL_REGEX.finditer(text):
-            url_str = match.group()
-            start, end = match.span()
+            url_str = match.group().rstrip(".,;!?)")
+            start = match.start()
+            end = start + len(url_str)
 
-            parsed = urlparse(url_str if "://" in url_str else f"http://{url_str}")
-            netloc = (parsed.netloc or "").lower().split(":")[0]
-            path = (parsed.path or "").lower()
+            reasons = check_local_url_heuristics(url_str)
 
             # 1. APK download link
-            if ".apk" in path or path.endswith(".apk") or ".apk" in url_str.lower():
+            if "apk_download" in reasons:
                 flags.append(
                     RedFlag(
                         pattern_id="HEUR-URL-APK",
@@ -155,7 +123,7 @@ class RuleDetector:
                 continue
 
             # 2. Raw IP address host
-            if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", netloc):
+            if "ip_host" in reasons:
                 flags.append(
                     RedFlag(
                         pattern_id="HEUR-URL-IP",
@@ -169,7 +137,7 @@ class RuleDetector:
                 continue
 
             # 3. Known URL Shortener
-            if any(netloc == s or netloc.endswith(f".{s}") for s in SHORTENER_DOMAINS):
+            if "url_shortener" in reasons:
                 flags.append(
                     RedFlag(
                         pattern_id="HEUR-URL-SHORTENER",
@@ -183,9 +151,7 @@ class RuleDetector:
                 continue
 
             # 4. Deceptive look-alike domain keywords (not ending in official .gov.in/.nic.in)
-            if not any(netloc.endswith(suffix) for suffix in TRUSTED_SUFFIXES) and any(
-                kw in netloc for kw in DECEPTIVE_DOMAIN_KEYWORDS
-            ):
+            if "lookalike_domain" in reasons:
                 flags.append(
                     RedFlag(
                         pattern_id="HEUR-URL-DECEPTIVE",

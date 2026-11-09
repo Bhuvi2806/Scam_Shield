@@ -10,6 +10,17 @@ class Settings(BaseSettings):
     SAFE_BROWSING_API_KEY: str = ""
     FRONTEND_ORIGIN: str = "http://localhost:5173"
 
+    # LLM settings
+    ANTHROPIC_MODEL: str = "claude-sonnet-4-20250514"
+    LLM_ENABLED: bool = True
+    LLM_TIMEOUT: int = 30  # seconds
+    LLM_MAX_TOKENS: int = 1024
+
+    @property
+    def llm_available(self) -> bool:
+        """Whether the LLM can actually be used (enabled AND key present)."""
+        return self.LLM_ENABLED and bool(self.ANTHROPIC_API_KEY)
+
     model_config = {
         "env_file": ".env",
         "env_file_encoding": "utf-8",

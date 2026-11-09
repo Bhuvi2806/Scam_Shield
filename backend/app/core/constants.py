@@ -76,3 +76,14 @@ CONFIDENCE_HIGH: Final[float] = 0.90
 CONFIDENCE_MEDIUM: Final[float] = 0.70
 CONFIDENCE_LOW: Final[float] = 0.50
 CONFIDENCE_DEGRADED_PENALTY: Final[float] = 0.15
+
+# OCR Image & Engine Constraints
+MAX_IMAGE_BYTES: Final[int] = 5 * 1024 * 1024  # 5 MB max upload
+MAX_IMAGE_PIXELS: Final[int] = 25_000_000  # 25 MP decompression-bomb ceiling
+ALLOWED_IMAGE_FORMATS: Final[set[str]] = {"PNG", "JPEG", "WEBP"}
+OCR_TIMEOUT_SECONDS: Final[int] = 15
+OCR_RATE_LIMIT_REQUESTS: Final[int] = 30
+OCR_RATE_LIMIT_WINDOW_SECONDS: Final[int] = 60
+OCR_LOW_CONFIDENCE_THRESHOLD: Final[float] = 0.50
+OCR_MIN_UPSCALE_DIMENSION: Final[int] = 1000
+OCR_LANGUAGES: Final[str] = "hin+eng"

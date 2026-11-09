@@ -1,5 +1,41 @@
 # Scam Shield — Progress Log
 
+## M4 Step 10: Final Evaluation, Privacy Page, Hardening, Deployment Setup, README and Demo Kit
+
+### Plan
+1. Sub-task A: Honest Accuracy Evaluation:
+   - Create `backend/data/heldout_set.json` with 40 new synthetic samples (20 scam, 20 genuine; en, hi, hinglish; tricky genuine alerts and keyword-avoiding scams). Strict privacy: synthetic placeholders only. No rule tuning against this set.
+   - Extend `backend/scripts/evaluate.py` to evaluate both tuning and held-out sets, calculate precision/recall/F1, and export `backend/reports/evaluation.md` (no message text, IDs only). Default to offline/mock client; real LLM opt-in with explicit cost gate.
+   - Write `docs/evaluation.md` summarizing methodology, honest numbers, edge cases, and benchmark limitations.
+2. Sub-task B: Privacy Page & In-App Notices:
+   - Build `frontend/src/components/PrivacyModal.jsx` in plain English and Hindi explaining what is processed, third-party API transmission boundaries, zero persistent storage, in-browser Family Card generation, and official disclaimers.
+   - Link PrivacyModal from the message input card and application footer.
+3. Sub-task C: Security Hardening:
+   - Backend: lock CORS to `FRONTEND_ORIGIN`, enforce HTTP security headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Content-Security-Policy`), request body size limit, global rate limiting, and sanitized 500 error responses without stack traces. Add degraded startup warnings when API keys are absent.
+   - Audit dependencies (`pip-audit`, `npm audit`), pin exact versions, and document findings in `docs/decisions.md`.
+   - Add security hardening test suite (`backend/tests/test_hardening.py`) testing CORS origin enforcement, security headers, request size limits, rate limiting, error sanitization, and a repository scanner for leaked keys or message text in logs.
+4. Sub-task D: Deployment Setup (Ready to Deploy):
+   - `backend/Dockerfile` with slim Python, Tesseract OCR (`hin+eng`), non-root user, and healthcheck.
+   - `docker-compose.yml` for local full-stack execution with healthchecks and network isolation.
+   - `docs/deployment.md`: free-tier hosting guide (e.g. Render/Railway backend, Vercel/Netlify frontend), environment variables reference, cold-start limits, and API spending caps.
+   - `.github/workflows/ci.yml`: automated GitHub Actions workflow for backend pytest/ruff and frontend eslint/vitest/build.
+5. Sub-task E: README & Demo Kit:
+   - Rewrite `README.md` as an authoritative open-source project page with problem statement, features, Mermaid architecture diagram, quick start (Docker & manual), environment variables, API reference, safety design, and evaluation summary.
+   - Create `docs/demo-script.md`: 2-3 minute video storyboard with scene-by-scene script, talking points, and 6 ready-to-paste synthetic demo messages.
+6. Verification & Final Reporting:
+   - Full test run (`pytest`, `ruff`, `pip-audit`, `npm test`, `npm run lint`, `npm run build`, `npm audit`).
+   - Deliver final report per AGENT.md Section 7.
+
+### Phase Log
+- [Phase 0] understand: Step 10 scope understood; confirmed M1-M3 complete, baseline tests green, plan decomposed into sub-tasks A-E.
+- [Phase 1] plan: Plan written at top of docs/progress.md covering evaluation, privacy, hardening, deployment, and demo kit.
+- [Phase 2] implement: Sub-tasks A (heldout set & evaluation), B (privacy modal & notices), C (security hardening & exact pinning), D (Dockerfile, compose & CI), E (README rewrite & demo script) implemented on branch feat/release-prep.
+- [Phase 3] test: 116 passed in pytest (1 skipped), 57 passed in vitest; ruff check & format clean, pip-audit 0 vulnerabilities, eslint clean, vite build clean.
+- [Phase 4] review: Self-review done; git diff reviewed; privacy claims verified, no secrets in repo, .env gitignored, held-out dataset untuned (disjoint verified).
+- [Phase 5] document & report: Updated README.md, docs/deployment.md, docs/evaluation.md, docs/demo-script.md, docs/decisions.md (#37-40), docs/progress.md.
+
+---
+
 ## M3 Step 9: Family Mode Share Card (WhatsApp-Shareable Result)
 
 ### Plan

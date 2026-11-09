@@ -25,3 +25,6 @@
 | 21 | URL defanging (`hxxps://`, `[.]`) for all user-facing findings | Ensures high-risk or suspicious links cannot be clicked accidentally from API responses or UI. |
 | 22 | Isolated URL-only Safe Browsing payload | Only extracted URLs are transmitted to Google Safe Browsing v4; zero user message text, numbers, or identifiers are sent. |
 | 23 | Concurrent execution via `asyncio.gather` in `/api/analyze` | Runs LLM analysis and Safe Browsing URL lookups simultaneously to reduce end-to-end API response latency. |
+| 24 | Asymmetric URL threat weighting in score fusion | A clean URL or absent URL is neutral (not proof of innocence, as many scams contain no links). Therefore `url_score == 0` does not dilute affirmative rule or LLM scam detections. |
+| 25 | Pure function architecture for fusion engine | `fuse()` in `backend/app/core/fusion.py` performs zero I/O and depends strictly on schema inputs and constants, ensuring fully deterministic and testable verdict synthesis. |
+| 26 | Hierarchical scam-type resolution and actions | Prefers specific LLM classification when aligned with findings, falling back to rule detection; directly dictates type-specific user action checklists while always including 1930 & cybercrime.gov.in. |

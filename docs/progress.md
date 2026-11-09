@@ -1,5 +1,27 @@
 # Scam Shield — Progress Log
 
+## M2 Step 6: Score Fusion and Final Verdict
+
+### Plan
+1. Create `backend/data/actions.json` and `backend/data/explanations.json`: Type-specific action checklists (always containing 1930 and cybercrime.gov.in) and fallback bilingual explanation templates.
+2. Create `backend/app/schemas/verdict.py`: Pydantic models `MergedRedFlag`, `ActionItem`, and `FinalVerdict`.
+3. Add fusion constants and thresholds to `backend/app/core/constants.py` (layer weights, safe/suspicious/likely_scam score bands, confidence bounds, fallback notes).
+4. Implement `backend/app/core/fusion.py`: Pure function `fuse(rule, llm, url_check, llm_error, url_check_error) -> FinalVerdict` enforcing all Section 5 safety rules (no LLM-only scam verdict, malicious URL override, lean suspicious on disagreement/degraded clean, exact lowest-risk disclaimer, zero "100% safe").
+5. Update `POST /api/analyze` in `backend/app/api/analyze.py`: Return final shape `{"verdict": FinalVerdict, "layers": {...}}` with zero message text leakage.
+6. Extend `backend/scripts/evaluate.py` with `--fusion` mode: Offline evaluation using simulated/cached LLM + rule + URL checker on `test_set.json`.
+7. Add comprehensive test suite in `backend/tests/test_fusion.py` covering all edge cases, safety constraints, and API integration.
+8. Verify `ruff`, `pytest`, and `evaluate.py --fusion`, then update documentation and log decisions.
+
+### Phase Log
+- [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-5 complete. Restated task: Implement pure fusion engine `fuse(rule, llm, url_check) -> FinalVerdict`, deduplicate red flags across layers, attach type-specific action checklist (with 1930 & cybercrime.gov.in) and bilingual explanations, enforce all Section 5 safety rules, update `/api/analyze` to return `verdict` + `layers`, and add `--fusion` evaluation mode.
+- [Phase 1] Plan: Documented plan above in docs/progress.md.
+- [Phase 2] Implement: On branch `feat/score-fusion`, created `actions.json`, `explanations.json`, `verdict.py` schema, fusion constants in `constants.py`, pure `fuse()` function in `fusion.py`, updated `POST /api/analyze` with concurrent layer execution, and added `--fusion` in `evaluate.py`.
+- [Phase 3] Test: tests: 85 passed, 0 failed (`pytest` across all suites), `ruff check` and `ruff format` clean, `evaluate.py --fusion` 100.00% accuracy (74/74, 0 FP, 0 FN), `evaluate.py` rule-only 100.00% accuracy (74/74, 0 FP, 0 FN).
+- [Phase 4] Review: Verified all Section 5 safety rules (no LLM-only scam, malicious Safe Browsing override to likely_scam, lean suspicious on disagreement/degraded clean, lowest-risk disclaimer, never 100% safe, no message text logged or returned, no secrets committed).
+- [Phase 5] Complete: Documented decisions #24-#26 in `docs/decisions.md`, updated `README.md`, verified DoD checklist.
+
+---
+
 ## M2 Step 5: URL Checker (Google Safe Browsing & Local Heuristics)
 
 ### Plan

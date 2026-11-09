@@ -4,7 +4,7 @@
 
 Scam Shield is a web app where you paste a suspicious SMS, WhatsApp message, or call transcript and get an instant verdict — *Safe*, *Suspicious*, or *Likely Scam* — along with highlighted red flags, a plain-language explanation (Hindi & English), and a clear "what to do now" checklist.
 
-> **Status:** M2 Step 5 — URL Checker (Google Safe Browsing & Local Heuristics) complete. Dual concurrent LLM & Safe Browsing analysis with in-memory TTL caching and defanged display URLs. Ready for Score Fusion (M2 Step 6).
+> **Status:** M2 Step 6 — Score Fusion & Final Verdict complete. Hybrid detection fusing rule patterns, Claude LLM, and Google Safe Browsing into a consolidated verdict, bilingual explanations, and prioritized action checklists. Ready for Frontend (M2 Step 7).
 
 ---
 
@@ -13,11 +13,14 @@ Scam Shield is a web app where you paste a suspicious SMS, WhatsApp message, or 
 ### Analyze Message: `POST /api/analyze`
 
 Accepts a suspicious message and returns:
-1. **Rule Result**: Pattern matches, URL heuristics, and baseline score (always present).
-2. **LLM Result**: Semantic classification, scam type, and bilingual explanations from Claude (optional/fallback).
-3. **URL Check Result**: Local heuristics + Google Safe Browsing Lookup v4 with in-memory TTL caching and defanged display URLs (optional/fallback).
+1. **Final Verdict**: Fused verdict (`safe`, `suspicious`, `likely_scam`), score (0-100), confidence, standardized scam type, merged & de-duplicated red flags, plain-language explanations in English and Hindi (Devanagari), type-specific action checklist, safety disclaimer, and degradation status.
+2. **Layer Outputs (`layers`)**: Raw breakdown of individual layers for debugging and detailed UI inspection:
+   - **`rule`**: Pattern matches, URL heuristics, and baseline score.
+   - **`llm`**: Semantic classification, scam type, and bilingual explanations from Claude (optional/fallback).
+   - **`url_check`**: Local heuristics + Google Safe Browsing Lookup v4 with in-memory TTL caching and defanged display URLs (optional/fallback).
+   - **`llm_error`**: Null or controlled error message if LLM call failed or timed out.
 
-The LLM and Safe Browsing checks run concurrently via `asyncio`. If any external service is unavailable, rule detection is always returned. **Processed strictly in-memory; never stored or logged.**
+The LLM and Safe Browsing checks run concurrently via `asyncio`. If any external service is unavailable, the system degrades gracefully without crashing. **Messages are processed strictly in-memory; never stored, logged, or echoed in API responses.**
 
 #### Sample Request
 
@@ -31,70 +34,153 @@ curl -X POST http://localhost:8000/api/analyze \
 
 ```json
 {
-  "rule": {
-    "score": 65,
+  "verdict": {
     "verdict": "likely_scam",
-    "scam_type_guess": "fake KYC",
-    "red_flags": [
-      {
-        "pattern_id": "HEUR-URL-DECEPTIVE",
-        "category": "suspicious link/APK",
-        "matched_text": "https://sbi-kyc-verification.com/login",
-        "start": 78,
-        "end": 116,
-        "weight": 4
-      },
-      {
-        "pattern_id": "PAT-006",
-        "category": "account blocked threat",
-        "matched_text": "account blocked",
-        "start": 12,
-        "end": 27,
-        "weight": 5
-      }
-    ],
-    "disclaimer": "High-risk scam indicators detected! Do not click any links, do not send money, and report immediately to 1930 or cybercrime.gov.in."
-  },
-  "llm": {
-    "verdict": "likely_scam",
+    "score": 88,
+    "confidence": 0.93,
     "scam_type": "fake_kyc",
     "red_flags": [
       {
+        "category": "suspicious link/APK",
+        "quote": "https://sbi-kyc-verification.com/login",
+        "start": 78,
+        "end": 116,
+        "reason": "Detected pattern 'suspicious link/APK' (severity weight 4/5)",
+        "source": "rule"
+      },
+      {
+        "category": "account blocked threat",
+        "quote": "account blocked",
+        "start": 12,
+        "end": 27,
+        "reason": "Detected pattern 'account blocked threat' (severity weight 5/5)",
+        "source": "rule"
+      },
+      {
         "category": "threats",
         "quote": "account blocked",
-        "reason": "Threatening account suspension to create artificial panic"
+        "start": null,
+        "end": null,
+        "reason": "Threatening account suspension to create artificial panic",
+        "source": "llm"
       },
       {
         "category": "suspicious_link",
-        "quote": "https://sbi-kyc-verification.com/login",
-        "reason": "Phishing link imitating official SBI netbanking"
+        "quote": "hxxps://sbi-kyc-verification[.]com/login",
+        "start": null,
+        "end": null,
+        "reason": "URL threat indicator (safe_browsing): safe_browsing:SOCIAL_ENGINEERING",
+        "source": "url_safe_browsing"
       }
     ],
     "explanation_en": "This message is a fake KYC scam. Banks never threaten immediate account deactivation via SMS or ask you to verify KYC through third-party links.",
     "explanation_hi": "यह संदेश एक फ़र्ज़ी KYC घोटाला है। बैंक कभी भी SMS द्वारा तुरंत खाता बंद करने की धमकी नहीं देते और न ही किसी लिंक पर KYC अपडेट करने को कहते हैं।",
-    "confidence": 0.96
-  },
-  "llm_error": null,
-  "url_check": {
-    "findings": [
+    "actions": [
       {
-        "url": "hxxps://sbi-kyc-verification[.]com/login",
-        "source": "local",
-        "status": "suspicious",
-        "reasons": ["lookalike_domain"]
+        "id": "ACT-KYC-1",
+        "priority": 1,
+        "step_en": "Do not click any link in the message or fill in banking passwords, PIN, or OTP.",
+        "step_hi": "संदेश में दिए गए किसी भी लिंक पर क्लिक न करें और न ही बैंकिंग पासवर्ड, पिन या ओटीपी भरें।"
       },
       {
-        "url": "hxxps://sbi-kyc-verification[.]com/login",
-        "source": "safe_browsing",
-        "status": "malicious",
-        "reasons": ["safe_browsing:SOCIAL_ENGINEERING"]
+        "id": "ACT-KYC-2",
+        "priority": 2,
+        "step_en": "Visit your official bank branch or log in directly via the bank's official mobile app to verify your KYC status.",
+        "step_hi": "अपनी बैंक शाखा में स्वयं जाएं या आधिकारिक मोबाइल ऐप से लॉगिन करके ही केवाईसी स्थिति जांचें।"
+      },
+      {
+        "id": "ACT-1930",
+        "priority": 3,
+        "step_en": "If money was deducted, immediately call 1930 (National Cyber Crime Helpline) within the golden hour to freeze transfers.",
+        "step_hi": "यदि बैंक खाते से पैसे कट गए हैं, तो तुरंत 1930 (राष्ट्रीय साइबर हेल्पलाइन) पर कॉल करें।"
+      },
+      {
+        "id": "ACT-CYBERCRIME",
+        "priority": 4,
+        "step_en": "Report this fraud attempt at cybercrime.gov.in with screenshots and transaction details.",
+        "step_hi": "इस धोखाधड़ी की शिकायत cybercrime.gov.in पर स्क्रीनशॉट और विवरण के साथ दर्ज करें।"
       }
     ],
-    "overall_status": "malicious",
-    "error": null
+    "disclaimer": "High-risk scam indicators detected! Do not click any links, do not send money, and report immediately to 1930 or cybercrime.gov.in.",
+    "sources_used": ["rule", "llm", "url_check"],
+    "degraded": false
+  },
+  "layers": {
+    "rule": {
+      "score": 65,
+      "verdict": "likely_scam",
+      "scam_type_guess": "fake KYC",
+      "red_flags": [
+        {
+          "pattern_id": "HEUR-URL-DECEPTIVE",
+          "category": "suspicious link/APK",
+          "matched_text": "https://sbi-kyc-verification.com/login",
+          "start": 78,
+          "end": 116,
+          "weight": 4
+        },
+        {
+          "pattern_id": "PAT-006",
+          "category": "account blocked threat",
+          "matched_text": "account blocked",
+          "start": 12,
+          "end": 27,
+          "weight": 5
+        }
+      ],
+      "disclaimer": "High-risk scam indicators detected! Do not click any links, do not send money, and report immediately to 1930 or cybercrime.gov.in."
+    },
+    "llm": {
+      "verdict": "likely_scam",
+      "scam_type": "fake_kyc",
+      "red_flags": [
+        {
+          "category": "threats",
+          "quote": "account blocked",
+          "reason": "Threatening account suspension to create artificial panic"
+        }
+      ],
+      "explanation_en": "This message is a fake KYC scam. Banks never threaten immediate account deactivation via SMS or ask you to verify KYC through third-party links.",
+      "explanation_hi": "यह संदेश एक फ़र्ज़ी KYC घोटाला है। बैंक कभी भी SMS द्वारा तुरंत खाता बंद करने की धमकी नहीं देते और न ही किसी लिंक पर KYC अपडेट करने को कहते हैं।",
+      "confidence": 0.96
+    },
+    "llm_error": null,
+    "url_check": {
+      "findings": [
+        {
+          "url": "hxxps://sbi-kyc-verification[.]com/login",
+          "source": "local",
+          "status": "suspicious",
+          "reasons": ["lookalike_domain"]
+        },
+        {
+          "url": "hxxps://sbi-kyc-verification[.]com/login",
+          "source": "safe_browsing",
+          "status": "malicious",
+          "reasons": ["safe_browsing:SOCIAL_ENGINEERING"]
+        }
+      ],
+      "overall_status": "malicious",
+      "error": null
+    }
   }
 }
 ```
+
+---
+
+## Score Fusion Engine & Safety Rules
+
+Scam Shield implements a pure mathematical fusion engine (`backend/app/core/fusion.py`) strictly enforcing the safety principles in `AGENT.md` Section 5:
+
+1. **Never Rely on the LLM Alone**: If only the LLM flags a message as `likely_scam` while rule detection and URL intelligence show zero threats, the verdict is capped at `suspicious` (score capped at 55).
+2. **Malicious URL Override**: A confirmed malicious Google Safe Browsing match immediately escalates the final verdict to `likely_scam` (minimum score 85).
+3. **Asymmetric URL Weighting**: Safe Browsing is a threat blocklist. The absence of a bad link or a clean URL does not prove innocence (many scams contain zero links or fresh domains). A clean URL lookup never suppresses positive rule or LLM detections.
+4. **Lean Suspicious on Disagreement**: If any layer detects scam indicators while others are clean, or if confidence is low, the verdict leans `suspicious`, never `safe`.
+5. **Strict Safe Verdict Requirements**: A `safe` verdict is allowed **only** when the rule detector is clean, the LLM (if available) confirms clean, no URLs are flagged, and the analysis is not degraded. It must always display the lowest-risk disclaimer:
+   > *"No red flag found, but never share OTP, PIN or money with anyone who contacts you."*
+6. **Never "100% Safe"**: Confidence is capped at 0.95. Language claiming "100% safe" or "completely safe" is filtered from all user-facing output.
+7. **Graceful Degraded Fallback**: If external APIs (Claude LLM or Google Safe Browsing) timeout or fail, the system falls back to rule detection with `degraded=true`. When degraded and rules are clean, the system leans `suspicious` noting that deeper analysis was temporarily unavailable.
 
 ---
 
@@ -112,8 +198,9 @@ Run the benchmark evaluation script against the test set:
 
 ```bash
 cd backend
-python scripts/evaluate.py        # Rule-only evaluation (default, no API calls)
-python scripts/evaluate.py --llm  # Include Claude LLM evaluation (requires ANTHROPIC_API_KEY)
+python scripts/evaluate.py           # Rule-only evaluation (default, no API calls)
+python scripts/evaluate.py --fusion  # Fused multi-layer evaluation (offline simulated LLM + Safe Browsing)
+python scripts/evaluate.py --llm     # Include Claude LLM evaluation (requires ANTHROPIC_API_KEY)
 ```
 
 Prints accuracy, false positives, false negatives, and a per-scam-type breakdown (message IDs only; never prints message text). When `--llm` is specified, the script caps at the test set size and prints the exact number of API calls before making them.
@@ -131,26 +218,29 @@ scam-shield/
 ├── backend/
 │   ├── app/
 │   │   ├── api/              # FastAPI routes (/health, /api/analyze)
-│   │   ├── core/             # Config, constants, dataset loaders, url_utils.py
+│   │   ├── core/             # Config, constants, fusion.py, dataset loaders, url_utils.py
 │   │   ├── detectors/        # Rule-based detector, url_checker.py
 │   │   ├── llm/              # LLM integration (client.py, prompts.py, analyzer.py)
 │   │   ├── ocr/              # OCR processing (future — M3)
-│   │   ├── schemas/          # Pydantic models (analysis.py, dataset.py, llm.py, url_check.py)
+│   │   ├── schemas/          # Pydantic models (analysis.py, dataset.py, llm.py, url_check.py, verdict.py)
 │   │   └── main.py           # App entry point
 │   ├── data/
+│   │   ├── actions.json      # Type-specific "what to do now" action checklists
+│   │   ├── explanations.json # Fallback bilingual explanation templates
 │   │   ├── patterns.json     # 35 scam patterns
 │   │   ├── url_rules.json    # Data-driven URL heuristic rules
 │   │   ├── test_set.json     # 74 labelled test messages
 │   │   └── README.md         # Dataset guide
 │   ├── scripts/
-│   │   └── evaluate.py       # Benchmark evaluation script (--llm supported)
+│   │   └── evaluate.py       # Benchmark evaluation script (--fusion and --llm supported)
 │   ├── tests/
 │   │   ├── test_health.py    # Health endpoint tests
 │   │   ├── test_dataset.py   # Dataset schema & integrity tests
 │   │   ├── test_rule_detector.py # Detector unit tests
 │   │   ├── test_api_analyze.py   # /api/analyze route tests
 │   │   ├── test_llm.py       # LLM schema, prompts, client, and analyzer tests
-│   │   └── test_url_checker.py   # URL extraction, defanging, heuristics & Safe Browsing tests
+│   │   ├── test_url_checker.py   # URL extraction, defanging, heuristics & Safe Browsing tests
+│   │   └── test_fusion.py    # Score fusion engine, safety rules & edge case tests
 │   └── requirements.txt
 ├── frontend/
 │   ├── src/

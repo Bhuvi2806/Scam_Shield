@@ -203,3 +203,4 @@ export const mockDegradedResponse = {
     llm_error: "Anthropic API timeout",
   },
 };
+

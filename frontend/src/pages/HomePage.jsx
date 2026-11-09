@@ -10,11 +10,14 @@ import { LoadingState } from "../components/LoadingState";
 import { ErrorState } from "../components/ErrorState";
 import { SampleMessages } from "../components/SampleMessages";
 import { ImageUpload } from "../components/ImageUpload";
+import { ShareCardButton } from "../components/ShareCardButton";
+import { ShareCardModal } from "../components/ShareCardModal";
 
 const MAX_CHARACTERS = 10000;
 
 export function HomePage() {
   const [inputText, setInputText] = useState("");
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const { data, error, submittedText, isLoading, isSuccess, isError, analyze, reset } = useAnalyze();
 
   const trimmed = inputText.trim();
@@ -31,11 +34,13 @@ export function HomePage() {
 
   const handleClear = () => {
     setInputText("");
+    setIsShareModalOpen(false);
     reset();
   };
 
   const handleSelectSample = (sampleText) => {
     setInputText(sampleText);
+    setIsShareModalOpen(false);
     reset();
   };
 
@@ -166,6 +171,19 @@ export function HomePage() {
             score={verdictData.score}
             confidence={verdictData.confidence}
             scamType={verdictData.scam_type}
+          />
+
+          {/* Family Mode Share Trigger */}
+          <ShareCardButton
+            onClick={() => setIsShareModalOpen(true)}
+            disabled={isLoading}
+          />
+
+          {/* Family Mode Share Modal */}
+          <ShareCardModal
+            isOpen={isShareModalOpen}
+            onClose={() => setIsShareModalOpen(false)}
+            verdict={verdictData}
           />
 
           {/* 2. Safety Disclaimer Banner & Degraded Notice */}

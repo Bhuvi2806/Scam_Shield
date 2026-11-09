@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useState, useCallback } from "react";
 import { useAnalyze } from "../hooks/useAnalyze";
 import { VerdictCard } from "../components/VerdictCard";
@@ -15,7 +16,7 @@ import { ShareCardModal } from "../components/ShareCardModal";
 
 const MAX_CHARACTERS = 10000;
 
-export function HomePage() {
+export function HomePage({ onOpenPrivacy }) {
   const [inputText, setInputText] = useState("");
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const { data, error, submittedText, isLoading, isSuccess, isError, analyze, reset } = useAnalyze();
@@ -133,11 +134,20 @@ export function HomePage() {
           </div>
 
           {/* Privacy Guarantee line */}
-          <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-text-muted/80 text-center">
+          <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-text-muted/80 text-center flex-wrap">
             <svg className="w-3.5 h-3.5 text-accent shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>
             <span>Your message is processed in memory and never stored or shared. Screenshots are processed and discarded.</span>
+            {onOpenPrivacy && (
+              <button
+                type="button"
+                onClick={onOpenPrivacy}
+                className="text-primary hover:underline font-semibold ml-1 cursor-pointer"
+              >
+                Privacy details &middot; विवरण
+              </button>
+            )}
           </div>
 
           {/* Screenshot Upload */}
@@ -215,3 +225,11 @@ export function HomePage() {
     </div>
   );
 }
+
+HomePage.propTypes = {
+  onOpenPrivacy: PropTypes.func,
+};
+
+HomePage.defaultProps = {
+  onOpenPrivacy: null,
+};

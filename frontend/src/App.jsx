@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { HomePage } from "./pages/HomePage";
+import { PrivacyModal } from "./components/PrivacyModal";
 import "./App.css";
 
 function App() {
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-start px-3.5 sm:px-6 py-6 sm:py-10 bg-surface text-text">
       {/* Header */}
@@ -24,13 +28,20 @@ function App() {
 
       {/* Main Content */}
       <main className="w-full max-w-3xl flex-1">
-        <HomePage />
+        <HomePage onOpenPrivacy={() => setIsPrivacyOpen(true)} />
       </main>
 
       {/* Footer */}
-      <footer className="mt-12 pt-6 pb-4 border-t border-white/5 w-full max-w-3xl text-center text-xs text-text-muted/60 space-y-1">
+      <footer className="mt-12 pt-6 pb-4 border-t border-white/5 w-full max-w-3xl text-center text-xs text-text-muted/60 space-y-1.5">
         <p>
-          Scam Shield &middot; Processed strictly in memory &middot; Never stored or logged.
+          Scam Shield &middot; Processed strictly in memory &middot; Never stored or logged. &middot;{" "}
+          <button
+            type="button"
+            onClick={() => setIsPrivacyOpen(true)}
+            className="text-primary hover:underline font-semibold cursor-pointer"
+          >
+            Privacy Policy & Guarantees &middot; गोपनीयता नीति
+          </button>
         </p>
         <p>
           In case of financial fraud, call the National Helpline{" "}
@@ -49,6 +60,12 @@ function App() {
           .
         </p>
       </footer>
+
+      {/* Privacy Policy Modal */}
+      <PrivacyModal
+        isOpen={isPrivacyOpen}
+        onClose={() => setIsPrivacyOpen(false)}
+      />
     </div>
   );
 }

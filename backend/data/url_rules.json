@@ -1,0 +1,56 @@
+{
+  "shortener_domains": [
+    "bit.ly",
+    "tinyurl.com",
+    "is.gd",
+    "cutt.ly",
+    "t.co",
+    "rb.gy",
+    "ow.ly",
+    "buff.ly",
+    "shorturl.at"
+  ],
+  "suspicious_tlds": [
+    ".tk",
+    ".ml",
+    ".ga",
+    ".cf",
+    ".gq",
+    ".xyz",
+    ".top",
+    ".buzz",
+    ".click",
+    ".link",
+    ".info",
+    ".online",
+    ".site"
+  ],
+  "deceptive_domain_keywords": [
+    "sbi",
+    "hdfc",
+    "icici",
+    "pnb",
+    "kyc",
+    "police",
+    "cbi",
+    "echallan",
+    "challan",
+    "bijli",
+    "bill-update",
+    "refund",
+    "cashback",
+    "lucky",
+    "lottery",
+    "iphone"
+  ],
+  "trusted_suffixes": [
+    ".gov.in",
+    ".nic.in",
+    ".onlinesbi.sbi",
+    ".hdfcbank.com",
+    ".icicibank.com"
+  ],
+  "apk_extensions": [
+    ".apk"
+  ]
+}

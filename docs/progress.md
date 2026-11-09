@@ -1,5 +1,50 @@
 # Scam Shield — Progress Log
 
+## M2 Step 5: URL Checker (Google Safe Browsing & Local Heuristics)
+
+### Plan
+1. Create `backend/data/url_rules.json`: Data-driven lists of shortener domains, deceptive bank/gov keywords, trusted suffixes, suspicious TLDs, and APK patterns.
+2. Create `backend/app/schemas/url_check.py`: Pydantic models `UrlFinding` (defanged url, source, status, reasons) and `UrlCheckResult` (findings, overall_status, error).
+3. Create `backend/app/core/url_utils.py`:
+   - Regex & parsing for http/https, bare domains (`sbi-kyc.in/login`), and surrounding Hindi/Hinglish text.
+   - `defang_url(url: str) -> str` (e.g. `hxxps://example[.]com`).
+   - Shared local heuristic checks reused by both the URL checker and the rule detector.
+4. Update `backend/app/core/constants.py` and `backend/app/core/config.py`:
+   - Add `MAX_URLS_TO_CHECK = 10`, `SAFE_BROWSING_TIMEOUT = 5`, `CACHE_TTL_SECONDS = 3600`.
+   - Add `URL_CHECK_ENABLED: bool = True`, `url_check_available` helper in config.
+5. Create `backend/app/detectors/url_checker.py`:
+   - In-memory TTL cache keyed by SHA-256 of normalized URL.
+   - Abstract `SafeBrowsingClient` interface for offline testability.
+   - `GoogleSafeBrowsingClient` using `httpx` (never fetch URLs, only API lookup; privacy-safe logging).
+   - Local heuristics executed first; batched remote Safe Browsing check for up to `MAX_URLS_TO_CHECK`.
+   - Controlled fallback to local-only with `status="unchecked"` on missing key, timeout, or API failure.
+6. Refactor `backend/app/detectors/rule_detector.py` to reuse `url_utils.py` and verify all existing tests stay green.
+7. Update `POST /api/analyze` in `backend/app/api/analyze.py`:
+   - Response shape: `{"rule": RuleResult, "llm": LLMResult | null, "llm_error": string | null, "url_check": UrlCheckResult | null}`.
+   - Execute LLM analysis and URL checking concurrently using `asyncio.gather`.
+8. Add comprehensive tests in `backend/tests/test_url_checker.py` using `FakeSafeBrowsingClient`.
+9. Add synthetic URL-bearing messages to `backend/data/test_set.json` and re-run `evaluate.py`.
+10. Review diff for privacy/safety (no secrets, no URL fetching, defanged URLs, no user data sent to Google).
+11. Update `README.md`, `docs/decisions.md`, `docs/progress.md`, and report.
+
+### Phase Log
+- [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-4 complete. Task is M2 Step 5 — Google Safe Browsing URL check layer with local heuristics, SHA-256 TTL caching, defanged URLs, and concurrent async execution.
+- [Phase 1] Plan: Written above.
+- [Phase 2] Implement: Created `url_rules.json`, `url_check.py` schema, `url_utils.py` with extractor & defanging, `url_checker.py` with caching and client abstraction, refactored `rule_detector.py`, updated `POST /api/analyze` with concurrent execution.
+- [Phase 3] Test: tests: 69 passed, 0 failed (`pytest tests/ -v`), ruff clean, `evaluate.py` 100.00% accuracy (74/74, 0 FP, 0 FN).
+- [Phase 4] Review: Re-read diff; confirmed no secrets in repo (.env gitignored), strict URL-only transmission to Google, no URLs visited/fetched, defanged display URLs, zero message text logged.
+- [Phase 5] Document & Report: Updated README (Safe Browsing setup, API usage sample, env vars) and docs/progress.md.
+
+### Definition of Done Checklist (Section 9)
+- [x] Code runs locally without errors
+- [x] Tests added/updated and passing; linters clean (69/69 pytest passed, ruff clean)
+- [x] Privacy and "never 100% safe" rules respected (no full URLs or messages logged, URLs defanged for display, never visited)
+- [x] No secrets in the repo (.env gitignored, placeholders only)
+- [x] `docs/progress.md` and README updated
+- [x] Final report delivered in Section 7 format
+
+---
+
 ## M2 Step 4: LLM Layer (Claude API Analysis)
 
 ### Plan

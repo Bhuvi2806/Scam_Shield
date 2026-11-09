@@ -20,3 +20,8 @@
 | 16 | XML `<message>` delimiters with prompt-injection defense | Isolates untrusted user content as pure data, telling the model to ignore any commands inside the message payload. |
 | 17 | 1-retry policy on LLM JSON/validation failure | Handles occasional markdown fence or minor formatting glitches from the LLM before raising a controlled error. |
 | 18 | Dual-result response shape with graceful LLM fallback | `POST /api/analyze` returns both rule and LLM results; if LLM fails or is disabled, rule detection still completes seamlessly. |
+| 19 | URL rules decoupled into `backend/data/url_rules.json` | Guarantees data-driven extensibility without modifying code; shared by both rule detector and URL checker. |
+| 20 | In-memory TTL cache keyed by SHA-256 of normalized URL | Prevents duplicate Safe Browsing API calls for repeated URLs; strictly non-persistent for privacy. |
+| 21 | URL defanging (`hxxps://`, `[.]`) for all user-facing findings | Ensures high-risk or suspicious links cannot be clicked accidentally from API responses or UI. |
+| 22 | Isolated URL-only Safe Browsing payload | Only extracted URLs are transmitted to Google Safe Browsing v4; zero user message text, numbers, or identifiers are sent. |
+| 23 | Concurrent execution via `asyncio.gather` in `/api/analyze` | Runs LLM analysis and Safe Browsing URL lookups simultaneously to reduce end-to-end API response latency. |

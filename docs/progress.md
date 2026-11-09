@@ -1,5 +1,39 @@
 # Scam Shield — Progress Log
 
+## M3 Step 9: Family Mode Share Card (WhatsApp-Shareable Result)
+
+### Plan
+1. Dependencies & Bundled Fonts:
+   - Install pinned packages in `frontend`: `html-to-image@1.11.11`, `@fontsource/noto-sans@5.1.0`, `@fontsource/noto-sans-devanagari@5.1.0`.
+   - Bundle OFL-licensed Noto Sans and Noto Sans Devanagari in `frontend/src/main.jsx` (zero CDN calls).
+2. Centralized Strings & Safe Content Builder:
+   - `frontend/src/lib/strings.js`: Centralized bilingual string dictionary for verdicts, scam types, red flag translations, actions, disclaimers, and share text.
+   - `frontend/src/lib/cardContent.js`: Pure function `buildCardContent(verdict, lang)` capping flags at 3 and steps at 4, enforcing strict privacy (zero original message text or quotes), guaranteeing 1930 and cybercrime.gov.in inclusion, enforcing exact safe disclaimer, and never outputting "100% safe". Also `buildShareText(verdict, lang)` for WhatsApp text fallback.
+3. Card Component & PNG Generation:
+   - `frontend/src/lib/shareCard.js`: Converts FamilyCard DOM node into PNG blob using `html-to-image`, awaiting `document.fonts.ready`. Object URL revoked when modal closes.
+   - `frontend/src/components/FamilyCard.jsx`: 1080x1350 (4:5) visual share card with WCAG AA contrast, clear verdict badge with icon + text, scam type in plain words, up to 3 red flags, 3-4 action steps, disclaimer, date and family forwarding prompt. Rendered via React text nodes only; zero external branding/emblems.
+4. Share Modal & Triggers:
+   - `frontend/src/components/ShareCardModal.jsx`: Accessible modal dialog with focus trap, Escape key handling, language toggle (English / हिन्दी), Web Share API integration (`navigator.canShare`), and graceful fallbacks (Download PNG, Share on WhatsApp wa.me link, Copy text).
+   - `frontend/src/components/ShareCardButton.jsx`: Prominent "Share with family / परिवार के साथ साझा करें" button in results view.
+   - Integrate into `frontend/src/pages/HomePage.jsx`.
+5. Automated Tests:
+   - Content builder unit tests (`frontend/src/__tests__/cardContent.test.js`).
+   - Component & Modal interaction tests (`frontend/src/__tests__/familyCard.test.jsx`).
+6. Verification & Documentation:
+   - Full test run (`vitest run`, `eslint`, `vite build`, `pytest`), documentation updates (`README.md`, `docs/decisions.md`, `docs/progress.md`).
+
+### Phase Log
+- **[Phase 0] Understand:** Confirmed Steps 1–8 complete across pipeline. Restated task: Build a browser-only, privacy-preserving Family Mode share card (1080x1350 PNG) for WhatsApp alerts, built solely from FinalVerdict with bundled OFL Noto Sans fonts, strict exclusion of message quotes, Web Share API with fallbacks, and zero storage or network calls.
+- **[Phase 1] Plan:** Documented 6-step implementation plan at the top of `docs/progress.md`.
+- **[Phase 2] Implement:** Added bundled Noto Sans Latin + Devanagari fonts via `@fontsource`, built `strings.js`, safe pure `buildCardContent` & `buildShareText` in `cardContent.js`, `shareCard.js` capture helper, `FamilyCard.jsx` component, `ShareCardModal.jsx` with accessible focus trap and Escape handler, and integrated `ShareCardButton.jsx` in `HomePage.jsx`.
+- **[Phase 3] Test:** 20 frontend tests added (8 in `cardContent.test.js`, 12 in `familyCard.test.jsx`). Full frontend suite: 51 tests passed across 6 test suites; ESLint 100% clean; Vite production build 100% clean (506ms). Full backend suite: 104 tests passed, 1 skipped; evaluation benchmark: 100% accuracy (74/74).
+- **[Phase 4] Review:** Verified zero message text, quotes, or personal details on card; verified defanged URLs; verified zero network requests and zero persistent storage writes; verified OFL font licensing; verified exact disclaimer and absence of "100% safe".
+- **[Phase 5] Document & Report:** Updated `README.md` with Family Mode share card guide and font licenses; recorded Decisions 33–36 in `docs/decisions.md`; marked Milestone M3 COMPLETE.
+
+---
+
+> **MILESTONE M3 COMPLETE:** Screenshot OCR with Hindi & English support, Action Checklist with 1930 tap-to-call, and WhatsApp-shareable Family Mode card with client-side PNG generation are fully implemented and verified!
+
 ## M3 Step 8: Screenshot OCR with Hindi + English Support
 
 ### Plan

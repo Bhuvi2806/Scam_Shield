@@ -4,7 +4,7 @@
 
 Scam Shield is a web app where you paste a suspicious SMS, WhatsApp message, or call transcript and get an instant verdict — *Safe*, *Suspicious*, or *Likely Scam* — along with highlighted red flags, a plain-language explanation (Hindi & English), and a clear "what to do now" checklist.
 
-> **Status:** Milestone M3 Step 8 Complete — Screenshot OCR active. Supports Hindi and English text extraction from uploaded screenshots (drag & drop, paste, or file selection) with client-side validation, in-memory sanitization, EXIF stripping, decompression-bomb protection, and review-first workflow. Ready for Milestone M3 Step 9 (Family Mode Share Card).
+> **Status:** Milestone M3 Complete (Steps 8–9) — Full multi-layer detection pipeline active with Screenshot OCR (Hindi + English) and browser-generated WhatsApp-shareable Family Mode safety card. Ready for Milestone M4 (Accuracy evaluation, privacy page, deployment, README & demo).
 
 ---
 
@@ -236,6 +236,34 @@ Prints accuracy, false positives, false negatives, and a per-scam-type breakdown
 
 ---
 
+## Family Mode (WhatsApp Share Card)
+
+Scam Shield provides a dedicated **Family Mode** designed to alert elderly parents, relatives, and community WhatsApp groups to emerging fraud tactics without exposing private user messages.
+
+### What the Card Contains
+- **Categorical Verdict**: Prominent risk badge (*Safe* / *Suspicious* / *Likely Scam*) rendered with an icon, color, and high-visibility text label (WCAG AA compliant).
+- **Scam Type**: Plain-language category (e.g., *"Digital Arrest Fraud"*, *"Fake KYC Deactivation Threat"*, *"Electricity Bill Disconnection Threat"*).
+- **Warning Signs**: Up to 3 summarized red-flag indicators in simple words (e.g., urgency tactics, impersonation, unverified payment demands).
+- **Action Checklist**: 3–4 practical safety steps, prominently highlighting the **1930 National Cyber Helpline** and **cybercrime.gov.in**.
+- **Mandatory Safety Disclaimer**: Always present. Lowest-risk messages carry the exact warning: *"No red flag found, but never share OTP, PIN or money with anyone who contacts you."* (Never says "100% safe").
+- **Date & Forwarding Notice**: Clean footer prompting family members to stay vigilant.
+
+### What It Deliberately Leaves Out (Privacy Guarantees)
+- **Zero Message Text / Quotes**: The victim's original message, phone numbers, sender details, OTPs, or quoted phrases are **strictly omitted** to prevent accidental personal data leakage when forwarded to group chats.
+- **Defanged URLs Only**: Any links referenced in warning categories are defanged (`hxxps://`, `[.]`) and non-clickable to prevent recipient clicks.
+- **No Deceptive Emblems**: Never uses government seals, police emblems, or RBI/CBI logos, ensuring the card cannot be mistaken for an official summons or legal document.
+
+### Technical & Privacy Implementation
+- **100% Client-Side Rendering**: Generated entirely in browser memory as a 1080×1350 PNG (4:5 WhatsApp aspect ratio) using `html-to-image`. Zero server communication or image uploads.
+- **Web Share API**: Native one-tap image sharing on supported mobile browsers (`navigator.canShare({ files })`), with graceful fallbacks:
+  1. *Download Image (PNG)*
+  2. *Share Text on WhatsApp* (`wa.me/?text=...` with safe pre-filled summary)
+  3. *Copy Text* to clipboard
+- **Memory Safety**: Preview and download images are handled via Blob object URLs and explicitly revoked with `URL.revokeObjectURL` on modal close or unmount. Zero writes to `localStorage`, `sessionStorage`, or cookies.
+- **Offline Bundled Fonts**: Noto Sans and Noto Sans Devanagari are bundled locally via `@fontsource` under the SIL Open Font License (OFL) 1.1, guaranteeing flawless Hindi and English rendering without external CDN calls.
+
+---
+
 ## Folder Structure
 
 ```
@@ -276,16 +304,18 @@ scam-shield/
 │   ├── src/
 │   │   ├── __tests__/        # Vitest & React Testing Library test suites
 │   │   │   ├── fixtures.js
+│   │   │   ├── cardContent.test.js   # Pure card content builder & privacy tests
+│   │   │   ├── familyCard.test.jsx   # FamilyCard component & share modal tests
 │   │   │   ├── highlighting.test.jsx
 │   │   │   ├── imageUpload.test.jsx  # Screenshot upload, preview & client validation tests
 │   │   │   ├── integration.test.jsx
 │   │   │   └── verdict.test.jsx
-│   │   ├── components/       # UI components (VerdictCard, HighlightedMessage, RedFlagList, ExplanationPanel, ActionChecklist, DisclaimerBanner, LoadingState, ErrorState, SampleMessages, ImageUpload)
+│   │   ├── components/       # UI components (VerdictCard, HighlightedMessage, RedFlagList, ExplanationPanel, ActionChecklist, DisclaimerBanner, LoadingState, ErrorState, SampleMessages, ImageUpload, FamilyCard, ShareCardModal, ShareCardButton)
 │   │   ├── pages/            # HomePage with accessible input card and live screen-reader announcer
 │   │   ├── hooks/            # useAnalyze state & lifecycle hook
-│   │   ├── lib/api.js        # Backend API client with timeout and error mapping
+│   │   ├── lib/              # api.js, cardContent.js, shareCard.js, strings.js
 │   │   ├── App.jsx           # Responsive layout with calm header and privacy footer
-│   │   └── main.jsx
+│   │   └── main.jsx          # Bundled Noto Sans & Devanagari font imports
 │   ├── index.html
 │   ├── package.json
 │   ├── vite.config.js        # Dev server proxy configuration

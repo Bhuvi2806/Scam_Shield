@@ -88,7 +88,9 @@ def normalize_scam_type(raw_type: str | None) -> str:
     """Normalize human-readable or rule-guessed scam type to standardized snake_case."""
     if not raw_type:
         return "none"
-    cleaned = raw_type.strip().lower().replace(" ", "_").replace("-", "_").replace("/", "_")
+    cleaned = (
+        raw_type.strip().lower().replace(" ", "_").replace("-", "_").replace("/", "_")
+    )
     valid_types = {
         "digital_arrest",
         "fake_kyc",
@@ -186,7 +188,9 @@ def _merge_red_flags(
                     if finding.source == "safe_browsing"
                     else "url_local"
                 )
-                reason_str = ", ".join(finding.reasons) or f"Flagged as {finding.status}"
+                reason_str = (
+                    ", ".join(finding.reasons) or f"Flagged as {finding.status}"
+                )
                 key = ("suspicious_link", finding.url.lower())
                 if key not in seen_keys:
                     seen_keys.add(key)
@@ -267,8 +271,9 @@ def fuse(
     # Calculate fused score based on available layers
     has_llm = "llm" in sources_used
     has_url = "url_check" in sources_used
+    has_active_url = has_url and url_score > 0
 
-    if has_llm and has_url:
+    if has_llm and has_active_url:
         fused_score_raw = (
             (rule_score * FUSION_WEIGHT_RULE)
             + (llm_score * FUSION_WEIGHT_LLM)
@@ -278,14 +283,14 @@ def fuse(
         fused_score_raw = (rule_score * FUSION_WEIGHT_RULE_NO_URL) + (
             llm_score * FUSION_WEIGHT_LLM_NO_URL
         )
-    elif has_url:
+    elif has_active_url:
         fused_score_raw = (rule_score * FUSION_WEIGHT_RULE_NO_LLM) + (
             url_score * FUSION_WEIGHT_URL_NO_LLM
         )
     else:
         fused_score_raw = float(rule_score)
 
-    fused_score = int(round(fused_score_raw))
+    fused_score = round(fused_score_raw)
 
     # Safety Rule 1: Never rely on the LLM alone
     # If LLM says likely_scam, but rule layer is clean (<30) and URL check is clean/absent,
@@ -334,10 +339,14 @@ def fuse(
 
     # Safety Rule 4: A "safe" verdict is allowed ONLY when rule is safe AND
     # LLM (if available) is safe AND no URL is flagged AND not degraded from clean
-    if verdict == VERDICT_SAFE:
-        if rule.verdict != VERDICT_SAFE or (has_llm and llm.verdict != VERDICT_SAFE) or has_suspicious_url or has_malicious_url:  # type: ignore[union-attr]
-            verdict = VERDICT_SUSPICIOUS
-            fused_score = max(fused_score, FUSION_SCORE_THRESHOLD_SAFE)
+    if verdict == VERDICT_SAFE and (
+        rule.verdict != VERDICT_SAFE
+        or (has_llm and llm.verdict != VERDICT_SAFE)  # type: ignore[union-attr]
+        or has_suspicious_url
+        or has_malicious_url
+    ):
+        verdict = VERDICT_SUSPICIOUS
+        fused_score = max(fused_score, FUSION_SCORE_THRESHOLD_SAFE)
 
     # Confidence calculation
     if not degraded:
@@ -346,7 +355,9 @@ def fuse(
         else:
             confidence = CONFIDENCE_MEDIUM
     else:
-        confidence = max(CONFIDENCE_LOW, CONFIDENCE_MEDIUM - CONFIDENCE_DEGRADED_PENALTY)
+        confidence = max(
+            CONFIDENCE_LOW, CONFIDENCE_MEDIUM - CONFIDENCE_DEGRADED_PENALTY
+        )
 
     if has_llm and llm.confidence:  # type: ignore[union-attr]
         confidence = (confidence + llm.confidence) / 2.0  # type: ignore[union-attr]
@@ -403,7 +414,9 @@ def fuse(
                 explanation_hi = f"{explanation_hi} {note['hi']}"
 
     # Guarantee "100% safe" never appears anywhere in explanations
-    explanation_en = explanation_en.replace("100% safe", "safe").replace("completely safe", "safe")
+    explanation_en = explanation_en.replace("100% safe", "safe").replace(
+        "completely safe", "safe"
+    )
     explanation_hi = explanation_hi.replace("100% सुरक्षित", "सुरक्षित")
 
     # Safety Disclaimer per AGENT.md Section 5
@@ -415,7 +428,9 @@ def fuse(
         disclaimer = DEFAULT_RISK_DISCLAIMER
 
     # Actions Checklist
-    actions = _build_action_checklist(final_scam_type if verdict != VERDICT_SAFE else "none")
+    actions = _build_action_checklist(
+        final_scam_type if verdict != VERDICT_SAFE else "none"
+    )
 
     return FinalVerdict(
         verdict=verdict,

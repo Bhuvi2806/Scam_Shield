@@ -63,7 +63,10 @@ class OfflineSafeBrowsingClient(SafeBrowsingClient):
         results: dict[str, list[str]] = {}
         for u in urls:
             u_lower = u.lower()
-            if any(kw in u_lower for kw in ["phishing", "malware", "scam-verify", "fake-kyc"]):
+            if any(
+                kw in u_lower
+                for kw in ["phishing", "malware", "scam-verify", "fake-kyc"]
+            ):
                 results[u] = ["SOCIAL_ENGINEERING"]
             else:
                 results[u] = []
@@ -133,11 +136,17 @@ def evaluate_rules(verbose: bool = True) -> dict:
 
         print("-" * 65)
         print("PER-SCAM-TYPE BREAKDOWN (Scam Samples Only):")
-        print(f"{'Scam Type':<25} {'Total':<8} {'Detected':<10} {'Type Match':<12} {'Recall':<8}")
+        print(
+            f"{'Scam Type':<25} {'Total':<8} {'Detected':<10} {'Type Match':<12} {'Recall':<8}"
+        )
         print("-" * 65)
         for stype, stats in sorted(scam_type_stats.items()):
-            recall = (stats["detected"] / stats["total"]) * 100 if stats["total"] else 0.0
-            type_acc = (stats["type_match"] / stats["total"]) * 100 if stats["total"] else 0.0
+            recall = (
+                (stats["detected"] / stats["total"]) * 100 if stats["total"] else 0.0
+            )
+            type_acc = (
+                (stats["type_match"] / stats["total"]) * 100 if stats["total"] else 0.0
+            )
             print(
                 f"{stype:<25} {stats['total']:<8} {stats['detected']:<10} "
                 f"{stats['type_match']:<12} ({type_acc:.0f}%) {recall:.1f}%"
@@ -226,11 +235,17 @@ def evaluate_fusion(verbose: bool = True, use_real_llm: bool = False) -> dict:
 
         print("-" * 65)
         print("PER-SCAM-TYPE BREAKDOWN (Scam Samples Only):")
-        print(f"{'Scam Type':<25} {'Total':<8} {'Detected':<10} {'Type Match':<12} {'Recall':<8}")
+        print(
+            f"{'Scam Type':<25} {'Total':<8} {'Detected':<10} {'Type Match':<12} {'Recall':<8}"
+        )
         print("-" * 65)
         for stype, stats in sorted(scam_type_stats.items()):
-            recall = (stats["detected"] / stats["total"]) * 100 if stats["total"] else 0.0
-            type_acc = (stats["type_match"] / stats["total"]) * 100 if stats["total"] else 0.0
+            recall = (
+                (stats["detected"] / stats["total"]) * 100 if stats["total"] else 0.0
+            )
+            type_acc = (
+                (stats["type_match"] / stats["total"]) * 100 if stats["total"] else 0.0
+            )
             print(
                 f"{stype:<25} {stats['total']:<8} {stats['detected']:<10} "
                 f"{stats['type_match']:<12} ({type_acc:.0f}%) {recall:.1f}%"
@@ -346,7 +361,9 @@ def evaluate_llm(verbose: bool = True) -> dict:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Evaluate Scam Shield detectors and fusion")
+    parser = argparse.ArgumentParser(
+        description="Evaluate Scam Shield detectors and fusion"
+    )
     parser.add_argument(
         "--fusion",
         action="store_true",

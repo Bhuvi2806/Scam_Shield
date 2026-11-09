@@ -2,7 +2,7 @@
 
 import re
 
-from app.core.dataset import load_patterns, load_test_set
+from app.core.dataset import load_heldout_set, load_patterns, load_test_set
 from app.schemas.dataset import VALID_SCAM_TYPES
 
 
@@ -103,3 +103,54 @@ def test_test_set_scam_types_and_labels_consistency():
     assert not missing_scam_types, (
         f"Scam test set missing representations for: {missing_scam_types}"
     )
+
+
+def test_heldout_set_loads_and_has_minimum_counts():
+    """Held-out set loads cleanly and contains at least 20 scam and 20 genuine messages (>= 40 total)."""
+    messages = load_heldout_set()
+    assert len(messages) >= 40, f"Expected at least 40 messages, found {len(messages)}"
+
+    scam_count = sum(1 for m in messages if m.label == "scam")
+    genuine_count = sum(1 for m in messages if m.label == "genuine")
+
+    assert scam_count >= 20, f"Expected at least 20 scam messages, found {scam_count}"
+    assert genuine_count >= 20, (
+        f"Expected at least 20 genuine messages, found {genuine_count}"
+    )
+
+
+def test_heldout_set_message_ids_are_unique():
+    """Each held-out test message must have a unique ID."""
+    messages = load_heldout_set()
+    ids = [m.id for m in messages]
+    duplicates = [mid for mid in ids if ids.count(mid) > 1]
+    assert len(ids) == len(set(ids)), f"Duplicate held-out IDs found: {set(duplicates)}"
+
+
+def test_heldout_set_covers_all_languages():
+    """Held-out set must contain English, Hindi, and Hinglish messages."""
+    messages = load_heldout_set()
+    languages = {m.language for m in messages}
+    expected_languages = {"en", "hi", "hinglish"}
+    assert expected_languages.issubset(languages), (
+        f"Missing languages in held-out set: {expected_languages - languages}"
+    )
+
+
+def test_heldout_set_is_disjoint_from_test_set():
+    """Held-out set IDs and texts must be completely disjoint from the tuning test set."""
+    tuning_messages = load_test_set()
+    heldout_messages = load_heldout_set()
+
+    tuning_ids = {m.id for m in tuning_messages}
+    heldout_ids = {m.id for m in heldout_messages}
+    id_overlap = tuning_ids.intersection(heldout_ids)
+    assert not id_overlap, f"ID overlap between tuning and held-out sets: {id_overlap}"
+
+    tuning_texts = {m.text.strip().lower() for m in tuning_messages}
+    heldout_texts = {m.text.strip().lower() for m in heldout_messages}
+    text_overlap = tuning_texts.intersection(heldout_texts)
+    assert not text_overlap, (
+        f"Text overlap between tuning and held-out sets: {len(text_overlap)} messages"
+    )
+

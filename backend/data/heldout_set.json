@@ -1,0 +1,322 @@
+[
+  {
+    "id": "HELD-001",
+    "text": "Customs Dept IGI Airport: A high-value parcel bearing tracking IND-8821 addressed to your Aadhaar was seized containing undeclared foreign currency and contraband. You have been placed under virtual surveillance. Contact Deputy Commissioner S. Verma immediately on WhatsApp video call at wa.example.com/customs-nodal to record declaration.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "digital arrest",
+    "notes": "Customs airport parcel pretext leading to virtual surveillance and video call."
+  },
+  {
+    "id": "HELD-002",
+    "text": "प्रवर्तन निदेशालय (ED) मुख्यालय नई दिल्ली: आपके बैंक खाते से जुड़े संदिग्ध विदेशी लेन-देन के संबंध में ई-समन जारी किया गया है। तुरंत अपने कमरे में अकेले रहें और सत्यापन पूरा होने तक हमारी कानूनी टीम के साथ स्काइप कॉल पर बने रहें। संपर्क न करने पर गिरफ्तारी वारंट जारी होगा।",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "digital arrest",
+    "notes": "Enforcement Directorate Hindi virtual custody threat."
+  },
+  {
+    "id": "HELD-003",
+    "text": "Cyber Crime Branch notice: Aapke SIM card se illegal defamatory content circulate ho raha hai. TRAI rules ke tehat number agle 30 minute me terminate hoga. Avoid legal custody by joining mandatory virtual interrogation room on Zoom meeting ID: 9812-XXXX with Investigating Officer.",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "digital arrest",
+    "notes": "TRAI/Cyber branch SIM termination leading to Zoom interrogation."
+  },
+  {
+    "id": "HELD-004",
+    "text": "HDFC Alert: Your NetBanking profile access has EXPIRED due to outdated regulatory KYC documentation. Login immediately at http://hdfc-netbanking-kyc.example.com to submit PAN verification and prevent permanent account block.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "fake KYC",
+    "notes": "HDFC netbanking expiry urgency with lookalike phishing domain."
+  },
+  {
+    "id": "HELD-005",
+    "text": "प्रिय ग्राहक, भारतीय स्टेट बैंक के निर्देशानुसार आपका बचत खाता निष्क्रिय कर दिया गया है। 24 घंटे में अपनी शाखा या ऑनलाइन पोर्टल http://sbi-aadhaar-update.example.in पर जाकर आधार लिंक करें अन्यथा जमा राशि जब्त कर ली जाएगी।",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "fake KYC",
+    "notes": "SBI Hindi savings account freeze threat with link."
+  },
+  {
+    "id": "HELD-006",
+    "text": "Paytm KYC Warning: Dear user, aapka wallet payment limit freeze ho gaya hai. To unblock transactions and restore UPI privileges, click here to submit Aadhaar OTP: http://paytm-wallet-verify.example.org",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "fake KYC",
+    "notes": "Paytm wallet limit freeze in Hinglish with OTP harvesting link."
+  },
+  {
+    "id": "HELD-007",
+    "text": "Hi Sir, by mistake I sent Rs 15,000 to your PhonePe number instead of my brother's account. I am a student and need it urgently for my exam fee. Please click this collect request link to refund the amount back to me: http://phonepe-refund-desk.example.com",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "UPI refund",
+    "notes": "Accidental UPI transfer emotional appeal disguised collect request."
+  },
+  {
+    "id": "HELD-008",
+    "text": "बधाई हो! Google Pay पर आपके खाते को ₹4,850 का विशेष कैशबैक स्वीकृत हुआ है। पैसे सीधे बैंक खाते में पाने के लिए अपना UPI पिन दर्ज करें और इस लिंक पर टैप करें: http://gpay-reward-claim.example.in",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "UPI refund",
+    "notes": "Google Pay Hindi fake cashback requiring UPI PIN entry."
+  },
+  {
+    "id": "HELD-009",
+    "text": "Aapke PhonePe wallet me Rs 2,500 cashback credit hona baaki hai. Accept payment par tap karke apna 4-digit UPI PIN enter karein aur paise turant claim karein: http://upi-cashback-instant.example.com",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "UPI refund",
+    "notes": "Classic UPI receive-money PIN trick in Hinglish."
+  },
+  {
+    "id": "HELD-010",
+    "text": "Part-Time Remote Opportunity: Global E-Commerce marketing agency is hiring review assistants. Earn Rs 2,500 - Rs 5,000 daily by rating Google Maps places and YouTube videos. No upfront fees. Join our project manager on Telegram: @GlobalTaskWork99",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "job/task scam",
+    "notes": "Task scam with realistic freelance rating pretext and Telegram handle."
+  },
+  {
+    "id": "HELD-011",
+    "text": "घर बैठे पार्ट-टाइम काम करके रोज ₹3,000 से ₹8,000 कमाएं। काम सिर्फ यूट्यूब वीडियो लाइक करना और होटल रिव्यू सबमिट करना है। रोजाना बैंक ट्रांसफर। अधिक जानकारी के लिए तुरंत व्हाट्सएप पर 'JOB' लिखकर भेजें।",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "job/task scam",
+    "notes": "Hindi part-time YouTube review work with unrealistic daily income."
+  },
+  {
+    "id": "HELD-012",
+    "text": "Earn daily Rs 4,000 working from mobile. Sirf hotel bookings confirm karni hain 1-2 ghante daily. Daily payment guaranteed via Google Pay. Start bonus Rs 500 immediate. Contact HR on WhatsApp: wa.example.com/daily-hiring",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "job/task scam",
+    "notes": "Hinglish mobile hotel booking job with instant bonus lure."
+  },
+  {
+    "id": "HELD-013",
+    "text": "KBC ALL INDIA SIM CARD LUCKY DRAW 2026: Your mobile number has won 1st Prize of Rs 25,00,000 in Kaun Banega Crorepati WhatsApp contest. Contact KBC Manager Rana Pratap Singh immediately on WhatsApp with Winner Code #KBC-772 to claim cheque.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "lottery/prize",
+    "notes": "KBC SIM card lucky draw WhatsApp prize scam."
+  },
+  {
+    "id": "HELD-014",
+    "text": "बधाई हो! आपको अमेज़न शॉपिंग लकी ड्रा में टाटा नेक्सॉन कार या ₹10,00,000 नकद पुरस्कार मिला है। अपना पुरस्कार क्लेम करने के लिए टैक्स राशि ₹12,500 तुरंत जमा करें। संपर्क: मैनेजर विजय शर्मा।",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "lottery/prize",
+    "notes": "Amazon shopping lucky draw requiring upfront tax payment in Hindi."
+  },
+  {
+    "id": "HELD-015",
+    "text": "Congratulations! Jio 10th Anniversary special offer: Aapke number ko 1 saal ka free recharge aur Rs 10,000 shopping gift card mila hai. Gift claim karne ke liye link open karein: http://jio-anniversary-rewards.example.com",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "lottery/prize",
+    "notes": "Telecom anniversary free recharge and gift card phishing."
+  },
+  {
+    "id": "HELD-016",
+    "text": "Electricity Board Urgent Notice: Your power connection CA-9021 will be DISCONNECTED tonight at 09:30 PM because the previous month bill payment was not updated. Contact Electricity Officer immediately at 98765-XXXXX to avoid power disconnection.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "electricity-bill threat",
+    "notes": "Power disconnection tonight at 9:30 PM with personal mobile number."
+  },
+  {
+    "id": "HELD-017",
+    "text": "बिजली विभाग सूचना: प्रिय उपभोक्ता, आपका बिजली बिल बकाया होने के कारण आज रात 8:30 बजे बिजली सप्लाई काट दी जाएगी। तुरंत हमारे एसडीओ अधिकारी से मोबाइल 98111-XXXXX पर संपर्क करके अपना बिल अपडेट कराएं।",
+    "language": "hi",
+    "label": "scam",
+    "scam_type": "electricity-bill threat",
+    "notes": "Hindi electricity disconnection warning directing call to personal mobile."
+  },
+  {
+    "id": "HELD-018",
+    "text": "Power Corp Alert: Aapka smart meter connection disconnect kar diya jayega due to unpaid bill amount Rs 1,450. Pay immediately through electricity helpline APK download link: http://bijli-meter-bill.example.com/app.apk",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "electricity-bill threat",
+    "notes": "Smart meter disconnection in Hinglish demanding APK installation."
+  },
+  {
+    "id": "HELD-019",
+    "text": "Parivahan E-Challan Alert: Notice for traffic fine Rs 1,000 on vehicle DL-01-XX-1234. Non-payment within 24 hours will lead to court prosecution and DL suspension. View photo evidence and pay fine by installing official app: http://echallan-parivahan-pay.example.com/challan.apk",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "other",
+    "notes": "Fake traffic e-challan notice delivering malicious APK file."
+  },
+  {
+    "id": "HELD-020",
+    "text": "Pre-approved Instant Personal Loan of Rs 5,00,000 approved at 1% interest rate without CIBIL score verification. To disburse funds in 15 minutes, pay refundable file registration fee Rs 1,999 to UPI: fastloan@example. Keep transaction receipt.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "other",
+    "notes": "Instant personal loan approval demanding upfront processing fee."
+  },
+  {
+    "id": "HELD-021",
+    "text": "Dear Customer, 492018 is your OTP for NetBanking login at HDFC Bank. Valid for 5 mins. Do NOT share OTP, PIN or passwords with anyone, including bank staff. If not requested by you, call 18002586161.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Standard genuine bank login OTP with explicit anti-fraud safety disclaimer."
+  },
+  {
+    "id": "HELD-022",
+    "text": "830192 भारतीय स्टेट बैंक (SBI) नेटबैंकिंग लेनदेन के लिए आपका ओटीपी है। यह 3 मिनट के लिए मान्य है। कृपया यह ओटीपी किसी के साथ साझा न करें। बैंक अधिकारी कभी भी आपसे ओटीपी नहीं मांगते हैं।",
+    "language": "hi",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic SBI Hindi OTP alert with safety advisory against sharing."
+  },
+  {
+    "id": "HELD-023",
+    "text": "Dear ICICI Bank customer, OTP for transaction of Rs 1,840.00 at AMAZON PAY is 629104. Never share your OTP with anyone, even if caller claims to be from ICICI Bank.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Genuine e-commerce purchase OTP with anti-fraud warning."
+  },
+  {
+    "id": "HELD-024",
+    "text": "Axis Bank Alert: 382910 is your secret code for Debit Card PIN generation. Axis Bank never asks for OTP or PIN over phone, SMS or email. Do not disclose to anyone.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Card PIN generation OTP carrying official secrecy notice."
+  },
+  {
+    "id": "HELD-025",
+    "text": "Your A/C ending XX4921 has been debited by Rs 1,250.00 on 08-Nov-2026 at POS 492810 RELIANCE RETAIL. Available balance: Rs 42,190.50. If not done by you, block card via official banking app or SMS BLOCK to 567676.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Standard transactional debit notification with official dispute mechanism."
+  },
+  {
+    "id": "HELD-026",
+    "text": "खाता संख्या XX8102 से ₹500.00 का नकद आहरण (Cash Withdrawal) 08-11-2026 को ATM पर किया गया। शेष राशि: ₹18,450.00। यदि यह आपके द्वारा नहीं किया गया है, तो तुरंत 1800-11-2211 पर सूचित करें।",
+    "language": "hi",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic Hindi ATM cash withdrawal notification."
+  },
+  {
+    "id": "HELD-027",
+    "text": "Rs 8,500.00 received in your Kotak Bank A/C XX3910 from SURESH K via IMPS ref 631920194821 on 09-Nov-2026. Updated balance: Rs 29,310.00. - Kotak Mahindra Bank",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Genuine IMPS inbound fund transfer notification."
+  },
+  {
+    "id": "HELD-028",
+    "text": "Your Amazon order #402-8192019-1029102 is out for delivery today by agent Deepak Kumar. Share delivery PIN 4910 with the delivery associate ONLY at the time of receiving the package. Track in your Amazon app.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Standard Amazon package out for delivery with delivery PIN."
+  },
+  {
+    "id": "HELD-029",
+    "text": "India Post Speed Post tracking #ED910291021IN has reached New Delhi GPO and is assigned for doorstep delivery. Please keep valid ID ready for registered parcel.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Genuine postal courier delivery notification without suspicious links."
+  },
+  {
+    "id": "HELD-030",
+    "text": "Swiggy delivery partner has arrived at your address with order #819201. Please collect your food. Thank you for choosing Swiggy!",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Benign transactional food delivery alert."
+  },
+  {
+    "id": "HELD-031",
+    "text": "BSES Rajdhani Power Limited: Bill for CA #100291829 for month OCT-2026 of Rs 2,340.00 generated. Due date: 24-Nov-2026. Pay safely through BSES website www.bsesdelhi.com or mobile app to avoid late payment surcharge.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate electricity bill notice with standard due date and official utility website."
+  },
+  {
+    "id": "HELD-032",
+    "text": "प्रिय उपभोक्ता, उपभोक्ता संख्या 1082910 के लिए माह अक्टूबर 2026 का बिजली बिल ₹1,120 देय है। अंतिम तिथि 20-11-2026 है। बिल का भुगतान हमारी अधिकृत वेबसाइट या नजदीकी उपखंड कार्यालय में करें।",
+    "language": "hi",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic Hindi electricity bill notification with normal due date."
+  },
+  {
+    "id": "HELD-033",
+    "text": "Indane Gas Booking Confirmation: Refill booking order #910294 accepted. Cash on delivery amount: Rs 853.00. Delivery scheduled in 2 working days. Track booking on IndianOil ONE app.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate LPG refill booking alert."
+  },
+  {
+    "id": "HELD-034",
+    "text": "Income Tax Department: Refund of Rs 4,280 for Assessment Year 2025-26 has been approved and credited to your verified bank account ending in XX9102 via NECS. Check status on e-filing portal incometax.gov.in.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Official Income Tax refund notice referencing official gov.in domain."
+  },
+  {
+    "id": "HELD-035",
+    "text": "ईपीएफओ (EPFO) मासिक अंशदान: आपके भविष्य निधि (PF) खाते XX1092 में माह सितंबर 2026 के लिए नियोक्ता अंशदान ₹2,450 जमा कर दिया गया है। विवरण देखने हेतु उमंग (UMANG) ऐप का उपयोग करें।",
+    "language": "hi",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Authentic EPFO Hindi contribution confirmation referencing Umang app."
+  },
+  {
+    "id": "HELD-036",
+    "text": "National Health Authority: CoWIN precaution dose appointment confirmed for Beneficiary Rahul on 12-Nov-2026 at Urban Health Center, Slot 10:00 AM - 12:00 PM. Carry Photo ID.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Official healthcare vaccination schedule alert."
+  },
+  {
+    "id": "HELD-037",
+    "text": "Airtel prepaid pack of Rs 349 successfully recharged on your mobile 98XXXXXXXX. Unlimited Calls + 1.5GB/day + 100 SMS/day for 28 days. Enjoy Airtel 5G Plus.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Standard telecom recharge receipt message."
+  },
+  {
+    "id": "HELD-038",
+    "text": "IndiGo Flight 6E-204 from Delhi to Bengaluru: Web check-in is now open for PNR #K9L2PQ. Complete check-in and download boarding pass at goindigo.in or on mobile app.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate airline flight check-in notice."
+  },
+  {
+    "id": "HELD-039",
+    "text": "Are you coming home for dinner tonight? Mom made paneer and dal tadka. Call me when you leave office.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Benign personal conversational message from family."
+  },
+  {
+    "id": "HELD-040",
+    "text": "Bhai kal subah 10 baje college library me milte hain project report discuss karne ke liye. Pen drive sath lete aana.",
+    "language": "hinglish",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Benign personal conversational message in Hinglish."
+  }
+]

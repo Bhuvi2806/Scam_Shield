@@ -8,6 +8,7 @@ from app.schemas.dataset import Pattern, TestMessage
 DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
 DEFAULT_PATTERNS_PATH = DATA_DIR / "patterns.json"
 DEFAULT_TEST_SET_PATH = DATA_DIR / "test_set.json"
+DEFAULT_HELDOUT_SET_PATH = DATA_DIR / "heldout_set.json"
 
 
 def load_patterns(path: Path | str | None = None) -> list[Pattern]:
@@ -60,3 +61,16 @@ def load_test_set(path: Path | str | None = None) -> list[TestMessage]:
         raise TypeError("Test set JSON root must be a list")
 
     return [TestMessage(**item) for item in raw_data]
+
+
+def load_heldout_set(path: Path | str | None = None) -> list[TestMessage]:
+    """Load and validate held-out test messages from a JSON file.
+
+    Args:
+        path: Optional file path. Defaults to backend/data/heldout_set.json.
+
+    Returns:
+        List of validated TestMessage models.
+    """
+    file_path = Path(path) if path else DEFAULT_HELDOUT_SET_PATH
+    return load_test_set(file_path)

@@ -1,6 +1,59 @@
 # Scam Shield — Progress Log
 
-## M2 Step 6: Score Fusion and Final Verdict
+## M2 Step 7: Frontend (Verdict Display, Highlighted Red Flags, Action Checklist)
+
+### Plan
+1. API client (`frontend/src/lib/api.js`):
+   - Add `analyzeMessage(text, { signal, timeoutMs })` invoking `POST /api/analyze`.
+   - Implement `AbortController` timeout (default 30s) and handle network errors, 422 validation errors, and 5xx failures with user-friendly error messages.
+   - Document types and response contract with JSDoc.
+2. State hook (`frontend/src/hooks/useAnalyze.js`):
+   - Manage states: `idle`, `loading`, `success`, `error`.
+   - Prevent double submissions; abort previous in-flight requests.
+   - Store submitted text in component state for safe client-side highlighting.
+3. Components (`frontend/src/components/`):
+   - `VerdictCard.jsx`: Multi-modal verdict presentation (color + icon + text badge, never color alone), score gauge, confidence level (High/Moderate/Preliminary), standardized scam type.
+   - `HighlightedMessage.jsx`: Safe client-side text highlighter. Calculates offsets from response or quotes; merges overlapping spans; handles out-of-bounds quotes gracefully; strictly uses React text nodes and `<mark>` elements (zero `dangerouslySetInnerHTML`).
+   - `RedFlagList.jsx`: Categorized list of indicators showing category, human-readable reason, detection source tag, and matching quote.
+   - `ExplanationPanel.jsx`: Bilingual English / हिन्दी toggle (defaults to Devanagari detection or English, session-only).
+   - `ActionChecklist.jsx`: Prioritized actionable advice, `tel:1930` tap-to-call link, `https://cybercrime.gov.in` (`rel="noopener noreferrer"`), client-side checkable state (no persistence).
+   - `DisclaimerBanner.jsx`: Safety disclaimer display and prominent warning when `degraded` is true.
+   - `LoadingState.jsx` & `ErrorState.jsx`: Calm, accessible loading skeleton and actionable error states with retry.
+   - `SampleMessages.jsx`: 3 synthetic one-click samples (Fake KYC, Electricity threat, Clean OTP alert) for demoing.
+4. Pages & Layout (`frontend/src/pages/HomePage.jsx`, `frontend/src/App.jsx`):
+   - Header with icon and one-line purpose; footer with privacy pledge ("Your message is not stored").
+   - Character count indicator (up to 10,000 chars), Clear button, Check button.
+   - Accessibility: `aria-live` region for screen readers, 44px minimum tap targets, WCAG AA contrast, mobile-first at 360px up to desktop, `prefers-reduced-motion` compliance.
+   - Zero storage: no localStorage, sessionStorage, cookies, URL params, or console logs.
+5. Testing setup and test suite:
+   - Install `vitest`, `@testing-library/react`, `@testing-library/jest-dom`, `jsdom`, `@testing-library/user-event`.
+   - Write comprehensive tests in `frontend/src/__tests__/`:
+     * Highlighting with non-overlapping, overlapping, out-of-range, and quote-only flags.
+     * XSS injection defense (raw HTML and `<script>` tags rendered as text).
+     * VerdictCard color/icon/text across safe, suspicious, likely_scam.
+     * Hindi/English toggle.
+     * Action checklist tel:1930 and cybercrime links.
+     * Disclaimer and degraded banner behavior.
+     * Double-submit prevention and request abort.
+     * Storage spy confirming 0 writes to localStorage/sessionStorage.
+6. Verification & End-to-End:
+   - `npm test`, `npm run lint`, `npm run build`.
+   - Real end-to-end check running backend + frontend concurrently.
+   - Update `README.md`, `docs/progress.md` (mark M2 complete!), and final report.
+
+### Phase Log
+- [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-6 complete. Restated task: Build responsive, accessible React frontend consuming `POST /api/analyze`, featuring multi-modal verdict card, safe XSS-immune text highlighter, bilingual Hindi/English explanation toggle, tap-to-call 1930 & cybercrime action checklist, disclaimer with degraded notice, zero persistent storage, and Vitest test suite.
+- [Phase 1] Plan: Documented plan above in docs/progress.md.
+- [Phase 2] Implement: On branch `feat/frontend-results`, implemented `api.js`, `useAnalyze.js`, `VerdictCard.jsx`, `HighlightedMessage.jsx`, `RedFlagList.jsx`, `ExplanationPanel.jsx`, `ActionChecklist.jsx`, `DisclaimerBanner.jsx`, `LoadingState.jsx`, `ErrorState.jsx`, `SampleMessages.jsx`, `HomePage.jsx`, and updated `App.jsx` and `vite.config.js`.
+- [Phase 3] Test: tests: 22 frontend tests passed (`vitest`), 85 backend tests passed (`pytest`), `eslint` clean, `vite build` clean, live backend HTTP check verified (`POST /api/analyze` 200 OK).
+- [Phase 4] Review: Verified zero `dangerouslySetInnerHTML`, zero writes to `localStorage`/`sessionStorage`, zero `console.log`, defanged URLs rendered strictly as plain text, WCAG AA contrast, 44px tap targets, aria-live region, and 360px mobile responsiveness.
+- [Phase 5] Complete: Documented decisions #27-#28 in `docs/decisions.md`, updated `README.md`, verified DoD checklist. Marked Milestone M2 as complete!
+
+> **Milestone Status:** **Milestone M2 COMPLETE.** (LLM integration, scam-type classification, URL safety intelligence, score fusion, and complete frontend results UI with highlighted red flags and action checklist). Ready for Milestone M3 (Screenshot OCR & Family Mode).
+
+---
+
+---
 
 ### Plan
 1. Create `backend/data/actions.json` and `backend/data/explanations.json`: Type-specific action checklists (always containing 1930 and cybercrime.gov.in) and fallback bilingual explanation templates.
@@ -13,6 +66,16 @@
 8. Verify `ruff`, `pytest`, and `evaluate.py --fusion`, then update documentation and log decisions.
 
 ### Phase Log
+- [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-6 complete. Restated task: Build responsive, accessible React frontend consuming `POST /api/analyze`, featuring multi-modal verdict card, safe XSS-immune text highlighter, bilingual Hindi/English explanation toggle, tap-to-call 1930 & cybercrime action checklist, disclaimer with degraded notice, zero persistent storage, and Vitest test suite.
+- [Phase 1] Plan: Documented plan above in docs/progress.md.
+- [Phase 2] Implement: On branch `feat/frontend-results`, implemented `api.js`, `useAnalyze.js`, `VerdictCard.jsx`, `HighlightedMessage.jsx`, `RedFlagList.jsx`, `ExplanationPanel.jsx`, `ActionChecklist.jsx`, `DisclaimerBanner.jsx`, `LoadingState.jsx`, `ErrorState.jsx`, `SampleMessages.jsx`, `HomePage.jsx`, and updated `App.jsx` and `vite.config.js`.
+- [Phase 3] Test: tests: 22 frontend tests passed (`vitest`), 85 backend tests passed (`pytest`), `eslint` clean, `vite build` clean, live backend HTTP check verified (`POST /api/analyze` 200 OK).
+- [Phase 4] Review: Verified zero `dangerouslySetInnerHTML`, zero writes to `localStorage`/`sessionStorage`, zero `console.log`, defanged URLs rendered strictly as plain text, WCAG AA contrast, 44px tap targets, aria-live region, and 360px mobile responsiveness.
+- [Phase 5] Complete: Documented decisions #27-#28 in `docs/decisions.md`, updated `README.md`, verified DoD checklist. Marked Milestone M2 as complete!
+
+> **Milestone Status:** **Milestone M2 COMPLETE.** (LLM integration, scam-type classification, URL safety intelligence, score fusion, and complete frontend results UI with highlighted red flags and action checklist). Ready for Milestone M3 (Screenshot OCR & Family Mode).
+
+---
 - [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-5 complete. Restated task: Implement pure fusion engine `fuse(rule, llm, url_check) -> FinalVerdict`, deduplicate red flags across layers, attach type-specific action checklist (with 1930 & cybercrime.gov.in) and bilingual explanations, enforce all Section 5 safety rules, update `/api/analyze` to return `verdict` + `layers`, and add `--fusion` evaluation mode.
 - [Phase 1] Plan: Documented plan above in docs/progress.md.
 - [Phase 2] Implement: On branch `feat/score-fusion`, created `actions.json`, `explanations.json`, `verdict.py` schema, fusion constants in `constants.py`, pure `fuse()` function in `fusion.py`, updated `POST /api/analyze` with concurrent layer execution, and added `--fusion` in `evaluate.py`.
@@ -50,6 +113,16 @@
 11. Update `README.md`, `docs/decisions.md`, `docs/progress.md`, and report.
 
 ### Phase Log
+- [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-6 complete. Restated task: Build responsive, accessible React frontend consuming `POST /api/analyze`, featuring multi-modal verdict card, safe XSS-immune text highlighter, bilingual Hindi/English explanation toggle, tap-to-call 1930 & cybercrime action checklist, disclaimer with degraded notice, zero persistent storage, and Vitest test suite.
+- [Phase 1] Plan: Documented plan above in docs/progress.md.
+- [Phase 2] Implement: On branch `feat/frontend-results`, implemented `api.js`, `useAnalyze.js`, `VerdictCard.jsx`, `HighlightedMessage.jsx`, `RedFlagList.jsx`, `ExplanationPanel.jsx`, `ActionChecklist.jsx`, `DisclaimerBanner.jsx`, `LoadingState.jsx`, `ErrorState.jsx`, `SampleMessages.jsx`, `HomePage.jsx`, and updated `App.jsx` and `vite.config.js`.
+- [Phase 3] Test: tests: 22 frontend tests passed (`vitest`), 85 backend tests passed (`pytest`), `eslint` clean, `vite build` clean, live backend HTTP check verified (`POST /api/analyze` 200 OK).
+- [Phase 4] Review: Verified zero `dangerouslySetInnerHTML`, zero writes to `localStorage`/`sessionStorage`, zero `console.log`, defanged URLs rendered strictly as plain text, WCAG AA contrast, 44px tap targets, aria-live region, and 360px mobile responsiveness.
+- [Phase 5] Complete: Documented decisions #27-#28 in `docs/decisions.md`, updated `README.md`, verified DoD checklist. Marked Milestone M2 as complete!
+
+> **Milestone Status:** **Milestone M2 COMPLETE.** (LLM integration, scam-type classification, URL safety intelligence, score fusion, and complete frontend results UI with highlighted red flags and action checklist). Ready for Milestone M3 (Screenshot OCR & Family Mode).
+
+---
 - [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-4 complete. Task is M2 Step 5 — Google Safe Browsing URL check layer with local heuristics, SHA-256 TTL caching, defanged URLs, and concurrent async execution.
 - [Phase 1] Plan: Written above.
 - [Phase 2] Implement: Created `url_rules.json`, `url_check.py` schema, `url_utils.py` with extractor & defanging, `url_checker.py` with caching and client abstraction, refactored `rule_detector.py`, updated `POST /api/analyze` with concurrent execution.
@@ -85,6 +158,16 @@
 - **Modified:** `backend/app/core/config.py`, `backend/app/api/analyze.py`, `backend/scripts/evaluate.py`, `backend/requirements.txt`, `.env.example`, `README.md`, `docs/progress.md`, `docs/decisions.md`
 
 ### Phase Log
+- [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-6 complete. Restated task: Build responsive, accessible React frontend consuming `POST /api/analyze`, featuring multi-modal verdict card, safe XSS-immune text highlighter, bilingual Hindi/English explanation toggle, tap-to-call 1930 & cybercrime action checklist, disclaimer with degraded notice, zero persistent storage, and Vitest test suite.
+- [Phase 1] Plan: Documented plan above in docs/progress.md.
+- [Phase 2] Implement: On branch `feat/frontend-results`, implemented `api.js`, `useAnalyze.js`, `VerdictCard.jsx`, `HighlightedMessage.jsx`, `RedFlagList.jsx`, `ExplanationPanel.jsx`, `ActionChecklist.jsx`, `DisclaimerBanner.jsx`, `LoadingState.jsx`, `ErrorState.jsx`, `SampleMessages.jsx`, `HomePage.jsx`, and updated `App.jsx` and `vite.config.js`.
+- [Phase 3] Test: tests: 22 frontend tests passed (`vitest`), 85 backend tests passed (`pytest`), `eslint` clean, `vite build` clean, live backend HTTP check verified (`POST /api/analyze` 200 OK).
+- [Phase 4] Review: Verified zero `dangerouslySetInnerHTML`, zero writes to `localStorage`/`sessionStorage`, zero `console.log`, defanged URLs rendered strictly as plain text, WCAG AA contrast, 44px tap targets, aria-live region, and 360px mobile responsiveness.
+- [Phase 5] Complete: Documented decisions #27-#28 in `docs/decisions.md`, updated `README.md`, verified DoD checklist. Marked Milestone M2 as complete!
+
+> **Milestone Status:** **Milestone M2 COMPLETE.** (LLM integration, scam-type classification, URL safety intelligence, score fusion, and complete frontend results UI with highlighted red flags and action checklist). Ready for Milestone M3 (Screenshot OCR & Family Mode).
+
+---
 - [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-3 complete. Task is M2 Step 4 — Claude API LLM layer, schema, client, prompt injection defense, analyzer with retry, dual-result /api/analyze, and opt-in evaluate.py --llm.
 - [Phase 1] Plan: Written above.
 - [Phase 2] Implement: Created `app/schemas/llm.py`, `app/llm/client.py`, `app/llm/prompts.py`, `app/llm/analyzer.py`, `tests/test_llm.py`, updated `app/core/config.py`, `app/api/analyze.py`, `scripts/evaluate.py`, and `requirements.txt`.
@@ -120,6 +203,16 @@
 8. Format, review for privacy/safety rules, run linters, and document.
 
 ### Phase Log
+- [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-6 complete. Restated task: Build responsive, accessible React frontend consuming `POST /api/analyze`, featuring multi-modal verdict card, safe XSS-immune text highlighter, bilingual Hindi/English explanation toggle, tap-to-call 1930 & cybercrime action checklist, disclaimer with degraded notice, zero persistent storage, and Vitest test suite.
+- [Phase 1] Plan: Documented plan above in docs/progress.md.
+- [Phase 2] Implement: On branch `feat/frontend-results`, implemented `api.js`, `useAnalyze.js`, `VerdictCard.jsx`, `HighlightedMessage.jsx`, `RedFlagList.jsx`, `ExplanationPanel.jsx`, `ActionChecklist.jsx`, `DisclaimerBanner.jsx`, `LoadingState.jsx`, `ErrorState.jsx`, `SampleMessages.jsx`, `HomePage.jsx`, and updated `App.jsx` and `vite.config.js`.
+- [Phase 3] Test: tests: 22 frontend tests passed (`vitest`), 85 backend tests passed (`pytest`), `eslint` clean, `vite build` clean, live backend HTTP check verified (`POST /api/analyze` 200 OK).
+- [Phase 4] Review: Verified zero `dangerouslySetInnerHTML`, zero writes to `localStorage`/`sessionStorage`, zero `console.log`, defanged URLs rendered strictly as plain text, WCAG AA contrast, 44px tap targets, aria-live region, and 360px mobile responsiveness.
+- [Phase 5] Complete: Documented decisions #27-#28 in `docs/decisions.md`, updated `README.md`, verified DoD checklist. Marked Milestone M2 as complete!
+
+> **Milestone Status:** **Milestone M2 COMPLETE.** (LLM integration, scam-type classification, URL safety intelligence, score fusion, and complete frontend results UI with highlighted red flags and action checklist). Ready for Milestone M3 (Screenshot OCR & Family Mode).
+
+---
 - [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-2 complete. Task is M1 Step 3: rule-based detector, URL heuristics, negation handling, /api/analyze, and evaluation script.
 - [Phase 1] Plan: Written above.
 - [Phase 2] Implement: Created `app/schemas/analysis.py`, `app/core/constants.py`, `app/detectors/rule_detector.py`, `app/api/analyze.py`, and `scripts/evaluate.py`.
@@ -165,6 +258,16 @@
 7. Run `pytest` and `ruff`, perform self-review, and update docs and DoD.
 
 ### Phase Log
+- [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-6 complete. Restated task: Build responsive, accessible React frontend consuming `POST /api/analyze`, featuring multi-modal verdict card, safe XSS-immune text highlighter, bilingual Hindi/English explanation toggle, tap-to-call 1930 & cybercrime action checklist, disclaimer with degraded notice, zero persistent storage, and Vitest test suite.
+- [Phase 1] Plan: Documented plan above in docs/progress.md.
+- [Phase 2] Implement: On branch `feat/frontend-results`, implemented `api.js`, `useAnalyze.js`, `VerdictCard.jsx`, `HighlightedMessage.jsx`, `RedFlagList.jsx`, `ExplanationPanel.jsx`, `ActionChecklist.jsx`, `DisclaimerBanner.jsx`, `LoadingState.jsx`, `ErrorState.jsx`, `SampleMessages.jsx`, `HomePage.jsx`, and updated `App.jsx` and `vite.config.js`.
+- [Phase 3] Test: tests: 22 frontend tests passed (`vitest`), 85 backend tests passed (`pytest`), `eslint` clean, `vite build` clean, live backend HTTP check verified (`POST /api/analyze` 200 OK).
+- [Phase 4] Review: Verified zero `dangerouslySetInnerHTML`, zero writes to `localStorage`/`sessionStorage`, zero `console.log`, defanged URLs rendered strictly as plain text, WCAG AA contrast, 44px tap targets, aria-live region, and 360px mobile responsiveness.
+- [Phase 5] Complete: Documented decisions #27-#28 in `docs/decisions.md`, updated `README.md`, verified DoD checklist. Marked Milestone M2 as complete!
+
+> **Milestone Status:** **Milestone M2 COMPLETE.** (LLM integration, scam-type classification, URL safety intelligence, score fusion, and complete frontend results UI with highlighted red flags and action checklist). Ready for Milestone M3 (Screenshot OCR & Family Mode).
+
+---
 - [Phase 0] Understand: Read AGENT.md and verified Step 1 completion. Task is M1 Step 2 — dataset schemas, >= 30 patterns, >= 60 test messages, loaders, and tests.
 - [Phase 1] Plan: Defined schemas, 35 patterns across 7 scam types, 70 synthetic messages, loaders, and tests.
 - [Phase 2] Implement: Created `app/schemas/dataset.py`, populated 35 patterns in `patterns.json`, 70 synthetic messages (35 scam / 35 genuine) in `test_set.json`, loader utilities in `app/core/dataset.py`, and `backend/data/README.md`.
@@ -195,6 +298,16 @@
 8. Document: update README and progress
 
 ### Phase Log
+- [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-6 complete. Restated task: Build responsive, accessible React frontend consuming `POST /api/analyze`, featuring multi-modal verdict card, safe XSS-immune text highlighter, bilingual Hindi/English explanation toggle, tap-to-call 1930 & cybercrime action checklist, disclaimer with degraded notice, zero persistent storage, and Vitest test suite.
+- [Phase 1] Plan: Documented plan above in docs/progress.md.
+- [Phase 2] Implement: On branch `feat/frontend-results`, implemented `api.js`, `useAnalyze.js`, `VerdictCard.jsx`, `HighlightedMessage.jsx`, `RedFlagList.jsx`, `ExplanationPanel.jsx`, `ActionChecklist.jsx`, `DisclaimerBanner.jsx`, `LoadingState.jsx`, `ErrorState.jsx`, `SampleMessages.jsx`, `HomePage.jsx`, and updated `App.jsx` and `vite.config.js`.
+- [Phase 3] Test: tests: 22 frontend tests passed (`vitest`), 85 backend tests passed (`pytest`), `eslint` clean, `vite build` clean, live backend HTTP check verified (`POST /api/analyze` 200 OK).
+- [Phase 4] Review: Verified zero `dangerouslySetInnerHTML`, zero writes to `localStorage`/`sessionStorage`, zero `console.log`, defanged URLs rendered strictly as plain text, WCAG AA contrast, 44px tap targets, aria-live region, and 360px mobile responsiveness.
+- [Phase 5] Complete: Documented decisions #27-#28 in `docs/decisions.md`, updated `README.md`, verified DoD checklist. Marked Milestone M2 as complete!
+
+> **Milestone Status:** **Milestone M2 COMPLETE.** (LLM integration, scam-type classification, URL safety intelligence, score fusion, and complete frontend results UI with highlighted red flags and action checklist). Ready for Milestone M3 (Screenshot OCR & Family Mode).
+
+---
 - [Phase 0] Understand: Read AGENT.md. Confirmed no prior progress.md exists. Task is M1 Step 1 — full project scaffold, no detection logic.
 - [Phase 1] Plan: Written above.
 - [Phase 2] Implement: Completed folder layout, FastAPI backend (/health, CORS, pydantic-settings config), React+Vite+Tailwind frontend, root configs (.gitignore, .env.example, README.md).

@@ -4,7 +4,7 @@
 
 Scam Shield is a web app where you paste a suspicious SMS, WhatsApp message, or call transcript and get an instant verdict — *Safe*, *Suspicious*, or *Likely Scam* — along with highlighted red flags, a plain-language explanation (Hindi & English), and a clear "what to do now" checklist.
 
-> **Status:** M2 Step 6 — Score Fusion & Final Verdict complete. Hybrid detection fusing rule patterns, Claude LLM, and Google Safe Browsing into a consolidated verdict, bilingual explanations, and prioritized action checklists. Ready for Frontend (M2 Step 7).
+> **Status:** Milestone M2 Complete (Steps 1–7) — Full-stack detection & analysis platform active. Rule detection, Claude API intelligence, Google Safe Browsing URL checks, score fusion, and complete React frontend with highlighted red flags, bilingual explanations, and action checklists. Ready for Milestone M3 (Screenshot OCR & Family Mode).
 
 ---
 
@@ -244,14 +244,21 @@ scam-shield/
 │   └── requirements.txt
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   ├── lib/api.js        # Backend API client
-│   │   ├── App.jsx
+│   │   ├── __tests__/        # Vitest & React Testing Library test suites
+│   │   │   ├── fixtures.js
+│   │   │   ├── highlighting.test.jsx
+│   │   │   ├── integration.test.jsx
+│   │   │   └── verdict.test.jsx
+│   │   ├── components/       # UI components (VerdictCard, HighlightedMessage, RedFlagList, ExplanationPanel, ActionChecklist, DisclaimerBanner, LoadingState, ErrorState, SampleMessages)
+│   │   ├── pages/            # HomePage with accessible input card and live screen-reader announcer
+│   │   ├── hooks/            # useAnalyze state & lifecycle hook
+│   │   ├── lib/api.js        # Backend API client with timeout and error mapping
+│   │   ├── App.jsx           # Responsive layout with calm header and privacy footer
 │   │   └── main.jsx
 │   ├── index.html
-│   └── package.json
+│   ├── package.json
+│   ├── vite.config.js        # Dev server proxy configuration
+│   └── vitest.config.js      # Testing configuration
 └── docs/
     ├── progress.md           # Phase-by-phase progress log
     └── decisions.md          # Architecture decision log
@@ -291,7 +298,19 @@ npm install
 npm run dev
 ```
 
-Opens at **http://localhost:5173**.
+Opens at **http://localhost:5173**. To run frontend tests and linting:
+
+```bash
+npm test        # Run Vitest test suite
+npm run lint    # Run ESLint
+npm run build   # Production build verification
+```
+
+### Privacy & Security Guarantees
+
+- **Processed strictly in-memory**: Neither the user's submitted message nor the analysis result is ever stored in `localStorage`, `sessionStorage`, cookies, query parameters, or client/server log files.
+- **XSS Defense**: The message highlighter renders strictly through React text nodes and `<mark>` elements (zero `dangerouslySetInnerHTML`), immunizing the UI against malicious script injection.
+- **Defanged URLs**: Suspicious or malicious links detected in messages are always defanged (`hxxps://...`, `[.]`) and are never rendered as clickable hyperlinks.
 
 ### Google Safe Browsing Setup (Free Key)
 

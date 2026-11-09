@@ -15,7 +15,7 @@ from urllib.parse import urlparse
 RULES_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "url_rules.json"
 
 # Trailing punctuation to strip from extracted URLs
-TRAILING_PUNCTUATION = ".,;:!?)]}\'\""
+TRAILING_PUNCTUATION = ".,;:!?)]}'\""
 
 # Comprehensive regex matching URLs:
 # 1. Standard http(s) URLs

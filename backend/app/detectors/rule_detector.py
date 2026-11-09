@@ -3,7 +3,6 @@
 import re
 import unicodedata
 from collections import defaultdict
-from urllib.parse import urlparse
 
 from app.core.constants import (
     DEFAULT_RISK_DISCLAIMER,

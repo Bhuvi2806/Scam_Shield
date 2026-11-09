@@ -80,7 +80,9 @@ class GoogleSafeBrowsingClient(SafeBrowsingClient):
         timeout: int | None = None,
     ) -> None:
         self._api_key = api_key or settings.SAFE_BROWSING_API_KEY
-        self._timeout = timeout or settings.SAFE_BROWSING_TIMEOUT or SAFE_BROWSING_TIMEOUT_DEFAULT
+        self._timeout = (
+            timeout or settings.SAFE_BROWSING_TIMEOUT or SAFE_BROWSING_TIMEOUT_DEFAULT
+        )
 
         if not self._api_key:
             raise SafeBrowsingError("SAFE_BROWSING_API_KEY is not set")
@@ -156,7 +158,9 @@ class GoogleSafeBrowsingClient(SafeBrowsingClient):
                 elapsed,
                 type(exc).__name__,
             )
-            raise SafeBrowsingError(f"Safe Browsing connection error: {type(exc).__name__}") from exc
+            raise SafeBrowsingError(
+                f"Safe Browsing connection error: {type(exc).__name__}"
+            ) from exc
 
 
 class UrlChecker:
@@ -248,7 +252,9 @@ class UrlChecker:
                     url_threat_results[raw_u] = threats
             except (SafeBrowsingTimeoutError, SafeBrowsingError) as exc:
                 client_error = str(exc)
-                logger.warning("Safe Browsing lookup failed gracefully: %s", type(exc).__name__)
+                logger.warning(
+                    "Safe Browsing lookup failed gracefully: %s", type(exc).__name__
+                )
         elif self._client is None:
             client_error = "Safe Browsing is not configured or disabled"
 

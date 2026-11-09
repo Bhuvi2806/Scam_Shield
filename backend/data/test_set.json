@@ -558,5 +558,37 @@
     "label": "genuine",
     "scam_type": null,
     "notes": "Authentic credit card statement due reminder."
+  },
+  {
+    "id": "MSG-071",
+    "text": "Urgent: Your HDFC bank debit card is temporarily blocked due to pending KYC verification. Please click https://hdfc-bank-kyc.example.com/update to verify your identity within 24 hours.",
+    "language": "en",
+    "label": "scam",
+    "scam_type": "fake KYC",
+    "notes": "Fake KYC scam with deceptive banking domain URL."
+  },
+  {
+    "id": "MSG-072",
+    "text": "Dear consumer, your electricity power will be disconnected at 9:30 PM tonight due to non-payment. Contact electricity officer immediately or pay at http://bijli-bill-payment.example.com/pay",
+    "language": "hinglish",
+    "label": "scam",
+    "scam_type": "electricity-bill threat",
+    "notes": "Electricity bill disconnection scam with lookalike payment URL."
+  },
+  {
+    "id": "MSG-073",
+    "text": "Your order #9821 has been shipped via India Post. Track your parcel anytime on the official postal portal at https://services.indiapost.gov.in with tracking number EP123456789IN.",
+    "language": "en",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate India Post shipping update with official .gov.in URL."
+  },
+  {
+    "id": "MSG-074",
+    "text": "Income Tax e-filing reminder: Aapka ITR assessment complete ho gaya hai. Intimation letter download karne ke liye official portal https://eportal.incometax.gov.in par login karein.",
+    "language": "hinglish",
+    "label": "genuine",
+    "scam_type": null,
+    "notes": "Legitimate Income Tax notification with official government portal link."
   }
 ]

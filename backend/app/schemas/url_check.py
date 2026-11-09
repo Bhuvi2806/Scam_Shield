@@ -1,6 +1,7 @@
 """Pydantic schemas for URL checking and Safe Browsing integration."""
 
 from typing import Literal
+
 from pydantic import BaseModel, Field
 
 

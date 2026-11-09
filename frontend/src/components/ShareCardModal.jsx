@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { FamilyCard } from "./FamilyCard";
 import {
   captureCardAsBlob,
-  captureCardAsFile,
   triggerBlobDownload,
   canShareFiles,
   getWhatsAppShareUrl,
@@ -60,7 +59,7 @@ export function ShareCardModal({ isOpen, onClose, verdict }) {
       setBlob(generatedBlob);
       setPreviewUrl(newUrl);
       setStatusMessage(lang === "hi" ? "कार्ड तैयार है" : "Card ready to share");
-    } catch (err) {
+    } catch {
       setError(
         lang === "hi"
           ? "कार्ड छवि बनाने में असमर्थ। आप नीचे दिए गए टेक्स्ट विकल्पों का उपयोग कर सकते हैं।"
@@ -73,23 +72,26 @@ export function ShareCardModal({ isOpen, onClose, verdict }) {
 
   // Regenerate image when modal opens or language changes
   useEffect(() => {
-    if (isOpen) {
-      // Delay slightly for initial DOM render and font readiness
-      const timer = setTimeout(() => {
-        generateImage();
-      }, 50);
-      return () => clearTimeout(timer);
-    } else {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-        setPreviewUrl(null);
-      }
-      setBlob(null);
-      setError(null);
-      setCopied(false);
-      setStatusMessage("");
+    if (!isOpen) return;
+
+    // Delay slightly for initial DOM render and font readiness
+    const timer = setTimeout(() => {
+      generateImage();
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [isOpen, lang, generateImage]);
+
+  const handleClose = useCallback(() => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
     }
-  }, [isOpen, lang]); // eslint-disable-line react-hooks/exhaustive-deps
+    setBlob(null);
+    setError(null);
+    setCopied(false);
+    setStatusMessage("");
+    onClose();
+  }, [previewUrl, onClose]);
 
   // Keyboard navigation & Focus management
   useEffect(() => {
@@ -101,7 +103,7 @@ export function ShareCardModal({ isOpen, onClose, verdict }) {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onClose();
+        handleClose();
         return;
       }
 
@@ -126,7 +128,7 @@ export function ShareCardModal({ isOpen, onClose, verdict }) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, handleClose]);
 
   if (!isOpen || !verdict) return null;
 
@@ -186,7 +188,7 @@ export function ShareCardModal({ isOpen, onClose, verdict }) {
       aria-labelledby="share-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) handleClose();
       }}
     >
       {/* Live Region for Screen Readers */}
@@ -260,7 +262,7 @@ export function ShareCardModal({ isOpen, onClose, verdict }) {
             <button
               ref={closeButtonRef}
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-text-muted hover:text-white hover:bg-surface-light transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
               aria-label={labels.close[lang]}
             >

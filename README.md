@@ -1,427 +1,310 @@
 # Scam Shield 🛡️
 
-**Detect scam messages. Protect your family.**
+**AI-powered scam detection and family safety guidance for India.**
 
-Scam Shield is a web app where you paste a suspicious SMS, WhatsApp message, or call transcript and get an instant verdict — *Safe*, *Suspicious*, or *Likely Scam* — along with highlighted red flags, a plain-language explanation (Hindi & English), and a clear "what to do now" checklist.
+Scam Shield is a privacy-first web application designed to protect citizens from prevalent cyber fraud and social engineering scams in India (such as *digital arrest*, *fake KYC updates*, *UPI refund traps*, *part-time job fraud*, and *electricity disconnection threats*). 
 
-> **Status:** Milestone M3 Complete (Steps 8–9) — Full multi-layer detection pipeline active with Screenshot OCR (Hindi + English) and browser-generated WhatsApp-shareable Family Mode safety card. Ready for Milestone M4 (Accuracy evaluation, privacy page, deployment, README & demo).
+Users paste suspicious SMS, WhatsApp messages, or call transcripts — or upload a screenshot — to receive an instant three-tiered verdict (**Safe**, **Suspicious**, or **Likely Scam**), highlighted red flags inside their text, plain-language bilingual explanations (Hindi & English), actionable next steps (including 1930 helpline & cybercrime.gov.in), and a WhatsApp-shareable **Family Mode** warning card.
 
 ---
 
-## API Usage
+## 🌟 Key Features
 
-### Analyze Message: `POST /api/analyze`
+- **Hybrid 3-Layer Detection**: Combines deterministic regular expression pattern scoring, real-time Google Safe Browsing URL intelligence with local heuristics, and Claude LLM semantic reasoning.
+- **Asymmetric Safety Posture**: Prioritizes avoiding false negatives (missing a scam) over false positives. When in doubt, the system leans toward *Suspicious*, and verdicts never claim "100% safe".
+- **Screenshot OCR (Hindi + English)**: Upload screenshots of SMS or WhatsApp chats. In-memory Tesseract OCR extracts bilingual Devanagari and Latin script text for user review before running analysis.
+- **Interactive Red-Flag Highlighting**: Client-side pure React text rendering highlights deceptive spans (urgency cues, authority impersonation, financial demands) without DOM injection vulnerabilities.
+- **Bilingual Accessibility**: Instant one-click toggle between plain English and Hindi (Devanagari script), tailored for elderly users with WCAG AA high-contrast design.
+- **Actionable Next Steps**: Direct tap-to-call link for India's National Cyber Crime Helpline (`tel:1930`) and reporting guidance for `cybercrime.gov.in`.
+- **WhatsApp-Shareable "Family Mode" Card**: In-browser generation of clean, 1080x1350 PNG cards (4:5 aspect ratio) with high legibility for forwarding to family groups, strictly omitting personal message text and phone numbers.
+- **Zero-Storage Privacy Architecture**: User messages and uploaded screenshots are processed strictly in RAM and never saved to a database, written to temporary files, or retained in logs.
 
-Accepts a suspicious message and returns:
-1. **Final Verdict**: Fused verdict (`safe`, `suspicious`, `likely_scam`), score (0-100), confidence, standardized scam type, merged & de-duplicated red flags, plain-language explanations in English and Hindi (Devanagari), type-specific action checklist, safety disclaimer, and degradation status.
-2. **Layer Outputs (`layers`)**: Raw breakdown of individual layers for debugging and detailed UI inspection:
-   - **`rule`**: Pattern matches, URL heuristics, and baseline score.
-   - **`llm`**: Semantic classification, scam type, and bilingual explanations from Claude (optional/fallback).
-   - **`url_check`**: Local heuristics + Google Safe Browsing Lookup v4 with in-memory TTL caching and defanged display URLs (optional/fallback).
-   - **`llm_error`**: Null or controlled error message if LLM call failed or timed out.
+---
 
-The LLM and Safe Browsing checks run concurrently via `asyncio`. If any external service is unavailable, the system degrades gracefully without crashing. **Messages are processed strictly in-memory; never stored, logged, or echoed in API responses.**
+## 🏗️ Architecture
 
-#### Sample Request
+```mermaid
+flowchart TD
+    subgraph Client["Client Browser (React 19 + Tailwind CSS)"]
+        UI["Message Input / Screenshot Upload"]
+        OCR_Preview["OCR Text Review & Edit"]
+        Dashboard["Verdict Dashboard (Safe / Suspicious / Likely Scam)"]
+        FamilyCard["Family Mode Share Card (1080x1350 PNG)"]
+    end
 
-```bash
-curl -X POST http://localhost:8000/api/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"text": "URGENT: SBI account blocked due to incomplete KYC. Update immediately at https://sbi-kyc-verification.com/login"}'
+    subgraph Backend["FastAPI Backend Service"]
+        API_Analyze["POST /api/analyze"]
+        API_OCR["POST /api/ocr"]
+
+        subgraph Preprocessing["Safe In-Memory Processing"]
+            Sanitize["Pillow Magic Bytes & EXIF Stripper"]
+            Tess["Tesseract OCR (hin + eng)"]
+        end
+
+        subgraph DetectionLayers["Concurrent Detection Pipeline"]
+            Rules["Rule Detector (Regex & Weights)"]
+            URLs["URL Checker (Heuristics + Google Safe Browsing v4)"]
+            LLM["Claude LLM Analyzer (Structured Schema)"]
+        end
+
+        Fusion["Score Fusion Engine (Asymmetric Safe Bias)"]
+    end
+
+    UI -->|"Raw Text"| API_Analyze
+    UI -->|"Screenshot Image"| API_OCR
+    API_OCR --> Sanitize --> Tess --> OCR_Preview
+    OCR_Preview -->|"Confirmed Text"| API_Analyze
+
+    API_Analyze --> Rules
+    API_Analyze --> URLs
+    API_Analyze --> LLM
+
+    Rules --> Fusion
+    URLs --> Fusion
+    LLM --> Fusion
+
+    Fusion -->|"FinalVerdict + Layers"| Dashboard
+    Dashboard -->|"In-Memory html-to-image"| FamilyCard
 ```
 
-#### Sample Response
+---
 
+## 🛠️ Tech Stack
+
+| Layer | Technologies |
+|---|---|
+| **Frontend** | React 19, Tailwind CSS v4, Vite, `@fontsource/noto-sans`, `@fontsource/noto-sans-devanagari`, `html-to-image` |
+| **Backend** | Python 3.12+, FastAPI, Uvicorn, Pydantic v2 |
+| **Detection & AI** | Anthropic Claude API (`claude-sonnet-4-20250514`), Google Safe Browsing API v4, Regular Expressions |
+| **OCR Engine** | Tesseract OCR (`eng` + `hin` Devanagari models), Pillow (PIL) |
+| **Testing & Quality** | Pytest, Vitest, Testing Library, Ruff, ESLint, `pip-audit`, `npm audit` |
+| **Deployment** | Docker, Docker Compose, Nginx, GitHub Actions CI |
+
+---
+
+## 🚀 Quick Start
+
+### Option A: Local Container Execution (Docker Compose)
+
+The easiest way to run the entire full-stack application (frontend on port 80, backend on port 8000):
+
+```bash
+# 1. Clone repository
+git clone https://github.com/your-username/scamshield.git
+cd scamshield
+
+# 2. Configure environment (optional keys; app runs in degraded mode without keys)
+cp .env.example .env
+
+# 3. Build and run containers
+docker compose up --build -d
+
+# 4. Open in browser
+# Frontend: http://localhost
+# Backend API Health: http://localhost:8000/health
+```
+
+### Option B: Manual Local Setup
+
+#### Prerequisites
+- Python 3.10+
+- Node.js 20+
+- (Optional) Tesseract OCR with `eng` and `hin` language packs installed:
+  - **Debian/Ubuntu**: `sudo apt install tesseract-ocr tesseract-ocr-hin tesseract-ocr-eng`
+  - **macOS**: `brew install tesseract tesseract-lang`
+  - **Windows**: Download installer from UB-Mannheim and select Hindi script.
+
+#### 1. Backend Setup
+```bash
+cd backend
+python -m venv venv
+
+# Windows
+.\venv\Scripts\activate
+# Linux/macOS
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+# Run FastAPI development server on port 8000
+uvicorn app.main:app --reload --port 8000
+```
+
+#### 2. Frontend Setup
+```bash
+cd frontend
+npm install
+
+# Start Vite development server on port 5173
+npm run dev
+```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## ⚙️ Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+# Backend CORS Whitelist (must match your frontend domain)
+FRONTEND_ORIGIN=http://localhost:5173
+
+# External AI & Threat Intelligence APIs (Optional: graceful fallback if missing)
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+SAFE_BROWSING_API_KEY=your_google_safe_browsing_key_here
+
+# LLM Tuning
+ANTHROPIC_MODEL=claude-sonnet-4-20250514
+LLM_ENABLED=true
+LLM_TIMEOUT=30
+
+# URL Intelligence
+URL_CHECK_ENABLED=true
+SAFE_BROWSING_TIMEOUT=5
+```
+
+For the frontend, specify the backend endpoint in `frontend/.env`:
+```env
+VITE_API_URL=http://localhost:8000
+```
+
+*See [docs/deployment.md](docs/deployment.md) for production hosting on Render, Vercel, and cloud spend cap guides.*
+
+---
+
+## 📡 API Reference
+
+### 1. Analyze Message: `POST /api/analyze`
+Analyzes input text across rule patterns, Claude LLM, and Google Safe Browsing URL intelligence.
+
+**Request Body (`application/json`):**
+```json
+{
+  "text": "URGENT: Your SBI account has been suspended due to pending KYC. Click http://sbi-update-kyc.com to avoid permanent deactivation."
+}
+```
+
+**Response (`200 OK`):**
 ```json
 {
   "verdict": {
     "verdict": "likely_scam",
-    "score": 88,
+    "score": 92,
     "confidence": 0.93,
     "scam_type": "fake_kyc",
     "red_flags": [
       {
-        "category": "suspicious link/APK",
-        "quote": "https://sbi-kyc-verification.com/login",
-        "start": 78,
-        "end": 116,
-        "reason": "Detected pattern 'suspicious link/APK' (severity weight 4/5)",
-        "source": "rule"
-      },
-      {
         "category": "account blocked threat",
-        "quote": "account blocked",
-        "start": 12,
-        "end": 27,
+        "quote": "account has been suspended",
+        "start": 13,
+        "end": 39,
         "reason": "Detected pattern 'account blocked threat' (severity weight 5/5)",
         "source": "rule"
       },
       {
-        "category": "threats",
-        "quote": "account blocked",
+        "category": "suspicious link",
+        "quote": "hxxp://sbi-update-kyc[.]com",
         "start": null,
         "end": null,
-        "reason": "Threatening account suspension to create artificial panic",
-        "source": "llm"
-      },
-      {
-        "category": "suspicious_link",
-        "quote": "hxxps://sbi-kyc-verification[.]com/login",
-        "start": null,
-        "end": null,
-        "reason": "URL threat indicator (safe_browsing): safe_browsing:SOCIAL_ENGINEERING",
+        "reason": "Deceptive financial institution domain spoofing",
         "source": "url_safe_browsing"
       }
     ],
-    "explanation_en": "This message is a fake KYC scam. Banks never threaten immediate account deactivation via SMS or ask you to verify KYC through third-party links.",
-    "explanation_hi": "यह संदेश एक फ़र्ज़ी KYC घोटाला है। बैंक कभी भी SMS द्वारा तुरंत खाता बंद करने की धमकी नहीं देते और न ही किसी लिंक पर KYC अपडेट करने को कहते हैं।",
+    "explanation_en": "This message is a fake KYC scam. Banks never suspend accounts via SMS or demand immediate verification through unofficial links.",
+    "explanation_hi": "यह संदेश एक फ़र्ज़ी KYC घोटाला है। बैंक कभी भी SMS के ज़रिए खाता बंद करने की धमकी नहीं देते।",
     "actions": [
       {
         "id": "ACT-KYC-1",
         "priority": 1,
-        "step_en": "Do not click any link in the message or fill in banking passwords, PIN, or OTP.",
-        "step_hi": "संदेश में दिए गए किसी भी लिंक पर क्लिक न करें और न ही बैंकिंग पासवर्ड, पिन या ओटीपी भरें।"
-      },
-      {
-        "id": "ACT-KYC-2",
-        "priority": 2,
-        "step_en": "Visit your official bank branch or log in directly via the bank's official mobile app to verify your KYC status.",
-        "step_hi": "अपनी बैंक शाखा में स्वयं जाएं या आधिकारिक मोबाइल ऐप से लॉगिन करके ही केवाईसी स्थिति जांचें।"
+        "step_en": "Do not click any links or share your net banking login, PIN, or OTP.",
+        "step_hi": "संदेश में दिए गए किसी भी लिंक पर क्लिक न करें और न ही बैंक विवरण साझा करें।"
       },
       {
         "id": "ACT-1930",
-        "priority": 3,
-        "step_en": "If money was deducted, immediately call 1930 (National Cyber Crime Helpline) within the golden hour to freeze transfers.",
-        "step_hi": "यदि बैंक खाते से पैसे कट गए हैं, तो तुरंत 1930 (राष्ट्रीय साइबर हेल्पलाइन) पर कॉल करें।"
-      },
-      {
-        "id": "ACT-CYBERCRIME",
-        "priority": 4,
-        "step_en": "Report this fraud attempt at cybercrime.gov.in with screenshots and transaction details.",
-        "step_hi": "इस धोखाधड़ी की शिकायत cybercrime.gov.in पर स्क्रीनशॉट और विवरण के साथ दर्ज करें।"
+        "priority": 2,
+        "step_en": "If money was deducted, call 1930 (National Cyber Crime Helpline) immediately.",
+        "step_hi": "यदि पैसे कट गए हैं, तो तुरंत 1930 पर कॉल करें।"
       }
     ],
-    "disclaimer": "High-risk scam indicators detected! Do not click any links, do not send money, and report immediately to 1930 or cybercrime.gov.in.",
-    "sources_used": ["rule", "llm", "url_check"],
-    "degraded": false
+    "disclaimer": "High-risk scam indicators detected! Do not click any links, do not send money, and report immediately to 1930 or cybercrime.gov.in."
   },
   "layers": {
-    "rule": {
-      "score": 65,
-      "verdict": "likely_scam",
-      "scam_type_guess": "fake KYC",
-      "red_flags": [
-        {
-          "pattern_id": "HEUR-URL-DECEPTIVE",
-          "category": "suspicious link/APK",
-          "matched_text": "https://sbi-kyc-verification.com/login",
-          "start": 78,
-          "end": 116,
-          "weight": 4
-        },
-        {
-          "pattern_id": "PAT-006",
-          "category": "account blocked threat",
-          "matched_text": "account blocked",
-          "start": 12,
-          "end": 27,
-          "weight": 5
-        }
-      ],
-      "disclaimer": "High-risk scam indicators detected! Do not click any links, do not send money, and report immediately to 1930 or cybercrime.gov.in."
-    },
-    "llm": {
-      "verdict": "likely_scam",
-      "scam_type": "fake_kyc",
-      "red_flags": [
-        {
-          "category": "threats",
-          "quote": "account blocked",
-          "reason": "Threatening account suspension to create artificial panic"
-        }
-      ],
-      "explanation_en": "This message is a fake KYC scam. Banks never threaten immediate account deactivation via SMS or ask you to verify KYC through third-party links.",
-      "explanation_hi": "यह संदेश एक फ़र्ज़ी KYC घोटाला है। बैंक कभी भी SMS द्वारा तुरंत खाता बंद करने की धमकी नहीं देते और न ही किसी लिंक पर KYC अपडेट करने को कहते हैं।",
-      "confidence": 0.96
-    },
+    "rule": { "verdict": "likely_scam", "score": 85, "scam_type_guess": "fake_kyc" },
+    "llm": { "verdict": "likely_scam", "scam_type": "fake_kyc", "confidence": 0.95 },
+    "url_check": { "overall_status": "suspicious" },
     "llm_error": null,
-    "url_check": {
-      "findings": [
-        {
-          "url": "hxxps://sbi-kyc-verification[.]com/login",
-          "source": "local",
-          "status": "suspicious",
-          "reasons": ["lookalike_domain"]
-        },
-        {
-          "url": "hxxps://sbi-kyc-verification[.]com/login",
-          "source": "safe_browsing",
-          "status": "malicious",
-          "reasons": ["safe_browsing:SOCIAL_ENGINEERING"]
-        }
-      ],
-      "overall_status": "malicious",
-      "error": null
-    }
+    "url_check_error": null
   }
 }
 ```
 
-### Extract Text via OCR: `POST /api/ocr`
+### 2. Extract Screenshot Text: `POST /api/ocr`
+Extracts text from an image using Tesseract OCR with Hindi and English language support.
 
-Accepts a screenshot upload (`multipart/form-data`, field `file`) and extracts Hindi and English text using Tesseract OCR. This endpoint is intentionally isolated from `/api/analyze` so that users review and edit the extracted text before running analysis.
+**Request (`multipart/form-data`):**
+- Field: `file` (PNG, JPEG, or WEBP image; max 5MB, max 25MP)
 
-- **Supported Formats**: PNG, JPEG, WebP (magic-byte validated via Pillow; file extension is ignored).
-- **Size Limits**: 5 MB max file size, 25 Megapixel maximum resolution (decompression-bomb defense).
-- **Privacy**: Processed strictly in memory; stripped of all EXIF metadata; never written to disk or temp directories; buffers cleared immediately. Logs record only byte size, status code, latency, and error codes — never image data, filenames, or extracted text.
-- **Languages**: Hindi (`hin`), English (`eng`), and mixed Hinglish.
-- **Rate Limit**: 30 requests per minute per IP address.
-
-#### Sample Request
-
-```bash
-curl -X POST http://localhost:8000/api/ocr \
-  -F "file=@screenshot.png;type=image/png"
-```
-
-#### Sample Response
-
+**Response (`200 OK`):**
 ```json
 {
-  "text": "URGENT: Your SBI account has been blocked. Update KYC at http://sbi-kyc.in to avoid suspension.",
-  "language_guess": "en",
-  "confidence": 0.91,
+  "text": "प्रिय ग्राहक, आपका बिजली बिल बकाया है। आज रात 9:30 बजे बिजली काट दी जाएगी...",
+  "language_guess": "hi",
+  "confidence": 0.88,
   "low_confidence": false,
   "warnings": []
 }
 ```
 
----
-
-## Score Fusion Engine & Safety Rules
-
-Scam Shield implements a pure mathematical fusion engine (`backend/app/core/fusion.py`) strictly enforcing the safety principles in `AGENT.md` Section 5:
-
-1. **Never Rely on the LLM Alone**: If only the LLM flags a message as `likely_scam` while rule detection and URL intelligence show zero threats, the verdict is capped at `suspicious` (score capped at 55).
-2. **Malicious URL Override**: A confirmed malicious Google Safe Browsing match immediately escalates the final verdict to `likely_scam` (minimum score 85).
-3. **Asymmetric URL Weighting**: Safe Browsing is a threat blocklist. The absence of a bad link or a clean URL does not prove innocence (many scams contain zero links or fresh domains). A clean URL lookup never suppresses positive rule or LLM detections.
-4. **Lean Suspicious on Disagreement**: If any layer detects scam indicators while others are clean, or if confidence is low, the verdict leans `suspicious`, never `safe`.
-5. **Strict Safe Verdict Requirements**: A `safe` verdict is allowed **only** when the rule detector is clean, the LLM (if available) confirms clean, no URLs are flagged, and the analysis is not degraded. It must always display the lowest-risk disclaimer:
-   > *"No red flag found, but never share OTP, PIN or money with anyone who contacts you."*
-6. **Never "100% Safe"**: Confidence is capped at 0.95. Language claiming "100% safe" or "completely safe" is filtered from all user-facing output.
-7. **Graceful Degraded Fallback**: If external APIs (Claude LLM or Google Safe Browsing) timeout or fail, the system falls back to rule detection with `degraded=true`. When degraded and rules are clean, the system leans `suspicious` noting that deeper analysis was temporarily unavailable.
+### 3. Health Check: `GET /health`
+Returns `{"status": "ok"}` for container health monitoring.
 
 ---
 
-## Dataset & Evaluation
+## 🔒 Privacy & Security Design
 
-Scam Shield uses data-driven rule patterns and a synthetic benchmark dataset:
-
-- **`backend/data/patterns.json`**: 35 validated detection patterns covering all 7 target scam types (`digital arrest`, `fake KYC`, `UPI refund`, `job/task scam`, `lottery/prize`, `electricity-bill threat`, `other`). Each pattern includes dual-script Hindi (Devanagari + Hinglish) and English keywords, regexes, red-flag category, and weight (1-5).
-- **`backend/data/test_set.json`**: 70 synthetic labelled messages (35 scam, 35 genuine) in English, Hindi, and Hinglish. Genuine samples include tricky edge cases: genuine bank OTPs with security disclaimers, debit/credit transaction alerts, delivery OTP updates, official electricity bill reminders, and RBI-mandated KYC notifications.
-- **Privacy Guaranteed**: Strictly synthetic data with placeholders (`XXXXXXXX`, `example.com`). Zero personal or banking data.
-
-### Running Evaluation
-
-Run the benchmark evaluation script against the test set:
-
-```bash
-cd backend
-python scripts/evaluate.py           # Rule-only evaluation (default, no API calls)
-python scripts/evaluate.py --fusion  # Fused multi-layer evaluation (offline simulated LLM + Safe Browsing)
-python scripts/evaluate.py --llm     # Include Claude LLM evaluation (requires ANTHROPIC_API_KEY)
-```
-
-Prints accuracy, false positives, false negatives, and a per-scam-type breakdown (message IDs only; never prints message text). When `--llm` is specified, the script caps at the test set size and prints the exact number of API calls before making them.
+1. **Zero Message Storage**: User submissions are never stored in databases, flat files, or browser LocalStorage. All analysis is performed ephemerally in RAM and released upon garbage collection.
+2. **De-identified Processing**: Log files strictly record request sizes, execution latencies, and status codes. Original message contents, phone numbers, names, and passwords are never logged.
+3. **In-Browser Card Rendering**: The WhatsApp Family Mode card is rendered entirely inside the user's browser via `html-to-image`. No share image is uploaded to or generated on any remote server.
+4. **Untrusted Upload Protection**: Images are validated using Pillow magic bytes (rejecting disguised executables), constrained to a 25 megapixel decompression-bomb threshold, stripped of EXIF metadata, and processed strictly in memory.
+5. **No "100% Safe" Verdicts**: Even completely clean messages carry a mandatory caution notice: *"No red flag found, but never share OTP, PIN or money with anyone who contacts you."*
 
 ---
 
-## Family Mode (WhatsApp Share Card)
+## 📊 Evaluation Benchmark
 
-Scam Shield provides a dedicated **Family Mode** designed to alert elderly parents, relatives, and community WhatsApp groups to emerging fraud tactics without exposing private user messages.
+Scam Shield was evaluated against an untuned, held-out synthetic test suite (`backend/data/heldout_set.json`) consisting of 40 novel messages (20 scams, 20 genuine notifications; English, Hindi, and Hinglish):
 
-### What the Card Contains
-- **Categorical Verdict**: Prominent risk badge (*Safe* / *Suspicious* / *Likely Scam*) rendered with an icon, color, and high-visibility text label (WCAG AA compliant).
-- **Scam Type**: Plain-language category (e.g., *"Digital Arrest Fraud"*, *"Fake KYC Deactivation Threat"*, *"Electricity Bill Disconnection Threat"*).
-- **Warning Signs**: Up to 3 summarized red-flag indicators in simple words (e.g., urgency tactics, impersonation, unverified payment demands).
-- **Action Checklist**: 3–4 practical safety steps, prominently highlighting the **1930 National Cyber Helpline** and **cybercrime.gov.in**.
-- **Mandatory Safety Disclaimer**: Always present. Lowest-risk messages carry the exact warning: *"No red flag found, but never share OTP, PIN or money with anyone who contacts you."* (Never says "100% safe").
-- **Date & Forwarding Notice**: Clean footer prompting family members to stay vigilant.
+| Metric | Rule Layer Only | Fused Final Verdict |
+|---|---|---|
+| **Overall Accuracy** | 87.50% | **92.50%** |
+| **Recall (Scam Detection)** | 100.00% | **100.00%** |
+| **Precision** | 80.00% | **86.96%** |
+| **F1 Score** | 88.89% | **93.02%** |
+| **False Negatives** | **0** | **0** |
+| **False Positives** | 5 | 3 |
 
-### What It Deliberately Leaves Out (Privacy Guarantees)
-- **Zero Message Text / Quotes**: The victim's original message, phone numbers, sender details, OTPs, or quoted phrases are **strictly omitted** to prevent accidental personal data leakage when forwarded to group chats.
-- **Defanged URLs Only**: Any links referenced in warning categories are defanged (`hxxps://`, `[.]`) and non-clickable to prevent recipient clicks.
-- **No Deceptive Emblems**: Never uses government seals, police emblems, or RBI/CBI logos, ensuring the card cannot be mistaken for an official summons or legal document.
+### Honest Error Analysis
+- **Zero False Negatives**: All 20 scam messages across digital arrest, UPI refunds, electricity threats, and job scams were correctly caught.
+- **3 False Positives**: Tricky genuine messages (such as an Amazon delivery PIN alert containing "PIN" and "delivery boy") were classified as *Suspicious*. This reflects Scam Shield's deliberate asymmetric safety posture: in fraud prevention, a cautious warning is preferable to allowing a fraudulent message through.
 
-### Technical & Privacy Implementation
-- **100% Client-Side Rendering**: Generated entirely in browser memory as a 1080×1350 PNG (4:5 WhatsApp aspect ratio) using `html-to-image`. Zero server communication or image uploads.
-- **Web Share API**: Native one-tap image sharing on supported mobile browsers (`navigator.canShare({ files })`), with graceful fallbacks:
-  1. *Download Image (PNG)*
-  2. *Share Text on WhatsApp* (`wa.me/?text=...` with safe pre-filled summary)
-  3. *Copy Text* to clipboard
-- **Memory Safety**: Preview and download images are handled via Blob object URLs and explicitly revoked with `URL.revokeObjectURL` on modal close or unmount. Zero writes to `localStorage`, `sessionStorage`, or cookies.
-- **Offline Bundled Fonts**: Noto Sans and Noto Sans Devanagari are bundled locally via `@fontsource` under the SIL Open Font License (OFL) 1.1, guaranteeing flawless Hindi and English rendering without external CDN calls.
+*For complete evaluation methodology and breakdown by scam type, read [docs/evaluation.md](docs/evaluation.md).*
 
 ---
 
-## Folder Structure
+## 🛣️ Roadmap & Stretch Goals
 
-```
-scam-shield/
-├── AGENT.md                  # AI agent rulebook
-├── README.md                 # This file
-├── .env.example              # Environment variable template
-├── .gitignore
-├── backend/
-│   ├── app/
-│   │   ├── api/              # FastAPI routes (/health, /api/analyze)
-│   │   ├── core/             # Config, constants, fusion.py, dataset loaders, url_utils.py
-│   │   ├── detectors/        # Rule-based detector, url_checker.py
-│   │   ├── llm/              # LLM integration (client.py, prompts.py, analyzer.py)
-│   │   ├── ocr/              # OCR processing (future — M3)
-│   │   ├── schemas/          # Pydantic models (analysis.py, dataset.py, llm.py, url_check.py, verdict.py)
-│   │   └── main.py           # App entry point
-│   ├── data/
-│   │   ├── actions.json      # Type-specific "what to do now" action checklists
-│   │   ├── explanations.json # Fallback bilingual explanation templates
-│   │   ├── patterns.json     # 35 scam patterns
-│   │   ├── url_rules.json    # Data-driven URL heuristic rules
-│   │   ├── test_set.json     # 74 labelled test messages
-│   │   └── README.md         # Dataset guide
-│   ├── scripts/
-│   │   └── evaluate.py       # Benchmark evaluation script (--fusion and --llm supported)
-│   ├── tests/
-│   │   ├── test_health.py    # Health endpoint tests
-│   │   ├── test_dataset.py   # Dataset schema & integrity tests
-│   │   ├── test_rule_detector.py # Detector unit tests
-│   │   ├── test_api_analyze.py   # /api/analyze route tests
-│   │   ├── test_llm.py       # LLM schema, prompts, client, and analyzer tests
-│   │   ├── test_ocr.py       # Image validation, security, and OCR engine tests
-│   │   ├── test_url_checker.py   # URL extraction, defanging, heuristics & Safe Browsing tests
-│   │   └── test_fusion.py    # Score fusion engine, safety rules & edge case tests
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── __tests__/        # Vitest & React Testing Library test suites
-│   │   │   ├── fixtures.js
-│   │   │   ├── cardContent.test.js   # Pure card content builder & privacy tests
-│   │   │   ├── familyCard.test.jsx   # FamilyCard component & share modal tests
-│   │   │   ├── highlighting.test.jsx
-│   │   │   ├── imageUpload.test.jsx  # Screenshot upload, preview & client validation tests
-│   │   │   ├── integration.test.jsx
-│   │   │   └── verdict.test.jsx
-│   │   ├── components/       # UI components (VerdictCard, HighlightedMessage, RedFlagList, ExplanationPanel, ActionChecklist, DisclaimerBanner, LoadingState, ErrorState, SampleMessages, ImageUpload, FamilyCard, ShareCardModal, ShareCardButton)
-│   │   ├── pages/            # HomePage with accessible input card and live screen-reader announcer
-│   │   ├── hooks/            # useAnalyze state & lifecycle hook
-│   │   ├── lib/              # api.js, cardContent.js, shareCard.js, strings.js
-│   │   ├── App.jsx           # Responsive layout with calm header and privacy footer
-│   │   └── main.jsx          # Bundled Noto Sans & Devanagari font imports
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.js        # Dev server proxy configuration
-│   └── vitest.config.js      # Testing configuration
-└── docs/
-    ├── progress.md           # Phase-by-phase progress log
-    └── decisions.md          # Architecture decision log
-```
+- [x] Rule-based detection with India-specific scam patterns (M1)
+- [x] Multi-layer Claude LLM integration with structured JSON schemas (M2)
+- [x] Interactive UI with red flag highlighting & action checklists (M2)
+- [x] Screenshot OCR supporting Devanagari Hindi and English (M3)
+- [x] In-browser WhatsApp Family Mode share card generator (M3)
+- [x] Held-out accuracy benchmark, security hardening & Docker setup (M4)
+- [ ] **Stretch**: WhatsApp Web browser extension for inline scam alerts.
+- [ ] **Stretch**: Malicious QR code detection and UPI string parsing.
 
 ---
 
-## Quick Start
+## 📜 License
 
-### Prerequisites
-- Python 3.10+
-- Node.js 18+
-- npm
-- **Tesseract OCR with Hindi and English language packs**:
-  - **Ubuntu/Debian**:
-    ```bash
-    sudo apt update
-    sudo apt install -y tesseract-ocr tesseract-ocr-hin tesseract-ocr-eng
-    ```
-  - **macOS (Homebrew)**:
-    ```bash
-    brew install tesseract tesseract-lang
-    ```
-  - **Windows**:
-    - Download installer from [UB-Mannheim Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki).
-    - During setup, check **Additional language data (download)** and select **Hindi (`hin`)**.
-    - Ensure Tesseract is added to system `PATH` (e.g., `C:\Program Files\Tesseract-OCR`).
-  - *Note: If Tesseract is not installed, the OCR API gracefully returns HTTP 503 (`OCR_UNAVAILABLE`), and automated unit tests use an in-memory fake engine.*
-
-### Backend
-
-```bash
-cd backend
-python -m venv venv
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
-
-pip install -r requirements.txt
-cp ../.env.example ../.env   # Fill in your API keys
-uvicorn app.main:app --reload
-```
-
-The API starts at **http://localhost:8000**. Check health: `GET /health`.
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Opens at **http://localhost:5173**. To run frontend tests and linting:
-
-```bash
-npm test        # Run Vitest test suite
-npm run lint    # Run ESLint
-npm run build   # Production build verification
-```
-
-### Privacy & Security Guarantees
-
-- **Processed strictly in-memory**: Neither the user's submitted message nor the analysis result is ever stored in `localStorage`, `sessionStorage`, cookies, query parameters, or client/server log files.
-- **Screenshot OCR Security**: Uploaded images are validated via Pillow magic bytes, checked against a 25MP decompression-bomb threshold and 5MB size limit, stripped of all EXIF metadata, and processed strictly in RAM. Uploaded image bytes and extracted text are **never written to disk or temporary files**, and server logs record only byte size and status code (never image content, filenames, or text).
-- **XSS Defense**: The message highlighter renders strictly through React text nodes and `<mark>` elements (zero `dangerouslySetInnerHTML`), immunizing the UI against malicious script injection.
-- **Defanged URLs**: Suspicious or malicious links detected in messages are always defanged (`hxxps://...`, `[.]`) and are never rendered as clickable hyperlinks.
-
-### Google Safe Browsing Setup (Free Key)
-
-Scam Shield can check user-submitted links against the Google Safe Browsing Lookup API (v4).
-
-1. Open the [Google Cloud Console](https://console.cloud.google.com/).
-2. Create or select a project.
-3. Enable the **Safe Browsing API** (Lookup API v4).
-4. Navigate to **APIs & Services > Credentials** and click **Create Credentials > API key**.
-5. Add the key to your `.env` file:
-   ```bash
-   SAFE_BROWSING_API_KEY=your_google_safe_browsing_key_here
-   ```
-
-> **Privacy Guarantee:** Only extracted URLs are transmitted to Google's Safe Browsing Lookup API. Scam Shield never transmits message text, sender details, phone numbers, or personal data. User-submitted links are **never fetched, followed, or visited directly**. Displayed URLs are always defanged (`hxxps://example[.]com`) to prevent accidental clicks.
-
-### Environment Variables
-
-Copy `.env.example` to `.env` and configure:
-
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `ANTHROPIC_API_KEY` | `""` | Anthropic Claude API key for LLM analysis |
-| `LLM_ENABLED` | `true` | Toggle LLM layer (`true` or `false` for rule-only mode) |
-| `ANTHROPIC_MODEL` | `claude-sonnet-4-20250514` | Claude model name |
-| `LLM_TIMEOUT` | `30` | Request timeout in seconds |
-| `LLM_MAX_TOKENS` | `1024` | Maximum tokens for generation |
-| `SAFE_BROWSING_API_KEY` | `""` | Google Safe Browsing API v4 key |
-| `URL_CHECK_ENABLED` | `true` | Toggle URL check layer (falls back to local heuristics when no key) |
-| `SAFE_BROWSING_TIMEOUT` | `5` | Safe Browsing API timeout in seconds |
-| `FRONTEND_ORIGIN` | `http://localhost:5173` | CORS origin for frontend |
-
----
-
-## License
-
-Private — not yet published.
+Distributed under the MIT License. See `LICENSE` for more information.

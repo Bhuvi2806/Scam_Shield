@@ -153,4 +153,3 @@ def test_heldout_set_is_disjoint_from_test_set():
     assert not text_overlap, (
         f"Text overlap between tuning and held-out sets: {len(text_overlap)} messages"
     )
-

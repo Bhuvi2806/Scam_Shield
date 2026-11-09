@@ -9,11 +9,17 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
+from collections import defaultdict
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
 from pydantic import BaseModel, Field
 
 from app.core.config import settings
+from app.core.constants import (
+    ANALYZE_RATE_LIMIT_REQUESTS,
+    ANALYZE_RATE_LIMIT_WINDOW_SECONDS,
+)
 from app.core.fusion import fuse
 from app.detectors.rule_detector import RuleDetector
 from app.detectors.url_checker import (
@@ -36,6 +42,31 @@ detector = RuleDetector()
 
 # Singleton UrlChecker instance to preserve in-memory TTL cache across requests
 _url_checker_instance = UrlChecker()
+
+# In-memory sliding-window rate limiter per client IP: ip -> list[timestamp]
+_analyze_rate_limit_history: dict[str, list[float]] = defaultdict(list)
+
+
+def _check_analyze_rate_limit(client_ip: str) -> None:
+    """Enforce maximum analysis requests per minute per client IP."""
+    now = time.monotonic()
+    window_start = now - ANALYZE_RATE_LIMIT_WINDOW_SECONDS
+
+    history = [ts for ts in _analyze_rate_limit_history[client_ip] if ts > window_start]
+    if len(history) >= ANALYZE_RATE_LIMIT_REQUESTS:
+        _analyze_rate_limit_history[client_ip] = history
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Rate limit exceeded. Maximum {ANALYZE_RATE_LIMIT_REQUESTS} analysis requests per minute allowed.",
+        )
+
+    history.append(now)
+    _analyze_rate_limit_history[client_ip] = history
+
+
+def reset_analyze_rate_limits() -> None:
+    """Reset rate limiter state (used in tests)."""
+    _analyze_rate_limit_history.clear()
 
 
 class LayerOutputs(BaseModel):
@@ -135,8 +166,14 @@ async def _run_url_analysis(
         "Fuses all signals into a consolidated final verdict. Processed strictly in-memory."
     ),
 )
-async def analyze_message(request: AnalyzeRequest) -> AnalyzeResponse:
+async def analyze_message(
+    request: AnalyzeRequest,
+    http_request: Request,
+) -> AnalyzeResponse:
     """Analyze a suspicious message in memory without storing or logging message content."""
+    client_ip = http_request.client.host if http_request.client else "127.0.0.1"
+    _check_analyze_rate_limit(client_ip)
+
     text = request.text
     if not text or not text.strip():
         raise HTTPException(

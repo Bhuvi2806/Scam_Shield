@@ -14,19 +14,19 @@ from __future__ import annotations
 import argparse
 import sys
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 # Ensure backend directory is in python path
 backend_dir = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(backend_dir))
 
-from app.core.dataset import load_heldout_set, load_test_set  # noqa: E402
-from app.core.fusion import fuse, normalize_scam_type  # noqa: E402
-from app.detectors.rule_detector import RuleDetector  # noqa: E402
-from app.detectors.url_checker import SafeBrowsingClient, UrlChecker  # noqa: E402
-from app.schemas.dataset import TestMessage  # noqa: E402
-from app.schemas.llm import LLMRedFlag, LLMResult  # noqa: E402
+from app.core.dataset import load_heldout_set, load_test_set
+from app.core.fusion import fuse, normalize_scam_type
+from app.detectors.rule_detector import RuleDetector
+from app.detectors.url_checker import SafeBrowsingClient, UrlChecker
+from app.schemas.dataset import TestMessage
+from app.schemas.llm import LLMRedFlag, LLMResult
 
 
 class OfflineSimulatedLLMClient:
@@ -138,9 +138,7 @@ def run_evaluation(
     precision = (tp / (tp + fp)) * 100 if (tp + fp) else 0.0
     recall = (tp / (tp + fn)) * 100 if (tp + fn) else 0.0
     f1 = (
-        (2 * precision * recall / (precision + recall))
-        if (precision + recall)
-        else 0.0
+        (2 * precision * recall / (precision + recall)) if (precision + recall) else 0.0
     )
 
     if verbose:
@@ -200,7 +198,7 @@ def generate_markdown_report(
 ) -> None:
     """Generate backend/reports/evaluation.md with clean markdown tables and analysis."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    now_iso = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     lines = [
         "# Scam Shield — Comprehensive Evaluation Report",

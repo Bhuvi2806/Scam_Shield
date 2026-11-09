@@ -81,3 +81,4 @@ ExplanationPanel.propTypes = {
   explanationHi: PropTypes.string.isRequired,
   originalText: PropTypes.string,
 };
+

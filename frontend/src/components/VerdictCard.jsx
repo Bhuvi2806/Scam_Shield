@@ -149,3 +149,4 @@ VerdictCard.propTypes = {
   confidence: PropTypes.number.isRequired,
   scamType: PropTypes.string,
 };
+

@@ -53,3 +53,4 @@ DisclaimerBanner.propTypes = {
   disclaimer: PropTypes.string.isRequired,
   degraded: PropTypes.bool,
 };
+

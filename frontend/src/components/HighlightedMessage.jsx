@@ -205,3 +205,4 @@ HighlightedMessage.propTypes = {
     })
   ),
 };
+

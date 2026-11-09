@@ -59,3 +59,4 @@ SampleMessages.propTypes = {
   onSelect: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
 };
+

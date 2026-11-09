@@ -1,8 +1,8 @@
 """FastAPI route for message analysis adhering to strict in-memory privacy rules.
 
-Returns rule-based, LLM, and URL check results.
-Runs LLM and Safe Browsing URL analysis concurrently via asyncio.
-If LLM or Safe Browsing fails or is disabled, rule detection is always preserved.
+Concurrently executes rule detection, Claude LLM analysis, and Safe Browsing URL intelligence,
+then fuses all signals into a consolidated FinalVerdict.
+Never logs or returns original user message text.
 """
 
 from __future__ import annotations
@@ -14,6 +14,7 @@ from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
 
 from app.core.config import settings
+from app.core.fusion import fuse
 from app.detectors.rule_detector import RuleDetector
 from app.detectors.url_checker import (
     GoogleSafeBrowsingClient,
@@ -26,6 +27,7 @@ from app.llm.client import ClaudeLLMClient, LLMAPIError
 from app.schemas.analysis import AnalyzeRequest, RuleResult
 from app.schemas.llm import LLMResult
 from app.schemas.url_check import UrlCheckResult
+from app.schemas.verdict import FinalVerdict
 
 logger = logging.getLogger(__name__)
 
@@ -36,23 +38,38 @@ detector = RuleDetector()
 _url_checker_instance = UrlChecker()
 
 
-class AnalyzeResponse(BaseModel):
-    """Combined response from rule-based, LLM, and URL check analysis."""
+class LayerOutputs(BaseModel):
+    """Outputs from individual detection layers for inspection and UI highlighting."""
 
-    rule: RuleResult = Field(
-        ..., description="Rule-based analysis result (always present)"
-    )
+    rule: RuleResult = Field(..., description="Rule-based detector output")
     llm: LLMResult | None = Field(
         default=None,
-        description="LLM analysis result (null if LLM disabled, unavailable, or failed)",
-    )
-    llm_error: str | None = Field(
-        default=None,
-        description="Error description if LLM analysis failed (null on success or if disabled)",
+        description="Claude LLM analysis output (null if disabled or failed)",
     )
     url_check: UrlCheckResult | None = Field(
         default=None,
-        description="URL check result (null if URL checking is disabled)",
+        description="URL check output (null if disabled or no URLs present)",
+    )
+    llm_error: str | None = Field(
+        default=None,
+        description="Error description if LLM analysis failed",
+    )
+    url_check_error: str | None = Field(
+        default=None,
+        description="Error description if URL checking failed",
+    )
+
+
+class AnalyzeResponse(BaseModel):
+    """Consolidated message analysis response."""
+
+    verdict: FinalVerdict = Field(
+        ...,
+        description="Fused final verdict with confidence, explanations, and checklist",
+    )
+    layers: LayerOutputs = Field(
+        ...,
+        description="Individual layer outputs for debugging and UI highlighting",
     )
 
 
@@ -98,7 +115,6 @@ async def _run_url_analysis(
 ) -> UrlCheckResult | None:
     """Execute URL checking (local heuristics + Safe Browsing lookup) in a thread."""
     try:
-        # Dynamically attach current client
         checker._client = sb_client
         return await asyncio.to_thread(checker.check_text, text)
     except Exception as exc:  # noqa: BLE001
@@ -115,8 +131,8 @@ async def _run_url_analysis(
     response_model=AnalyzeResponse,
     summary="Analyze a message for scam indicators",
     description=(
-        "Analyzes input text using rule patterns, heuristics, optional LLM, "
-        "and Google Safe Browsing URL intelligence. Concurrently executed and processed in-memory."
+        "Analyzes input text across rule patterns, Claude LLM, and Google Safe Browsing URL intelligence. "
+        "Fuses all signals into a consolidated final verdict. Processed strictly in-memory."
     ),
 )
 async def analyze_message(request: AnalyzeRequest) -> AnalyzeResponse:
@@ -143,23 +159,40 @@ async def analyze_message(request: AnalyzeRequest) -> AnalyzeResponse:
     if settings.URL_CHECK_ENABLED:
         url_task = _run_url_analysis(text, _url_checker_instance, sb_client)
 
-    # Run tasks concurrently
     llm_result: LLMResult | None = None
     llm_error: str | None = None
     url_check: UrlCheckResult | None = None
+    url_check_error: str | None = None
 
     if llm_task and url_task:
         (llm_res, llm_err), url_res = await asyncio.gather(llm_task, url_task)
         llm_result, llm_error = llm_res, llm_err
         url_check = url_res
+        if url_check and url_check.error:
+            url_check_error = url_check.error
     elif llm_task:
         llm_result, llm_error = await llm_task
     elif url_task:
         url_check = await url_task
+        if url_check and url_check.error:
+            url_check_error = url_check.error
 
-    return AnalyzeResponse(
+    # 3. Fuse all layer signals into FinalVerdict
+    final_verdict = fuse(
         rule=rule_result,
         llm=llm_result,
-        llm_error=llm_error,
         url_check=url_check,
+        llm_error=llm_error,
+        url_check_error=url_check_error,
+    )
+
+    return AnalyzeResponse(
+        verdict=final_verdict,
+        layers=LayerOutputs(
+            rule=rule_result,
+            llm=llm_result,
+            url_check=url_check,
+            llm_error=llm_error,
+            url_check_error=url_check_error,
+        ),
     )

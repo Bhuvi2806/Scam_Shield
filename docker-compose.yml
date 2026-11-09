@@ -1,0 +1,33 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: scamshield-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - FRONTEND_ORIGIN=http://localhost:80
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - SAFE_BROWSING_API_KEY=${SAFE_BROWSING_API_KEY:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:8000
+    container_name: scamshield-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped

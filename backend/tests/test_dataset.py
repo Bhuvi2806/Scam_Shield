@@ -36,14 +36,18 @@ def test_pattern_regexes_compile():
             try:
                 re.compile(r)
             except re.error as e:
-                raise AssertionError(f"Pattern {pattern.id} has invalid regex '{r}': {e}") from e
+                raise AssertionError(
+                    f"Pattern {pattern.id} has invalid regex '{r}': {e}"
+                ) from e
 
 
 def test_pattern_weights_valid():
     """All pattern weights must be between 1 and 5 inclusive."""
     patterns = load_patterns()
     for pattern in patterns:
-        assert 1 <= pattern.weight <= 5, f"Pattern {pattern.id} has invalid weight {pattern.weight}"
+        assert 1 <= pattern.weight <= 5, (
+            f"Pattern {pattern.id} has invalid weight {pattern.weight}"
+        )
 
 
 def test_test_set_loads_and_has_minimum_counts():
@@ -55,7 +59,9 @@ def test_test_set_loads_and_has_minimum_counts():
     genuine_count = sum(1 for m in messages if m.label == "genuine")
 
     assert scam_count >= 30, f"Expected at least 30 scam messages, found {scam_count}"
-    assert genuine_count >= 30, f"Expected at least 30 genuine messages, found {genuine_count}"
+    assert genuine_count >= 30, (
+        f"Expected at least 30 genuine messages, found {genuine_count}"
+    )
 
 
 def test_test_set_message_ids_are_unique():
@@ -71,7 +77,9 @@ def test_test_set_covers_all_languages():
     messages = load_test_set()
     languages = {m.language for m in messages}
     expected_languages = {"en", "hi", "hinglish"}
-    assert expected_languages.issubset(languages), f"Missing languages: {expected_languages - languages}"
+    assert expected_languages.issubset(languages), (
+        f"Missing languages: {expected_languages - languages}"
+    )
 
 
 def test_test_set_scam_types_and_labels_consistency():
@@ -82,10 +90,16 @@ def test_test_set_scam_types_and_labels_consistency():
     for m in messages:
         if m.label == "scam":
             assert m.scam_type is not None, f"Scam message {m.id} has no scam_type"
-            assert m.scam_type in VALID_SCAM_TYPES, f"Scam message {m.id} has invalid scam_type: {m.scam_type}"
+            assert m.scam_type in VALID_SCAM_TYPES, (
+                f"Scam message {m.id} has invalid scam_type: {m.scam_type}"
+            )
             scam_types_in_test_set.add(m.scam_type)
         else:
-            assert m.scam_type is None, f"Genuine message {m.id} should have scam_type=None, got {m.scam_type}"
+            assert m.scam_type is None, (
+                f"Genuine message {m.id} should have scam_type=None, got {m.scam_type}"
+            )
 
     missing_scam_types = VALID_SCAM_TYPES - scam_types_in_test_set
-    assert not missing_scam_types, f"Scam test set missing representations for: {missing_scam_types}"
+    assert not missing_scam_types, (
+        f"Scam test set missing representations for: {missing_scam_types}"
+    )

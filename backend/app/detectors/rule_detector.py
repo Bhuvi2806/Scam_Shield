@@ -74,9 +74,15 @@ PROTECTIVE_PATTERNS = [
     re.compile(r"कभी\s+भी\s+(?:कोई\s+ऐप\s+)?(?:इंस्टॉल|डाउनलोड)\s+न\s+करें", re.IGNORECASE),
     re.compile(r"किसी\s+को\s+न\s+(?:बताएं|दें)", re.IGNORECASE),
     re.compile(r"nahi\s+maangta|share\s+mat\s+karna", re.IGNORECASE),
-    re.compile(r"shakha\s+jakar|visiting\s+your\s+(?:nearest\s+)?(?:home\s+)?branch|शाखा\s+जाकर", re.IGNORECASE),
+    re.compile(
+        r"shakha\s+jakar|visiting\s+your\s+(?:nearest\s+)?(?:home\s+)?branch|शाखा\s+जाकर",
+        re.IGNORECASE,
+    ),
     re.compile(r"official\s+(?:portal|app|website)", re.IGNORECASE),
-    re.compile(r"(?:cyber\s+safety\s+awareness|साइबर\s+सुरक्षा\s+सूचना|गृह\s+मंत्रालय)", re.IGNORECASE),
+    re.compile(
+        r"(?:cyber\s+safety\s+awareness|साइबर\s+सुरक्षा\s+सूचना|गृह\s+मंत्रालय)",
+        re.IGNORECASE,
+    ),
 ]
 
 
@@ -105,7 +111,9 @@ class RuleDetector:
             compiled[pattern.id] = pattern_regex_list
         return compiled
 
-    def _is_protective_context(self, text: str, match_start: int, match_end: int) -> bool:
+    def _is_protective_context(
+        self, text: str, match_start: int, match_end: int
+    ) -> bool:
         """Check if a match occurs within an anti-fraud protective warning.
 
         For example: 'Do not share this OTP with anyone' vs 'Share OTP for KYC'.
@@ -178,16 +186,16 @@ class RuleDetector:
             if not any(netloc.endswith(suffix) for suffix in TRUSTED_SUFFIXES) and any(
                 kw in netloc for kw in DECEPTIVE_DOMAIN_KEYWORDS
             ):
-                    flags.append(
-                        RedFlag(
-                            pattern_id="HEUR-URL-DECEPTIVE",
-                            category="suspicious link/APK",
-                            matched_text=url_str,
-                            start=start,
-                            end=end,
-                            weight=URL_WEIGHT_DECEPTIVE,
-                        )
+                flags.append(
+                    RedFlag(
+                        pattern_id="HEUR-URL-DECEPTIVE",
+                        category="suspicious link/APK",
+                        matched_text=url_str,
+                        start=start,
+                        end=end,
+                        weight=URL_WEIGHT_DECEPTIVE,
                     )
+                )
 
         return flags
 
@@ -316,7 +324,9 @@ class RuleDetector:
         base_score = base_map.get(max_weight, 20)
 
         # Additional severity from secondary distinct flags
-        secondary_weight = sum(f.weight * 4 for f in filtered_flags if f.weight < max_weight)
+        secondary_weight = sum(
+            f.weight * 4 for f in filtered_flags if f.weight < max_weight
+        )
         score = min(100, base_score + secondary_weight)
 
         # Categorical verdict
@@ -359,7 +369,9 @@ class RuleDetector:
             overlaps = False
             for s in selected:
                 # Same category and overlapping span
-                if flag.category == s.category and max(flag.start, s.start) < min(flag.end, s.end):
+                if flag.category == s.category and max(flag.start, s.start) < min(
+                    flag.end, s.end
+                ):
                     overlaps = True
                     break
             if not overlaps:

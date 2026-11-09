@@ -50,7 +50,9 @@ def test_genuine_messages_not_flagged_as_likely_scam():
 
     for text in genuine_samples:
         res = detector.analyze(text)
-        assert res.verdict == VERDICT_SAFE, f"Genuine message incorrectly flagged as {res.verdict}: '{text[:50]}...'"
+        assert res.verdict == VERDICT_SAFE, (
+            f"Genuine message incorrectly flagged as {res.verdict}: '{text[:50]}...'"
+        )
         assert res.score < 30
 
 
@@ -99,7 +101,10 @@ def test_empty_input_returns_safe_with_disclaimer():
 def test_very_long_input_handled_gracefully():
     """A long message (several thousand characters) must be analyzed without errors."""
     long_prefix = "This is a legitimate regular narrative text. " * 150
-    malicious_text = long_prefix + " Non-bailable arrest warrant issued by CBI. Connect on Skype video call."
+    malicious_text = (
+        long_prefix
+        + " Non-bailable arrest warrant issued by CBI. Connect on Skype video call."
+    )
     res = detector.analyze(malicious_text)
     assert res.verdict == VERDICT_LIKELY_SCAM
     assert res.scam_type_guess == "digital arrest"
@@ -109,13 +114,18 @@ def test_disclaimer_present_on_safe_verdict():
     """The lowest-risk verdict must carry the exact wording mandated by AGENT.md Section 5."""
     res = detector.analyze("Hello, are we still meeting tomorrow for lunch?")
     assert res.verdict == VERDICT_SAFE
-    assert res.disclaimer == "No red flag found, but never share OTP, PIN or money with anyone who contacts you."
+    assert (
+        res.disclaimer
+        == "No red flag found, but never share OTP, PIN or money with anyone who contacts you."
+    )
 
 
 def test_local_url_heuristics():
     """Local URL heuristics detect APKs, IP hosts, shorteners, and deceptive domains."""
     # 1. APK link
-    apk_res = detector.analyze("Direct link to update: http://example.com/files/bank_support.apk")
+    apk_res = detector.analyze(
+        "Direct link to update: http://example.com/files/bank_support.apk"
+    )
     assert any(f.pattern_id == "HEUR-URL-APK" for f in apk_res.red_flags)
 
     # 2. IP address host
@@ -123,11 +133,15 @@ def test_local_url_heuristics():
     assert any(f.pattern_id == "HEUR-URL-IP" for f in ip_res.red_flags)
 
     # 3. URL shortener
-    short_res = detector.analyze("View your pending order status: https://bit.ly/tracking-id")
+    short_res = detector.analyze(
+        "View your pending order status: https://bit.ly/tracking-id"
+    )
     assert any(f.pattern_id == "HEUR-URL-SHORTENER" for f in short_res.red_flags)
 
     # 4. Deceptive look-alike domain
-    deceptive_res = detector.analyze("Access portal at http://hdfc-netbanking-portal.com")
+    deceptive_res = detector.analyze(
+        "Access portal at http://hdfc-netbanking-portal.com"
+    )
     assert any(f.pattern_id == "HEUR-URL-DECEPTIVE" for f in deceptive_res.red_flags)
 
     # 5. Legitimate government domain not flagged as deceptive

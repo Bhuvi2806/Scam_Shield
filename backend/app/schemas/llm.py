@@ -1,4 +1,5 @@
 """Schemas for LLM analysis results."""
+
 from pydantic import BaseModel, Field
 
 

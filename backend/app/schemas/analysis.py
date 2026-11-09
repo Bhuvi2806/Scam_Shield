@@ -12,18 +12,39 @@ from app.core.constants import (
 class RedFlag(BaseModel):
     """An individual scam indicator flagged in the message."""
 
-    pattern_id: str = Field(..., description="ID of the matched pattern, or heuristic rule ID")
-    category: str = Field(..., description="Red flag category (urgency, authority impersonation, etc.)")
-    matched_text: str = Field(..., description="The exact substring that triggered the indicator")
-    start: int = Field(..., ge=0, description="Start character offset in original text for UI highlighting")
-    end: int = Field(..., ge=0, description="End character offset in original text for UI highlighting")
-    weight: int = Field(..., ge=1, le=5, description="Severity weight from 1 (minor) to 5 (critical)")
+    pattern_id: str = Field(
+        ..., description="ID of the matched pattern, or heuristic rule ID"
+    )
+    category: str = Field(
+        ..., description="Red flag category (urgency, authority impersonation, etc.)"
+    )
+    matched_text: str = Field(
+        ..., description="The exact substring that triggered the indicator"
+    )
+    start: int = Field(
+        ...,
+        ge=0,
+        description="Start character offset in original text for UI highlighting",
+    )
+    end: int = Field(
+        ...,
+        ge=0,
+        description="End character offset in original text for UI highlighting",
+    )
+    weight: int = Field(
+        ..., ge=1, le=5, description="Severity weight from 1 (minor) to 5 (critical)"
+    )
 
 
 class RuleResult(BaseModel):
     """Result of rule-based analysis."""
 
-    score: int = Field(..., ge=0, le=100, description="Overall risk score between 0 (safe) and 100 (scam)")
+    score: int = Field(
+        ...,
+        ge=0,
+        le=100,
+        description="Overall risk score between 0 (safe) and 100 (scam)",
+    )
     verdict: Literal["safe", "suspicious", "likely_scam"] = Field(
         ...,
         description="Categorical risk assessment: safe, suspicious, or likely_scam",

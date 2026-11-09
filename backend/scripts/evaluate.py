@@ -86,11 +86,17 @@ def evaluate_rules(verbose: bool = True) -> dict:
 
         print("-" * 65)
         print("PER-SCAM-TYPE BREAKDOWN (Scam Samples Only):")
-        print(f"{'Scam Type':<25} {'Total':<8} {'Detected':<10} {'Type Match':<12} {'Recall':<8}")
+        print(
+            f"{'Scam Type':<25} {'Total':<8} {'Detected':<10} {'Type Match':<12} {'Recall':<8}"
+        )
         print("-" * 65)
         for stype, stats in sorted(scam_type_stats.items()):
-            recall = (stats["detected"] / stats["total"]) * 100 if stats["total"] else 0.0
-            type_acc = (stats["type_match"] / stats["total"]) * 100 if stats["total"] else 0.0
+            recall = (
+                (stats["detected"] / stats["total"]) * 100 if stats["total"] else 0.0
+            )
+            type_acc = (
+                (stats["type_match"] / stats["total"]) * 100 if stats["total"] else 0.0
+            )
             print(
                 f"{stype:<25} {stats['total']:<8} {stats['detected']:<10} "
                 f"{stats['type_match']:<12} ({type_acc:.0f}%) {recall:.1f}%"

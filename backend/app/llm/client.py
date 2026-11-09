@@ -79,7 +79,9 @@ class ClaudeLLMClient(LLMClient):
 
         except anthropic.APITimeoutError as exc:
             logger.warning("LLM request timed out (timeout=%ds)", self._timeout)
-            raise LLMTimeoutError(f"Claude API timed out after {self._timeout}s") from exc
+            raise LLMTimeoutError(
+                f"Claude API timed out after {self._timeout}s"
+            ) from exc
 
         except anthropic.APIError as exc:
             logger.warning("LLM API error: %s", type(exc).__name__)

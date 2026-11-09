@@ -85,7 +85,9 @@ def analyze_with_llm(text: str, client: LLMClient) -> LLMResult:
         try:
             raw_response = client.generate(SYSTEM_PROMPT, user_prompt)
             elapsed = time.monotonic() - start_time
-            logger.info("LLM call completed in %.2fs (attempt %d)", elapsed, attempt + 1)
+            logger.info(
+                "LLM call completed in %.2fs (attempt %d)", elapsed, attempt + 1
+            )
 
             result = _parse_llm_response(raw_response)
             return result

@@ -27,7 +27,9 @@ detector = RuleDetector()
 class AnalyzeResponse(BaseModel):
     """Combined response from rule-based and LLM analysis."""
 
-    rule: RuleResult = Field(..., description="Rule-based analysis result (always present)")
+    rule: RuleResult = Field(
+        ..., description="Rule-based analysis result (always present)"
+    )
     llm: LLMResult | None = Field(
         default=None,
         description="LLM analysis result (null if LLM disabled, unavailable, or failed)",
@@ -80,6 +82,9 @@ async def analyze_message(request: AnalyzeRequest) -> AnalyzeResponse:
             llm_result = analyze_with_llm(text, client)
         except LLMAnalysisError as exc:
             llm_error = str(exc)
-            logger.warning("LLM analysis failed, returning rule-only result: %s", type(exc).__name__)
+            logger.warning(
+                "LLM analysis failed, returning rule-only result: %s",
+                type(exc).__name__,
+            )
 
     return AnalyzeResponse(rule=rule_result, llm=llm_result, llm_error=llm_error)

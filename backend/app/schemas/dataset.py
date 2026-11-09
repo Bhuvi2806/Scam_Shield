@@ -21,24 +21,34 @@ class Pattern(BaseModel):
     id: str = Field(..., description="Unique identifier for the pattern, e.g. PAT-001")
     scam_type: str = Field(..., description="Type of scam this pattern indicates")
     name: str = Field(..., description="Short descriptive name of the pattern")
-    description: str = Field(..., description="Detailed description of what this pattern catches")
-    keywords_en: list[str] = Field(default_factory=list, description="English keywords or phrases")
+    description: str = Field(
+        ..., description="Detailed description of what this pattern catches"
+    )
+    keywords_en: list[str] = Field(
+        default_factory=list, description="English keywords or phrases"
+    )
     keywords_hi: list[str] = Field(
         default_factory=list,
         description="Hindi keywords or phrases in Devanagari script and Hinglish transliteration",
     )
-    regexes: list[str] = Field(default_factory=list, description="Regex patterns for matching")
+    regexes: list[str] = Field(
+        default_factory=list, description="Regex patterns for matching"
+    )
     red_flag_category: str = Field(
         ...,
         description="High-level category of red flag, e.g. urgency, authority impersonation, OTP demand",
     )
-    weight: int = Field(..., ge=1, le=5, description="Severity weight from 1 (minor) to 5 (critical)")
+    weight: int = Field(
+        ..., ge=1, le=5, description="Severity weight from 1 (minor) to 5 (critical)"
+    )
 
     @field_validator("scam_type")
     @classmethod
     def validate_scam_type(cls, value: str) -> str:
         if value not in VALID_SCAM_TYPES:
-            raise ValueError(f"Invalid scam_type '{value}'. Must be one of {sorted(VALID_SCAM_TYPES)}")
+            raise ValueError(
+                f"Invalid scam_type '{value}'. Must be one of {sorted(VALID_SCAM_TYPES)}"
+            )
         return value
 
 
@@ -47,13 +57,19 @@ class TestMessage(BaseModel):
 
     id: str = Field(..., description="Unique message identifier, e.g. MSG-001")
     text: str = Field(..., description="Full message text")
-    language: Literal["en", "hi", "hinglish"] = Field(..., description="Language of the message")
-    label: Literal["scam", "genuine"] = Field(..., description="Classification ground truth")
+    language: Literal["en", "hi", "hinglish"] = Field(
+        ..., description="Language of the message"
+    )
+    label: Literal["scam", "genuine"] = Field(
+        ..., description="Classification ground truth"
+    )
     scam_type: str | None = Field(
         default=None,
         description="Scam category if label is 'scam', or None if 'genuine'",
     )
-    notes: str = Field(default="", description="Contextual notes on why this is scam or genuine")
+    notes: str = Field(
+        default="", description="Contextual notes on why this is scam or genuine"
+    )
 
     @field_validator("scam_type")
     @classmethod
@@ -65,5 +81,7 @@ class TestMessage(BaseModel):
             if not value:
                 raise ValueError("Scam messages must have a non-empty scam_type")
             if value not in VALID_SCAM_TYPES:
-                raise ValueError(f"Invalid scam_type '{value}'. Must be one of {sorted(VALID_SCAM_TYPES)}")
+                raise ValueError(
+                    f"Invalid scam_type '{value}'. Must be one of {sorted(VALID_SCAM_TYPES)}"
+                )
         return value

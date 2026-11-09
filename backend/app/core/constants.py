@@ -35,3 +35,11 @@ URL_WEIGHT_APK: Final[int] = 5
 URL_WEIGHT_IP_HOST: Final[int] = 4
 URL_WEIGHT_DECEPTIVE: Final[int] = 4
 URL_WEIGHT_SHORTENER: Final[int] = 3
+
+# URL Checker and Safe Browsing constraints
+MAX_URLS_TO_CHECK: Final[int] = 10
+SAFE_BROWSING_TIMEOUT_DEFAULT: Final[int] = 5
+URL_CACHE_TTL_SECONDS: Final[int] = 3600
+SAFE_BROWSING_API_URL: Final[str] = (
+    "https://safebrowsing.googleapis.com/v4/threatMatches:find"
+)

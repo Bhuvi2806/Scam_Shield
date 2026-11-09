@@ -19,11 +19,12 @@ async def test_analyze_scam_message_success():
 
     assert response.status_code == 200
     data = response.json()
-    assert data["verdict"] == "likely_scam"
-    assert data["score"] >= 60
-    assert data["scam_type_guess"] == "digital arrest"
-    assert len(data["red_flags"]) > 0
-    assert "disclaimer" in data
+    assert "rule" in data
+    assert data["rule"]["verdict"] == "likely_scam"
+    assert data["rule"]["score"] >= 60
+    assert data["rule"]["scam_type_guess"] == "digital arrest"
+    assert len(data["rule"]["red_flags"]) > 0
+    assert "disclaimer" in data["rule"]
 
 
 @pytest.mark.anyio
@@ -38,11 +39,12 @@ async def test_analyze_genuine_message_success():
 
     assert response.status_code == 200
     data = response.json()
-    assert data["verdict"] == "safe"
-    assert data["score"] < 30
-    assert data["scam_type_guess"] is None
-    assert data["red_flags"] == []
-    assert data["disclaimer"] == LOWEST_RISK_DISCLAIMER
+    assert "rule" in data
+    assert data["rule"]["verdict"] == "safe"
+    assert data["rule"]["score"] < 30
+    assert data["rule"]["scam_type_guess"] is None
+    assert data["rule"]["red_flags"] == []
+    assert data["rule"]["disclaimer"] == LOWEST_RISK_DISCLAIMER
 
 
 @pytest.mark.anyio

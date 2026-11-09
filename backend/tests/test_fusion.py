@@ -16,6 +16,8 @@ Verifies all safety rules from AGENT.md Section 5:
 from __future__ import annotations
 
 import pytest
+from httpx import ASGITransport, AsyncClient
+
 from app.core.constants import (
     DEFAULT_RISK_DISCLAIMER,
     HIGH_RISK_DISCLAIMER,
@@ -28,7 +30,6 @@ from app.core.fusion import fuse, normalize_scam_type
 from app.schemas.analysis import RedFlag, RuleResult
 from app.schemas.llm import LLMRedFlag, LLMResult
 from app.schemas.url_check import UrlCheckResult, UrlFinding
-from httpx import ASGITransport, AsyncClient
 
 
 def make_rule_result(

@@ -6,6 +6,8 @@ All tests use a FAKE Safe Browsing client — no real Google APIs are ever calle
 from __future__ import annotations
 
 import pytest
+from httpx import ASGITransport, AsyncClient
+
 from app.core.url_utils import (
     check_local_url_heuristics,
     defang_url,
@@ -18,7 +20,6 @@ from app.detectors.url_checker import (
     UrlChecker,
 )
 from app.schemas.url_check import UrlCheckResult
-from httpx import ASGITransport, AsyncClient
 
 
 class FakeSafeBrowsingClient(SafeBrowsingClient):

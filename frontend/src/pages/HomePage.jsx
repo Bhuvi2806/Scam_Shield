@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useAnalyze } from "../hooks/useAnalyze";
 import { VerdictCard } from "../components/VerdictCard";
 import { HighlightedMessage } from "../components/HighlightedMessage";
@@ -9,6 +9,7 @@ import { DisclaimerBanner } from "../components/DisclaimerBanner";
 import { LoadingState } from "../components/LoadingState";
 import { ErrorState } from "../components/ErrorState";
 import { SampleMessages } from "../components/SampleMessages";
+import { ImageUpload } from "../components/ImageUpload";
 
 const MAX_CHARACTERS = 10000;
 
@@ -37,6 +38,12 @@ export function HomePage() {
     setInputText(sampleText);
     reset();
   };
+
+  /** Callback from ImageUpload: populate textarea with OCR text (no auto-analyze) */
+  const handleTextExtracted = useCallback((text) => {
+    setInputText(text);
+    reset();
+  }, [reset]);
 
   const verdictData = data?.verdict;
 
@@ -125,8 +132,11 @@ export function HomePage() {
             <svg className="w-3.5 h-3.5 text-accent shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>
-            <span>Your message is processed in memory and never stored or shared.</span>
+            <span>Your message is processed in memory and never stored or shared. Screenshots are processed and discarded.</span>
           </div>
+
+          {/* Screenshot Upload */}
+          <ImageUpload onTextExtracted={handleTextExtracted} disabled={isLoading} />
 
           {/* One-Click Sample Messages */}
           <SampleMessages onSelect={handleSelectSample} disabled={isLoading} />

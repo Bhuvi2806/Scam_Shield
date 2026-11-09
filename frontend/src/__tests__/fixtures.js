@@ -204,3 +204,20 @@ export const mockDegradedResponse = {
   },
 };
 
+export const mockOcrSuccessResponse = {
+  text: "URGENT: Your SBI account has been suspended. Visit http://sbi-kyc.in to update immediately.",
+  language_guess: "en",
+  confidence: 0.88,
+  low_confidence: false,
+  warnings: [],
+};
+
+export const mockOcrLowConfidenceResponse = {
+  text: "Aapka account block ho gaya hai.",
+  language_guess: "hinglish",
+  confidence: 0.42,
+  low_confidence: true,
+  warnings: ["Low OCR confidence score: 0.42"],
+};
+
+

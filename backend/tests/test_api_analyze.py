@@ -1,9 +1,10 @@
 """Tests for POST /api/analyze endpoint."""
 
 import pytest
+from httpx import ASGITransport, AsyncClient
+
 from app.core.constants import LOWEST_RISK_DISCLAIMER, MAX_TEXT_LENGTH
 from app.main import app
-from httpx import ASGITransport, AsyncClient
 
 
 @pytest.mark.anyio

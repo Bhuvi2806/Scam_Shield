@@ -21,6 +21,9 @@ import tempfile
 from typing import Literal
 
 import pytest
+from httpx import ASGITransport, AsyncClient
+from PIL import Image
+
 from app.api.ocr import reset_rate_limits
 from app.core.constants import MAX_IMAGE_BYTES
 from app.main import app
@@ -39,8 +42,6 @@ from app.ocr.preprocess import (
     validate_and_sanitize_image,
 )
 from app.schemas.ocr import OCRResult
-from httpx import ASGITransport, AsyncClient
-from PIL import Image
 
 # ---------------------------------------------------------------------------
 # Test Helpers & Fake OCR Engine

@@ -6,12 +6,13 @@ All tests use a FAKE LLM client — no real API calls are ever made.
 import json
 
 import pytest
+from httpx import ASGITransport, AsyncClient
+from pydantic import ValidationError
+
 from app.llm.analyzer import LLMAnalysisError, analyze_with_llm
 from app.llm.client import LLMAPIError, LLMClient, LLMTimeoutError
 from app.llm.prompts import SYSTEM_PROMPT, build_user_prompt
 from app.schemas.llm import LLMResult
-from httpx import ASGITransport, AsyncClient
-from pydantic import ValidationError
 
 # ---------------------------------------------------------------------------
 # Fake LLM client for testing

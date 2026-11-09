@@ -72,4 +72,7 @@ LLM_SCORE_SAFE: Final[int] = 10
 
 # Confidence Limits
 MAX_CONFIDENCE_CAP: Final[float] = 0.95
+CONFIDENCE_HIGH: Final[float] = 0.90
+CONFIDENCE_MEDIUM: Final[float] = 0.70
+CONFIDENCE_LOW: Final[float] = 0.50
 CONFIDENCE_DEGRADED_PENALTY: Final[float] = 0.15

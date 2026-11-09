@@ -40,3 +40,4 @@ ShareCardButton.propTypes = {
 ShareCardButton.defaultProps = {
   disabled: false,
 };
+

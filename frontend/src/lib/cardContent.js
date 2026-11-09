@@ -234,3 +234,4 @@ export function buildShareText(verdict, lang = "en") {
 
   return lines.join("\n");
 }
+

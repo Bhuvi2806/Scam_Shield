@@ -290,3 +290,4 @@ FamilyCard.propTypes = {
 FamilyCard.defaultProps = {
   lang: "en",
 };
+

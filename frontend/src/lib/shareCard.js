@@ -111,3 +111,4 @@ export function getWhatsAppShareUrl(text) {
   const encoded = encodeURIComponent(text || "");
   return `https://wa.me/?text=${encoded}`;
 }
+

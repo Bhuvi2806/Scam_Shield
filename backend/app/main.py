@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.analyze import router as analyze_router
+from app.api.ocr import router as ocr_router
 from app.core.config import settings
 
 app = FastAPI(
@@ -21,6 +22,7 @@ app.add_middleware(
 )
 
 app.include_router(analyze_router)
+app.include_router(ocr_router)
 
 
 @app.get("/health")

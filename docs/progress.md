@@ -1,5 +1,72 @@
 # Scam Shield — Progress Log
 
+## M3 Step 8: Screenshot OCR with Hindi + English Support
+
+### Plan
+1. Dependencies & Constants:
+   - Add `pytesseract>=0.3.10`, `pillow>=10.0.0`, and `python-multipart>=0.0.6` to `backend/requirements.txt`.
+   - Define OCR constants in `backend/app/core/constants.py` (`MAX_IMAGE_BYTES = 5MB`, `MAX_IMAGE_PIXELS = 25MP`, `ALLOWED_IMAGE_FORMATS`, `OCR_TIMEOUT_SECONDS = 15`, `OCR_RATE_LIMIT_REQUESTS = 30/min`, `OCR_LOW_CONFIDENCE_THRESHOLD = 0.50`).
+2. OCR Schema & Preprocessing (`backend/app/schemas/ocr.py`, `backend/app/ocr/preprocess.py`):
+   - Schema: `OCRResult` with `text`, `language_guess` ('en' | 'hi' | 'hinglish'), `confidence` (0.0-1.0), `low_confidence` (bool), and `warnings` (list).
+   - In-memory validation & sanitization: decode using Pillow magic bytes (PNG, JPEG, WEBP), enforce decompression-bomb protection (`Image.MAX_IMAGE_PIXELS`), and strip EXIF metadata into fresh memory buffers. Zero disk persistence.
+   - Preprocessing: grayscale conversion, contrast enhancement, minimum dimension upscaling, orientation cleanup.
+3. OCR Engine & Language Detection (`backend/app/ocr/engine.py`):
+   - Abstract `OCREngine` interface (`extract(image: Image.Image) -> OCRResult`).
+   - `TesseractEngine`: runs pytesseract with languages `"hin+eng"`, calculates word confidence, classifies script balance (`en`, `hi`, `hinglish`), and raises controlled `OCRError` on timeout or missing binary.
+   - Dependency-injection hook for mock engines in tests.
+4. Dedicated Endpoint `POST /api/ocr` (`backend/app/api/ocr.py`):
+   - Accepts `file: UploadFile = File(...)`.
+   - Validates image bytes, enforces per-client IP rate limiting.
+   - Returns `{text, language_guess, confidence, low_confidence, warnings}` without auto-analyzing.
+   - Privacy-safe logging: log only byte size, latency, status, and error code. Never log image content, filenames, or extracted text.
+5. Frontend Screenshot Upload UI (`frontend/src/components/ImageUpload.jsx`):
+   - "Upload Screenshot" button, drag-and-drop zone, and clipboard paste listener (`onPaste`).
+   - Client-side size (< 5MB) and format (PNG/JPEG/WEBP) validation.
+   - Thumbnail preview using object URLs, properly revoked via `URL.revokeObjectURL`.
+   - On success: populates the message textarea for user review and editing without auto-submitting.
+   - Warning banners for low confidence or empty text in Hindi and English.
+   - Zero storage writes (no localStorage/sessionStorage/cookies).
+6. Comprehensive Tests:
+   - Backend (`backend/tests/test_ocr.py`): fake engine unit tests (format validation, oversize, decompression bomb, EXIF stripping, temp dir write assertion, rate limiting, language detection, low confidence).
+   - Optional live Tesseract integration test (auto-skipped when binary or language pack missing).
+   - Frontend (`frontend/src/__tests__/imageUpload.test.jsx`): upload flow, drag/drop/paste, preview cleanup, low-confidence warning, storage spies.
+7. Verification & Documentation:
+   - `pytest`, `ruff`, `npm test`, `npm run lint`, `npm run build`, real end-to-end check.
+   - Update `README.md`, `docs/decisions.md`, `docs/progress.md`.
+
+### Phase Log
+- **Phase 0 (Understand):**
+  - Confirmed Steps 1–7 complete and functioning across backend, fusion, and frontend.
+  - Checked host Tesseract installation (`tesseract --version`): binary not present on Windows host. Documented manual installation guidelines in `README.md` and `docs/decisions.md`. Designed architecture with abstract `OCREngine` test doubles so all tests run deterministically in CI/local without external binaries, while live integration test auto-skips.
+  - Restated task: Implement screenshot OCR supporting Hindi, English, and Hinglish with safe in-memory image validation, decompression-bomb protection, EXIF stripping, privacy-preserving logging, a dedicated `POST /api/ocr` endpoint, a review-first frontend upload UI (paste, drag & drop, file selection), and rigorous automated tests.
+- **Phase 1 (Plan):**
+  - Documented 7-step plan at top of `docs/progress.md`.
+- **Phase 2 (Implement):**
+  - Installed `pytesseract>=0.3.10`, `pillow>=10.0.0`, and `python-multipart>=0.0.6` in backend.
+  - Defined OCR constants in `backend/app/core/constants.py` (5 MB max bytes, 25 MP max pixels, 15s timeout, 30 req/min rate limit, 0.50 low confidence threshold).
+  - Created `OCRResult` schema in `backend/app/schemas/ocr.py`.
+  - Built image sanitization & preprocessing in `backend/app/ocr/preprocess.py` (magic byte format validation, decompression-bomb guard, EXIF stripping, grayscale, Otsu/contrast enhancement, upscaling).
+  - Implemented `OCREngine` and `TesseractEngine` with language/script detection in `backend/app/ocr/engine.py`.
+  - Built sliding-window rate-limited `POST /api/ocr` endpoint in `backend/app/api/ocr.py` with privacy logging and mapped HTTP statuses (400, 413, 422, 429, 503, 504).
+  - Integrated OCR router into `backend/app/main.py`.
+  - Implemented `extractTextFromScreenshot` in `frontend/src/lib/api.js` with client-side format & size pre-checks.
+  - Built `ImageUpload.jsx` supporting drag-and-drop, clipboard paste, file selection, preview with object URL revocation, and bilingual alerts.
+  - Integrated `ImageUpload` into `HomePage.jsx` populating the message textarea for user review (no auto-analysis).
+- **Phase 3 (Test):**
+  - Backend: 20 tests in `backend/tests/test_ocr.py` covering format validation, corruption, zero-byte, spoofed headers, BMP rejection, byte limits, pixel limits, EXIF stripping, in-memory zero disk writes, language classification, rate limiting, low confidence, 422 empty text, 503 missing binary, 504 timeout, and auto-skipping real integration test.
+  - Frontend: 9 tests in `frontend/src/__tests__/imageUpload.test.jsx` covering textarea population without auto-analyze, low-confidence warning, 422 error, client-side format & size rejection, preview URL revocation, zero storage writes, drag-and-drop, and clipboard paste.
+- **Phase 4 (Evaluate):**
+  - Backend: 104 passed, 1 skipped.
+  - Frontend: 31 passed across 4 test suites.
+  - Evaluation benchmark: 100% accuracy (74/74) with 0 false positives and 0 false negatives.
+  - Code hygiene: `ruff check` and `ruff format` 100% clean; ESLint clean; Vite build clean (326ms).
+- **Phase 5 (Document):**
+  - Updated `README.md` with OCR endpoint specs, system Tesseract dependencies, and privacy architecture.
+  - Recorded Architecture Decisions 29–32 in `docs/decisions.md`.
+  - Finalized phase logs in `docs/progress.md`.
+
+---
+
 ## M2 Step 7: Frontend (Verdict Display, Highlighted Red Flags, Action Checklist)
 
 ### Plan

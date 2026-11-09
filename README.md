@@ -4,7 +4,7 @@
 
 Scam Shield is a web app where you paste a suspicious SMS, WhatsApp message, or call transcript and get an instant verdict — *Safe*, *Suspicious*, or *Likely Scam* — along with highlighted red flags, a plain-language explanation (Hindi & English), and a clear "what to do now" checklist.
 
-> **Status:** Milestone M2 Complete (Steps 1–7) — Full-stack detection & analysis platform active. Rule detection, Claude API intelligence, Google Safe Browsing URL checks, score fusion, and complete React frontend with highlighted red flags, bilingual explanations, and action checklists. Ready for Milestone M3 (Screenshot OCR & Family Mode).
+> **Status:** Milestone M3 Step 8 Complete — Screenshot OCR active. Supports Hindi and English text extraction from uploaded screenshots (drag & drop, paste, or file selection) with client-side validation, in-memory sanitization, EXIF stripping, decompression-bomb protection, and review-first workflow. Ready for Milestone M3 Step 9 (Family Mode Share Card).
 
 ---
 
@@ -167,6 +167,35 @@ curl -X POST http://localhost:8000/api/analyze \
 }
 ```
 
+### Extract Text via OCR: `POST /api/ocr`
+
+Accepts a screenshot upload (`multipart/form-data`, field `file`) and extracts Hindi and English text using Tesseract OCR. This endpoint is intentionally isolated from `/api/analyze` so that users review and edit the extracted text before running analysis.
+
+- **Supported Formats**: PNG, JPEG, WebP (magic-byte validated via Pillow; file extension is ignored).
+- **Size Limits**: 5 MB max file size, 25 Megapixel maximum resolution (decompression-bomb defense).
+- **Privacy**: Processed strictly in memory; stripped of all EXIF metadata; never written to disk or temp directories; buffers cleared immediately. Logs record only byte size, status code, latency, and error codes — never image data, filenames, or extracted text.
+- **Languages**: Hindi (`hin`), English (`eng`), and mixed Hinglish.
+- **Rate Limit**: 30 requests per minute per IP address.
+
+#### Sample Request
+
+```bash
+curl -X POST http://localhost:8000/api/ocr \
+  -F "file=@screenshot.png;type=image/png"
+```
+
+#### Sample Response
+
+```json
+{
+  "text": "URGENT: Your SBI account has been blocked. Update KYC at http://sbi-kyc.in to avoid suspension.",
+  "language_guess": "en",
+  "confidence": 0.91,
+  "low_confidence": false,
+  "warnings": []
+}
+```
+
 ---
 
 ## Score Fusion Engine & Safety Rules
@@ -239,6 +268,7 @@ scam-shield/
 │   │   ├── test_rule_detector.py # Detector unit tests
 │   │   ├── test_api_analyze.py   # /api/analyze route tests
 │   │   ├── test_llm.py       # LLM schema, prompts, client, and analyzer tests
+│   │   ├── test_ocr.py       # Image validation, security, and OCR engine tests
 │   │   ├── test_url_checker.py   # URL extraction, defanging, heuristics & Safe Browsing tests
 │   │   └── test_fusion.py    # Score fusion engine, safety rules & edge case tests
 │   └── requirements.txt
@@ -247,9 +277,10 @@ scam-shield/
 │   │   ├── __tests__/        # Vitest & React Testing Library test suites
 │   │   │   ├── fixtures.js
 │   │   │   ├── highlighting.test.jsx
+│   │   │   ├── imageUpload.test.jsx  # Screenshot upload, preview & client validation tests
 │   │   │   ├── integration.test.jsx
 │   │   │   └── verdict.test.jsx
-│   │   ├── components/       # UI components (VerdictCard, HighlightedMessage, RedFlagList, ExplanationPanel, ActionChecklist, DisclaimerBanner, LoadingState, ErrorState, SampleMessages)
+│   │   ├── components/       # UI components (VerdictCard, HighlightedMessage, RedFlagList, ExplanationPanel, ActionChecklist, DisclaimerBanner, LoadingState, ErrorState, SampleMessages, ImageUpload)
 │   │   ├── pages/            # HomePage with accessible input card and live screen-reader announcer
 │   │   ├── hooks/            # useAnalyze state & lifecycle hook
 │   │   ├── lib/api.js        # Backend API client with timeout and error mapping
@@ -272,6 +303,21 @@ scam-shield/
 - Python 3.10+
 - Node.js 18+
 - npm
+- **Tesseract OCR with Hindi and English language packs**:
+  - **Ubuntu/Debian**:
+    ```bash
+    sudo apt update
+    sudo apt install -y tesseract-ocr tesseract-ocr-hin tesseract-ocr-eng
+    ```
+  - **macOS (Homebrew)**:
+    ```bash
+    brew install tesseract tesseract-lang
+    ```
+  - **Windows**:
+    - Download installer from [UB-Mannheim Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki).
+    - During setup, check **Additional language data (download)** and select **Hindi (`hin`)**.
+    - Ensure Tesseract is added to system `PATH` (e.g., `C:\Program Files\Tesseract-OCR`).
+  - *Note: If Tesseract is not installed, the OCR API gracefully returns HTTP 503 (`OCR_UNAVAILABLE`), and automated unit tests use an in-memory fake engine.*
 
 ### Backend
 
@@ -309,6 +355,7 @@ npm run build   # Production build verification
 ### Privacy & Security Guarantees
 
 - **Processed strictly in-memory**: Neither the user's submitted message nor the analysis result is ever stored in `localStorage`, `sessionStorage`, cookies, query parameters, or client/server log files.
+- **Screenshot OCR Security**: Uploaded images are validated via Pillow magic bytes, checked against a 25MP decompression-bomb threshold and 5MB size limit, stripped of all EXIF metadata, and processed strictly in RAM. Uploaded image bytes and extracted text are **never written to disk or temporary files**, and server logs record only byte size and status code (never image content, filenames, or text).
 - **XSS Defense**: The message highlighter renders strictly through React text nodes and `<mark>` elements (zero `dangerouslySetInnerHTML`), immunizing the UI against malicious script injection.
 - **Defanged URLs**: Suspicious or malicious links detected in messages are always defanged (`hxxps://...`, `[.]`) and are never rendered as clickable hyperlinks.
 

@@ -1,0 +1,42 @@
+{
+  "digital_arrest": {
+    "en": "This message is a fraudulent 'digital arrest' scam. Scammers impersonate government law enforcement (such as the CBI, Police, or Customs) and falsely claim you are implicated in crimes. They create artificial urgency to force you onto video calls or extort money. Real police and government bodies NEVER conduct arrests or investigations via Skype or WhatsApp video calls.",
+    "hi": "यह संदेश एक फ़र्ज़ी 'डिजिटल अरेस्ट' धोखाधड़ी है। धोखेबाज़ सीबीआई, पुलिस या कस्टम अधिकारी बनकर झूठा दावा करते हैं कि आप किसी अपराध में शामिल हैं। वे आपको डराकर वीडियो कॉल पर आने या पैसे ट्रांसफर करने का दबाव बनाते हैं। असली पुलिस या सरकारी एजेंसियां कभी भी वीडियो कॉल पर पूछताछ या गिरफ़्तारी नहीं करतीं।"
+  },
+  "fake_kyc": {
+    "en": "This message is a fake KYC update scam. Scammers threaten that your bank account, SIM card, or debit card will be blocked immediately unless you click a link or share personal details. Legitimate banks and telecom operators NEVER ask for passwords, OTPs, or biometric updates via unofficial links or SMS messages.",
+    "hi": "यह संदेश एक फ़र्ज़ी KYC घोटाला है। धोखेबाज़ बैंक खाता या सिम ब्लॉक होने का डर दिखाकर फ़िशिंग लिंक पर क्लिक करने या विवरण देने के लिए कहते हैं। कोई भी वास्तविक बैंक या कंपनी कभी भी SMS लिंक के ज़रिए गोपनीय पासवर्ड, OTP या KYC विवरण नहीं मांगती।"
+  },
+  "upi_refund": {
+    "en": "This message is a UPI payment or refund trap. Fraudsters claim to have sent you money by mistake, or offer fake cashback/refunds, and ask you to enter your UPI PIN or scan a QR code. Remember: entering your UPI PIN or scanning a QR code ALWAYS sends money from your account; it is never used to receive money.",
+    "hi": "यह संदेश एक UPI रिफंड या भुगतान धोखा है। जालसाज़ गलती से पैसे भेजने का बहाना बनाकर या कैशबैक का लालच देकर UPI पिन डालने या QR कोड स्कैन करने को कहते हैं। याद रखें: UPI पिन दर्ज करने या QR कोड स्कैन करने से हमेशा आपके खाते से पैसे कटते हैं, कभी प्राप्त नहीं होते।"
+  },
+  "job_task_scam": {
+    "en": "This message is a task-based job scam. Scammers promise high daily earnings for simple online activities like liking videos, rating hotels, or reviewing products, but eventually demand deposits or registration fees to withdraw earnings. Genuine employers NEVER ask job seekers to pay upfront money or recharge crypto accounts for work.",
+    "hi": "यह संदेश एक फ़र्ज़ी ऑनलाइन जॉब/टास्क घोटाला है। धोखेबाज़ यूट्यूब वीडियो लाइक करने या रिव्यू देने के बदले मोटी कमाई का झांसा देते हैं और बाद में पैसे निकालने के लिए डिपॉज़िट की मांग करते हैं। कोई भी वास्तविक कंपनी काम देने के लिए अग्रिम पैसे या रिचार्ज नहीं मांगती।"
+  },
+  "lottery_prize": {
+    "en": "This message is a lottery or prize reward scam. Fraudsters claim you have won a large sum, car, or gift voucher, but demand 'processing fees', 'tax', or personal banking details to claim it. You cannot win a lottery or contest you never purchased a ticket for.",
+    "hi": "यह संदेश एक फ़र्ज़ी लॉटरी या इनाम का लालच है। जालसाज़ दावा करते हैं कि आपने लाखों रुपये या कार जीती है, लेकिन इनाम पाने के लिए प्रोसेसिंग शुल्क या टैक्स मांगते हैं। जिस लॉटरी का टिकट आपने कभी नहीं खरीदा, वह आप कभी नहीं जीत सकते।"
+  },
+  "electricity_bill_threat": {
+    "en": "This message is an electricity bill disconnection threat. Scammers send urgent messages threatening that your power supply will be cut off tonight unless you call an unknown mobile number or pay via an unverified link. Electricity boards never send disconnection notices from personal mobile numbers or demand payments via third-party links.",
+    "hi": "यह संदेश बिजली बिल का कनेक्शन काटने का डर दिखाने वाला घोटाला है। धोखेबाज़ चेतावनी देते हैं कि आज रात बिजली कट जाएगी और अनजान नंबर पर कॉल करने या लिंक से भुगतान करने को कहते हैं। बिजली विभाग कभी भी निजी मोबाइल नंबर से ऐसी चेतावनियां नहीं भेजता।"
+  },
+  "other": {
+    "en": "This message exhibits strong scam patterns such as artificial urgency, unverified links, demands for money or sensitive credentials, or impersonation of trusted organizations. Do not interact with the sender, click links, or send funds without independent verification.",
+    "hi": "इस संदेश में धोखाधड़ी के गंभीर संकेत मिले हैं, जैसे अनावश्यक जल्दबाजी, संदिग्ध लिंक, पैसे या गोपनीय जानकारी की मांग, या किसी प्रतिष्ठित संस्था का नाम इस्तेमाल करना। बिना स्वतंत्र पुष्टि के किसी लिंक पर क्लिक न करें और न ही पैसे भेजें।"
+  },
+  "suspicious_general": {
+    "en": "This message contains suspicious indicators such as unverified links, urgent deadlines, or requests for sensitive actions. While not conclusively confirmed as a known scam pattern, exercise extreme caution before taking any action.",
+    "hi": "इस संदेश में संदिग्ध संकेत मिले हैं, जैसे असत्यापित लिंक, जल्दबाजी का दबाव, या संवेदनशील जानकारी की मांग। पूरी तरह पुष्टि होने तक अत्यधिक सावधानी बरतें और कोई कदम न उठाएं।"
+  },
+  "safe": {
+    "en": "No scam red flags or malicious links were found in this message. However, always exercise standard digital hygiene: never share passwords, OTPs, or financial credentials with anyone who contacts you.",
+    "hi": "इस संदेश में कोई धोखाधड़ी का संकेत या खतरनाक लिंक नहीं मिला है। फिर भी हमेशा सावधानी रखें: किसी भी अनजान व्यक्ति के साथ OTP, पासवर्ड या बैंक विवरण कभी साझा न करें।"
+  },
+  "degraded_note": {
+    "en": "Note: AI semantic analysis and/or external URL threat intelligence were unavailable. This evaluation is based on local rule heuristics.",
+    "hi": "सूचना: एआई विश्लेषण या यूआरएल सत्यापन अनुपलब्ध था। यह मूल्यांकन स्थानीय नियमों के आधार पर किया गया है।"
+  }
+}

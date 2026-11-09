@@ -1,0 +1,144 @@
+{
+  "common": [
+    {
+      "id": "ACT-1930",
+      "text_en": "Call the National Cyber Crime Helpline at 1930 immediately if you have lost money or shared financial information.",
+      "text_hi": "यदि आपने पैसे गंवाए हैं या वित्तीय जानकारी साझा की है, तो तुरंत 1930 राष्ट्रीय साइबर क्राइम हेल्पलाइन पर कॉल करें।",
+      "urgency": "immediate",
+      "phone": "1930"
+    },
+    {
+      "id": "ACT-CYBERCRIME",
+      "text_en": "Register an official cyber fraud complaint at the Government portal: cybercrime.gov.in.",
+      "text_hi": "सरकारी पोर्टल cybercrime.gov.in पर आधिकारिक साइबर धोखाधड़ी की शिकायत दर्ज करें।",
+      "urgency": "important",
+      "link": "https://cybercrime.gov.in"
+    }
+  ],
+  "by_type": {
+    "digital_arrest": [
+      {
+        "id": "ACT-DA-1",
+        "text_en": "Disconnect the video call immediately. Indian law enforcement (police, CBI, ED, customs) never arrests anyone via video call.",
+        "text_hi": "तुरंत वीडियो कॉल काट दें। भारतीय कानून प्रवर्तन (पुलिस, सीबीआई, ईडी, कस्टम) कभी भी वीडियो कॉल पर किसी को गिरफ्तार नहीं करता।",
+        "urgency": "immediate"
+      },
+      {
+        "id": "ACT-DA-2",
+        "text_en": "Do not transfer money to any 'RBI verification' or 'court escrow' account. No such account exists.",
+        "text_hi": "किसी भी 'आरबीआई सत्यापन' या 'कोर्ट एस्क्रो' खाते में पैसे ट्रांसफर न करें। ऐसा कोई खाता नहीं होता।",
+        "urgency": "immediate"
+      },
+      {
+        "id": "ACT-DA-3",
+        "text_en": "Inform family members and visit your local police station to report the intimidation.",
+        "text_hi": "परिवार के सदस्यों को सूचित करें और धमकी की रिपोर्ट करने के लिए अपने स्थानीय पुलिस स्टेशन जाएं।",
+        "urgency": "important"
+      }
+    ],
+    "fake_kyc": [
+      {
+        "id": "ACT-KYC-1",
+        "text_en": "Do not click any link or download any APK. Banks never ask for PAN, Aadhaar, or biometric updates via SMS links.",
+        "text_hi": "किसी भी लिंक पर क्लिक न करें और न ही कोई APK डाउनलोड करें। बैंक कभी भी SMS लिंक के ज़रिए पैन, आधार या बायोमेट्रिक अपडेट नहीं मांगते।",
+        "urgency": "immediate"
+      },
+      {
+        "id": "ACT-KYC-2",
+        "text_en": "Never share OTP, passwords, or ATM PIN with anyone claiming to be a bank official.",
+        "text_hi": "बैंक अधिकारी होने का दावा करने वाले किसी भी व्यक्ति के साथ OTP, पासवर्ड या ATM पिन कभी साझा न करें।",
+        "urgency": "immediate"
+      },
+      {
+        "id": "ACT-KYC-3",
+        "text_en": "Visit your nearest official bank branch or call the customer care number printed on the back of your debit card.",
+        "text_hi": "अपनी निकटतम आधिकारिक बैंक शाखा में जाएं या अपने डेबिट कार्ड के पीछे छपे कस्टमर केयर नंबर पर कॉल करें।",
+        "urgency": "important"
+      }
+    ],
+    "upi_refund": [
+      {
+        "id": "ACT-UPI-1",
+        "text_en": "Never enter your UPI PIN to receive money or refunds. UPI PIN is strictly required only to SEND money.",
+        "text_hi": "पैसे या रिफंड प्राप्त करने के लिए कभी भी अपना UPI पिन दर्ज न करें। UPI पिन केवल पैसे भेजने के लिए उपयोग होता है।",
+        "urgency": "immediate"
+      },
+      {
+        "id": "ACT-UPI-2",
+        "text_en": "Do not scan any QR code sent by a buyer or caller. Scanning QR codes deducts money from your account.",
+        "text_hi": "किसी खरीदार या कॉलर द्वारा भेजे गए किसी भी QR कोड को स्कैन न करें। QR कोड स्कैन करने से आपके खाते से पैसे कटते हैं।",
+        "urgency": "immediate"
+      },
+      {
+        "id": "ACT-UPI-3",
+        "text_en": "Report and block the sender's mobile number and UPI ID within your UPI app (GPay, PhonePe, Paytm).",
+        "text_hi": "अपने UPI ऐप (GPay, PhonePe, Paytm) में प्रेषक के मोबाइल नंबर और UPI आईडी की रिपोर्ट करें और ब्लॉक करें।",
+        "urgency": "important"
+      }
+    ],
+    "job_task_scam": [
+      {
+        "id": "ACT-JOB-1",
+        "text_en": "Never pay any registration fee, security deposit, or crypto recharge to unlock jobs or tasks.",
+        "text_hi": "नौकरी या टास्क अनलॉक करने के लिए कभी भी पंजीकरण शुल्क, सुरक्षा जमा या क्रिप्टो रिचार्ज का भुगतान न करें।",
+        "urgency": "immediate"
+      },
+      {
+        "id": "ACT-JOB-2",
+        "text_en": "Leave and report any Telegram or WhatsApp group promoting 'like YouTube videos to earn' tasks.",
+        "text_hi": "'यूट्यूब वीडियो लाइक करके कमाएं' जैसे टास्क को बढ़ावा देने वाले किसी भी टेलीग्राम या व्हाट्सएप ग्रुप को छोड़ें और रिपोर्ट करें।",
+        "urgency": "important"
+      }
+    ],
+    "lottery_prize": [
+      {
+        "id": "ACT-LOT-1",
+        "text_en": "Do not pay any 'processing fee', 'GST', or 'customs clearance' to claim a prize or lottery you never entered.",
+        "text_hi": "जिस लॉटरी या इनाम में आपने कभी भाग नहीं लिया, उसे पाने के लिए किसी भी 'प्रोसेसिंग शुल्क', 'जीएसटी' या टैक्स का भुगतान न करें।",
+        "urgency": "immediate"
+      },
+      {
+        "id": "ACT-LOT-2",
+        "text_en": "Block the sender and do not share any bank account or identity details.",
+        "text_hi": "भेजने वाले को ब्लॉक करें और कोई भी बैंक खाता या पहचान विवरण साझा न करें।",
+        "urgency": "important"
+      }
+    ],
+    "electricity_bill_threat": [
+      {
+        "id": "ACT-ELEC-1",
+        "text_en": "Do not call the mobile number given in the message. Electricity distribution companies never use personal numbers for disconnection alerts.",
+        "text_hi": "संदेश में दिए गए मोबाइल नंबर पर कॉल न करें। बिजली कंपनियां कभी भी कनेक्शन काटने की चेतावनी के लिए निजी नंबरों का उपयोग नहीं करतीं।",
+        "urgency": "immediate"
+      },
+      {
+        "id": "ACT-ELEC-2",
+        "text_en": "Pay your bills only via the official state electricity discom website, consumer portal, or verified utility apps.",
+        "text_hi": "अपने बिलों का भुगतान केवल आधिकारिक राज्य बिजली बोर्ड की वेबसाइट, उपभोक्ता पोर्टल या अधिकृत ऐप के माध्यम से करें।",
+        "urgency": "important"
+      }
+    ],
+    "other": [
+      {
+        "id": "ACT-OTH-1",
+        "text_en": "Do not click any unverified link, do not share OTPs or passwords, and do not transfer money.",
+        "text_hi": "किसी भी असत्यापित लिंक पर क्लिक न करें, OTP या पासवर्ड साझा न करें, और पैसे ट्रांसफर न करें।",
+        "urgency": "immediate"
+      },
+      {
+        "id": "ACT-OTH-2",
+        "text_en": "Verify the claim independently by contacting the concerned organization through their official website or customer care.",
+        "text_hi": "संबंधित संगठन की आधिकारिक वेबसाइट या कस्टमर केयर से संपर्क करके दावे की स्वतंत्र रूप से पुष्टि करें।",
+        "urgency": "important"
+      }
+    ],
+    "none": [
+      {
+        "id": "ACT-NONE-1",
+        "text_en": "No immediate threat detected, but always remember: never share OTP, passwords, or bank PINs with anyone.",
+        "text_hi": "कोई सीधा खतरा नहीं मिला, लेकिन हमेशा ध्यान रखें: किसी के साथ भी OTP, पासवर्ड या बैंक पिन साझा न करें।",
+        "urgency": "info"
+      }
+    ]
+  }
+}

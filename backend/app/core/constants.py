@@ -43,3 +43,33 @@ URL_CACHE_TTL_SECONDS: Final[int] = 3600
 SAFE_BROWSING_API_URL: Final[str] = (
     "https://safebrowsing.googleapis.com/v4/threatMatches:find"
 )
+
+# Fusion Weights (must sum to 1.0)
+FUSION_WEIGHT_RULE: Final[float] = 0.35
+FUSION_WEIGHT_LLM: Final[float] = 0.40
+FUSION_WEIGHT_URL: Final[float] = 0.25
+
+FUSION_WEIGHT_RULE_NO_URL: Final[float] = 0.45
+FUSION_WEIGHT_LLM_NO_URL: Final[float] = 0.55
+
+FUSION_WEIGHT_RULE_NO_LLM: Final[float] = 0.65
+FUSION_WEIGHT_URL_NO_LLM: Final[float] = 0.35
+
+# Fusion Score Bands & Thresholds
+FUSION_SCORE_THRESHOLD_SAFE: Final[int] = 25
+FUSION_SCORE_THRESHOLD_LIKELY_SCAM: Final[int] = 60
+FUSION_CAP_LLM_ONLY_SCORE: Final[int] = 55
+FUSION_MALICIOUS_MIN_SCORE: Final[int] = 85
+
+# Synthetic Layer Scores
+URL_SCORE_MALICIOUS: Final[int] = 95
+URL_SCORE_SUSPICIOUS: Final[int] = 50
+URL_SCORE_CLEAN: Final[int] = 0
+
+LLM_SCORE_LIKELY_SCAM: Final[int] = 85
+LLM_SCORE_SUSPICIOUS: Final[int] = 50
+LLM_SCORE_SAFE: Final[int] = 10
+
+# Confidence Limits
+MAX_CONFIDENCE_CAP: Final[float] = 0.95
+CONFIDENCE_DEGRADED_PENALTY: Final[float] = 0.15

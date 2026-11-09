@@ -4,7 +4,7 @@
 
 Scam Shield is a web app where you paste a suspicious SMS, WhatsApp message, or call transcript and get an instant verdict — *Safe*, *Suspicious*, or *Likely Scam* — along with highlighted red flags, a plain-language explanation (Hindi & English), and a clear "what to do now" checklist.
 
-> **Status:** M1 Step 3 — Rule-based detector complete (100% test set accuracy, 0 FN, 0 FP). Ready for LLM layer (M2 Step 4).
+> **Status:** M2 Step 4 — LLM layer (Claude API analysis) complete. Dual rule + LLM analysis with graceful fallback. Ready for Safe Browsing URL check (M2 Step 5).
 
 ---
 
@@ -12,7 +12,7 @@ Scam Shield is a web app where you paste a suspicious SMS, WhatsApp message, or 
 
 ### Analyze Message: `POST /api/analyze`
 
-Accepts a suspicious message and returns the risk score, verdict, detected red flags with character offsets for UI highlighting, and safety disclaimer. **Processed strictly in-memory; never stored or logged.**
+Accepts a suspicious message and returns both the rule-based risk analysis and Claude LLM analysis (when configured). If the LLM is unavailable or encounters an error, the endpoint gracefully falls back to returning the rule result. **Processed strictly in-memory; never stored or logged.**
 
 #### Sample Request
 
@@ -26,36 +26,63 @@ curl -X POST http://localhost:8000/api/analyze \
 
 ```json
 {
-  "score": 65,
-  "verdict": "likely_scam",
-  "scam_type_guess": "digital arrest",
-  "red_flags": [
-    {
-      "pattern_id": "PAT-001",
-      "category": "authority impersonation",
-      "matched_text": "CBI",
-      "start": 69,
-      "end": 72,
-      "weight": 5
-    },
-    {
-      "pattern_id": "PAT-002",
-      "category": "threats of arrest/disconnection",
-      "matched_text": "Non-bailable arrest warrant",
-      "start": 8,
-      "end": 35,
-      "weight": 5
-    },
-    {
-      "pattern_id": "PAT-003",
-      "category": "stay on video call",
-      "matched_text": "Connect on Skype video call",
-      "start": 102,
-      "end": 129,
-      "weight": 5
-    }
-  ],
-  "disclaimer": "High-risk scam indicators detected! Do not click any links, do not send money, and report immediately to 1930 or cybercrime.gov.in."
+  "rule": {
+    "score": 65,
+    "verdict": "likely_scam",
+    "scam_type_guess": "digital arrest",
+    "red_flags": [
+      {
+        "pattern_id": "PAT-001",
+        "category": "authority impersonation",
+        "matched_text": "CBI",
+        "start": 69,
+        "end": 72,
+        "weight": 5
+      },
+      {
+        "pattern_id": "PAT-002",
+        "category": "threats of arrest/disconnection",
+        "matched_text": "Non-bailable arrest warrant",
+        "start": 8,
+        "end": 35,
+        "weight": 5
+      },
+      {
+        "pattern_id": "PAT-003",
+        "category": "stay on video call",
+        "matched_text": "Connect on Skype video call",
+        "start": 102,
+        "end": 129,
+        "weight": 5
+      }
+    ],
+    "disclaimer": "High-risk scam indicators detected! Do not click any links, do not send money, and report immediately to 1930 or cybercrime.gov.in."
+  },
+  "llm": {
+    "verdict": "likely_scam",
+    "scam_type": "digital_arrest",
+    "red_flags": [
+      {
+        "category": "authority_impersonation",
+        "quote": "CBI",
+        "reason": "Impersonating government law enforcement"
+      },
+      {
+        "category": "threats",
+        "quote": "Non-bailable arrest warrant has been issued against you",
+        "reason": "Threatening arrest to intimidate and induce panic"
+      },
+      {
+        "category": "stay_on_call",
+        "quote": "Connect on Skype video call",
+        "reason": "Demanding a private video call (classic digital arrest tactic)"
+      }
+    ],
+    "explanation_en": "This message falsely claims to be from the CBI and threatens you with an arrest warrant on Skype. Government and police agencies never arrest people online or conduct investigations over Skype video calls. Never transfer money, share your OTP, or stay on calls with unknown callers.",
+    "explanation_hi": "यह संदेश CBI के नाम पर झूठा दावा कर रहा है और स्काइप वीडियो कॉल पर गिरफ़्तारी का डर दिखा रहा है। पुलिस या सरकारी एजेंसियां कभी ऑनलाइन गिरफ़्तार नहीं करतीं और न ही वीडियो कॉल पर पूछताछ करती हैं। किसी अनजान को पैसे न भेजें और न ही OTP बताएं।",
+    "confidence": 0.98
+  },
+  "llm_error": null
 }
 ```
 
@@ -75,10 +102,11 @@ Run the benchmark evaluation script against the test set:
 
 ```bash
 cd backend
-python scripts/evaluate.py
+python scripts/evaluate.py        # Rule-only evaluation (default, no API calls)
+python scripts/evaluate.py --llm  # Include Claude LLM evaluation (requires ANTHROPIC_API_KEY)
 ```
 
-Prints accuracy, false positives, false negatives, and a per-scam-type breakdown (message IDs only; never prints message text).
+Prints accuracy, false positives, false negatives, and a per-scam-type breakdown (message IDs only; never prints message text). When `--llm` is specified, the script caps at the test set size and prints the exact number of API calls before making them.
 
 ---
 
@@ -95,21 +123,22 @@ scam-shield/
 │   │   ├── api/              # FastAPI routes (/health, /api/analyze)
 │   │   ├── core/             # Config, constants, dataset loaders
 │   │   ├── detectors/        # Rule-based detector (rule_detector.py)
-│   │   ├── llm/              # LLM integration (future — M2)
+│   │   ├── llm/              # LLM integration (client.py, prompts.py, analyzer.py)
 │   │   ├── ocr/              # OCR processing (future — M3)
-│   │   ├── schemas/          # Pydantic models (dataset.py, analysis.py)
+│   │   ├── schemas/          # Pydantic models (analysis.py, dataset.py, llm.py)
 │   │   └── main.py           # App entry point
 │   ├── data/
 │   │   ├── patterns.json     # 35 scam patterns
 │   │   ├── test_set.json     # 70 labelled test messages
 │   │   └── README.md         # Dataset guide
 │   ├── scripts/
-│   │   └── evaluate.py       # Benchmark evaluation script
+│   │   └── evaluate.py       # Benchmark evaluation script (--llm supported)
 │   ├── tests/
 │   │   ├── test_health.py    # Health endpoint tests
 │   │   ├── test_dataset.py   # Dataset schema & integrity tests
 │   │   ├── test_rule_detector.py # Detector unit tests
-│   │   └── test_api_analyze.py   # /api/analyze route tests
+│   │   ├── test_api_analyze.py   # /api/analyze route tests
+│   │   └── test_llm.py       # LLM schema, prompts, client, and analyzer tests
 │   └── requirements.txt
 ├── frontend/
 │   ├── src/
@@ -164,13 +193,17 @@ Opens at **http://localhost:5173**.
 
 ### Environment Variables
 
-Copy `.env.example` to `.env` and fill in:
+Copy `.env.example` to `.env` and configure:
 
-| Variable | Purpose |
-|----------|---------|
-| `ANTHROPIC_API_KEY` | Claude API key (future — M2) |
-| `SAFE_BROWSING_API_KEY` | Google Safe Browsing (future — M1 Step 3) |
-| `FRONTEND_ORIGIN` | CORS origin for the frontend (default `http://localhost:5173`) |
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `ANTHROPIC_API_KEY` | `""` | Anthropic Claude API key for LLM analysis |
+| `LLM_ENABLED` | `true` | Toggle LLM layer (`true` or `false` for rule-only mode) |
+| `ANTHROPIC_MODEL` | `claude-sonnet-4-20250514` | Claude model name |
+| `LLM_TIMEOUT` | `30` | Request timeout in seconds |
+| `LLM_MAX_TOKENS` | `1024` | Maximum tokens for generation |
+| `SAFE_BROWSING_API_KEY` | `""` | Google Safe Browsing API key (future — M2 Step 5) |
+| `FRONTEND_ORIGIN` | `http://localhost:5173` | CORS origin for frontend |
 
 ---
 

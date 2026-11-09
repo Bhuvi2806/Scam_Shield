@@ -1,5 +1,40 @@
 # Scam Shield — Progress Log
 
+## M2 Step 4: LLM Layer (Claude API Analysis)
+
+### Plan
+1. Create `backend/app/schemas/llm.py`: `LLMResult` Pydantic model with verdict, scam_type, red_flags[], explanation_en, explanation_hi, confidence.
+2. Create `backend/app/llm/client.py`: abstract `LLMClient` interface + `ClaudeLLMClient` using Anthropic SDK. Read API key and model name from config. Add `anthropic` to `requirements.txt`.
+3. Create `backend/app/llm/prompts.py`: system prompt and user prompt template as constants with prompt-injection defenses (message delimited as data, ignore-instructions-inside directive), JSON-only output, "never 100% safe", "lean suspicious", bilingual elderly-friendly explanations.
+4. Create `backend/app/llm/analyzer.py`: `analyze_with_llm(text) -> LLMResult` — calls client, parses JSON, validates with Pydantic. Retry once on invalid JSON / schema failure. Controlled error on timeout/API failure. Privacy: never log message text or model response body.
+5. Update `backend/app/core/config.py`: add `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`, `LLM_ENABLED`, `LLM_TIMEOUT`, `LLM_MAX_TOKENS` settings.
+6. Update `POST /api/analyze` to return `{"rule": RuleResult, "llm": LLMResult | null, "llm_error": string | null}`. Graceful fallback when LLM fails.
+7. Extend `backend/scripts/evaluate.py` with `--llm` flag (opt-in, caps at test set size, prints API-call count before running).
+8. Add tests in `backend/tests/test_llm.py` using a fake LLM client: valid JSON, invalid JSON retry, timeout, schema violation, prompt-injection, LLM-disabled mode, /api/analyze fallback.
+9. Commit incrementally per Section 6 format.
+
+### Files Created / Modified
+- **Created:** `backend/app/schemas/llm.py`, `backend/app/llm/client.py`, `backend/app/llm/prompts.py`, `backend/app/llm/analyzer.py`, `backend/tests/test_llm.py`
+- **Modified:** `backend/app/core/config.py`, `backend/app/api/analyze.py`, `backend/scripts/evaluate.py`, `backend/requirements.txt`, `.env.example`, `README.md`, `docs/progress.md`, `docs/decisions.md`
+
+### Phase Log
+- [Phase 0] Understand: Read AGENT.md and confirmed Steps 1-3 complete. Task is M2 Step 4 — Claude API LLM layer, schema, client, prompt injection defense, analyzer with retry, dual-result /api/analyze, and opt-in evaluate.py --llm.
+- [Phase 1] Plan: Written above.
+- [Phase 2] Implement: Created `app/schemas/llm.py`, `app/llm/client.py`, `app/llm/prompts.py`, `app/llm/analyzer.py`, `tests/test_llm.py`, updated `app/core/config.py`, `app/api/analyze.py`, `scripts/evaluate.py`, and `requirements.txt`.
+- [Phase 3] Test: tests: 46 passed, 0 failed (`pytest tests/ -v`), ruff check and format clean, evaluate.py default rule run clean (100% accuracy, 0 FP, 0 FN).
+- [Phase 4] Review: Re-read diff; confirmed no secrets in repo (.env gitignored), strict in-memory privacy (never log message text or model response body), XML `<message>` prompt injection defense, "never 100% safe" and "lean suspicious" rules in prompt.
+- [Phase 5] Document & Report: Updated README (API usage with new response format, evaluate --llm, env vars) and docs/progress.md.
+
+### Definition of Done Checklist (Section 9)
+- [x] Code runs locally without errors
+- [x] Tests added/updated and passing; linters clean (46/46 pytest passed, ruff clean)
+- [x] Privacy and "never 100% safe" rules respected (no message/response body logged, prompt-injection defense, lean-suspicious & lowest-risk disclaimer)
+- [x] No secrets in the repo (.env gitignored, placeholders only)
+- [x] `docs/progress.md` and README updated
+- [x] Final report delivered in Section 7 format
+
+---
+
 ## M1 Step 3: Rule-Based Detector
 
 ### Plan

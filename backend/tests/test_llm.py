@@ -6,13 +6,12 @@ All tests use a FAKE LLM client — no real API calls are ever made.
 import json
 
 import pytest
-from httpx import ASGITransport, AsyncClient
-from pydantic import ValidationError
-
 from app.llm.analyzer import LLMAnalysisError, analyze_with_llm
 from app.llm.client import LLMAPIError, LLMClient, LLMTimeoutError
 from app.llm.prompts import SYSTEM_PROMPT, build_user_prompt
 from app.schemas.llm import LLMResult
+from httpx import ASGITransport, AsyncClient
+from pydantic import ValidationError
 
 # ---------------------------------------------------------------------------
 # Fake LLM client for testing
@@ -275,10 +274,16 @@ class TestAnalyzeEndpointWithLLM:
 
         assert response.status_code == 200
         data = response.json()
-        assert "rule" in data
-        assert data["rule"]["verdict"] in {"safe", "suspicious", "likely_scam"}
-        assert data["llm"] is None
-        assert data["llm_error"] is None
+        assert "verdict" in data
+        assert "layers" in data
+        assert "rule" in data["layers"]
+        assert data["layers"]["rule"]["verdict"] in {
+            "safe",
+            "suspicious",
+            "likely_scam",
+        }
+        assert data["layers"]["llm"] is None
+        assert data["layers"]["llm_error"] is None
 
     @pytest.mark.anyio
     async def test_returns_rule_result_when_no_api_key(self, monkeypatch):
@@ -300,12 +305,14 @@ class TestAnalyzeEndpointWithLLM:
 
         assert response.status_code == 200
         data = response.json()
-        assert "rule" in data
-        assert data["llm"] is None
+        assert "verdict" in data
+        assert "layers" in data
+        assert "rule" in data["layers"]
+        assert data["layers"]["llm"] is None
 
     @pytest.mark.anyio
     async def test_response_shape_has_rule_llm_llm_error(self, monkeypatch):
-        """Response always contains 'rule', 'llm', and 'llm_error' keys."""
+        """Response always contains 'verdict' and 'layers' with rule, llm, and llm_error."""
         monkeypatch.setenv("LLM_ENABLED", "false")
         monkeypatch.setenv("ANTHROPIC_API_KEY", "")
 
@@ -322,9 +329,11 @@ class TestAnalyzeEndpointWithLLM:
             response = await client.post("/api/analyze", json=payload)
 
         data = response.json()
-        assert "rule" in data
-        assert "llm" in data
-        assert "llm_error" in data
+        assert "verdict" in data
+        assert "layers" in data
+        assert "rule" in data["layers"]
+        assert "llm" in data["layers"]
+        assert "llm_error" in data["layers"]
 
     @pytest.mark.anyio
     async def test_returns_rule_result_when_llm_fails(self, monkeypatch):
@@ -343,11 +352,13 @@ class TestAnalyzeEndpointWithLLM:
 
         assert response.status_code == 200
         data = response.json()
-        assert "rule" in data
-        assert data["rule"]["verdict"] == "likely_scam"
-        assert data["llm"] is None
-        assert data["llm_error"] is not None
-        assert "LLM API failure" in data["llm_error"]
+        assert "verdict" in data
+        assert "layers" in data
+        assert "rule" in data["layers"]
+        assert data["layers"]["rule"]["verdict"] == "likely_scam"
+        assert data["layers"]["llm"] is None
+        assert data["layers"]["llm_error"] is not None
+        assert "LLM API failure" in data["layers"]["llm_error"]
 
     @pytest.mark.anyio
     async def test_returns_both_results_when_llm_succeeds(self, monkeypatch):
@@ -366,9 +377,11 @@ class TestAnalyzeEndpointWithLLM:
 
         assert response.status_code == 200
         data = response.json()
-        assert "rule" in data
-        assert data["rule"]["verdict"] == "likely_scam"
-        assert data["llm"] is not None
-        assert data["llm"]["verdict"] == "likely_scam"
-        assert data["llm"]["scam_type"] == "digital_arrest"
-        assert data["llm_error"] is None
+        assert "verdict" in data
+        assert "layers" in data
+        assert "rule" in data["layers"]
+        assert data["layers"]["rule"]["verdict"] == "likely_scam"
+        assert data["layers"]["llm"] is not None
+        assert data["layers"]["llm"]["verdict"] == "likely_scam"
+        assert data["layers"]["llm"]["scam_type"] == "digital_arrest"
+        assert data["layers"]["llm_error"] is None

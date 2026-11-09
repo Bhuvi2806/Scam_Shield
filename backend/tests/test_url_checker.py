@@ -6,8 +6,6 @@ All tests use a FAKE Safe Browsing client — no real Google APIs are ever calle
 from __future__ import annotations
 
 import pytest
-from httpx import ASGITransport, AsyncClient
-
 from app.core.url_utils import (
     check_local_url_heuristics,
     defang_url,
@@ -20,6 +18,7 @@ from app.detectors.url_checker import (
     UrlChecker,
 )
 from app.schemas.url_check import UrlCheckResult
+from httpx import ASGITransport, AsyncClient
 
 
 class FakeSafeBrowsingClient(SafeBrowsingClient):
@@ -299,12 +298,15 @@ class TestApiAnalyzeUrlCheckIntegration:
 
         assert response.status_code == 200
         data = response.json()
-        assert "rule" in data
-        assert "llm" in data
-        assert "url_check" in data
-        assert data["url_check"] is not None
-        assert data["url_check"]["overall_status"] == "malicious"
-        assert len(data["url_check"]["findings"]) > 0
+        assert "verdict" in data
+        assert "layers" in data
+        assert "rule" in data["layers"]
+        assert "llm" in data["layers"]
+        assert "url_check" in data["layers"]
+        assert data["layers"]["url_check"] is not None
+        assert data["layers"]["url_check"]["overall_status"] == "malicious"
+        assert len(data["layers"]["url_check"]["findings"]) > 0
+        assert data["verdict"]["verdict"] == "likely_scam"
 
     @pytest.mark.anyio
     async def test_analyze_endpoint_url_check_fails_gracefully(self, monkeypatch):
@@ -328,11 +330,13 @@ class TestApiAnalyzeUrlCheckIntegration:
         assert response.status_code == 200
         data = response.json()
         # Rule result still present and accurate
-        assert "rule" in data
-        assert data["rule"]["verdict"] in {"suspicious", "likely_scam"}
+        assert "layers" in data
+        assert "rule" in data["layers"]
+        assert data["layers"]["rule"]["verdict"] in {"suspicious", "likely_scam"}
         # URL check returned with error details
-        assert data["url_check"] is not None
-        assert data["url_check"]["error"] is not None
+        assert data["layers"]["url_check"] is not None
+        assert data["layers"]["url_check"]["error"] is not None
+        assert data["verdict"]["degraded"] is True
 
     @pytest.mark.anyio
     async def test_analyze_endpoint_url_check_disabled(self, monkeypatch):
@@ -351,4 +355,5 @@ class TestApiAnalyzeUrlCheckIntegration:
 
         assert response.status_code == 200
         data = response.json()
-        assert data["url_check"] is None
+        assert "layers" in data
+        assert data["layers"]["url_check"] is None

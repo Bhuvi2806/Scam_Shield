@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Scam Shield for WhatsApp Web 🛡️",
+  "version": "1.0.0",
+  "description": "Instant scam detection, red flag highlights, and 1930 cybercrime guidance right inside WhatsApp Web.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://web.whatsapp.com/*",
+    "http://localhost:8000/*",
+    "http://127.0.0.1:8000/*"
+  ],
+  "action": {
+    "default_title": "Scam Shield 🛡️",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://web.whatsapp.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

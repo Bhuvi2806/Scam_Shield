@@ -13,12 +13,14 @@ import { SampleMessages } from "../components/SampleMessages";
 import { ImageUpload } from "../components/ImageUpload";
 import { ShareCardButton } from "../components/ShareCardButton";
 import { ShareCardModal } from "../components/ShareCardModal";
+import { QRResultCard } from "../components/QRResultCard";
 
 const MAX_CHARACTERS = 10000;
 
 export function HomePage({ onOpenPrivacy }) {
   const [inputText, setInputText] = useState("");
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [qrResult, setQrResult] = useState(null);
   const { data, error, submittedText, isLoading, isSuccess, isError, analyze, reset } = useAnalyze();
 
   const trimmed = inputText.trim();
@@ -36,20 +38,24 @@ export function HomePage({ onOpenPrivacy }) {
   const handleClear = () => {
     setInputText("");
     setIsShareModalOpen(false);
+    setQrResult(null);
     reset();
   };
 
   const handleSelectSample = (sampleText) => {
     setInputText(sampleText);
     setIsShareModalOpen(false);
+    setQrResult(null);
     reset();
   };
 
-  /** Callback from ImageUpload: populate textarea with OCR text (no auto-analyze) */
-  const handleTextExtracted = useCallback((text) => {
+  /** Callback from ImageUpload: populate textarea with OCR text & QR scan */
+  const handleTextExtracted = useCallback((text, qr) => {
     setInputText(text);
+    setQrResult(qr || null);
     reset();
   }, [reset]);
+
 
   const verdictData = data?.verdict;
 
@@ -157,6 +163,11 @@ export function HomePage({ onOpenPrivacy }) {
           <SampleMessages onSelect={handleSelectSample} disabled={isLoading} />
         </form>
       </section>
+
+      {/* QR Code Detection Alert Card */}
+      {qrResult && qrResult.found && (
+        <QRResultCard qrResult={qrResult} onDismiss={() => setQrResult(null)} />
+      )}
 
       {/* Analysis Results View */}
       {isLoading && <LoadingState />}

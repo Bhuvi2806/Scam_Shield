@@ -126,8 +126,12 @@ export function ImageUpload({ onTextExtracted, disabled }) {
           setLowConfidenceWarning(true);
         }
 
-        // Populate parent textarea — does NOT auto-analyze
-        onTextExtracted(result.text);
+        // Populate parent textarea and pass QR results if present — does NOT auto-analyze
+        if (result.qr_result) {
+          onTextExtracted(result.text, result.qr_result);
+        } else {
+          onTextExtracted(result.text);
+        }
       } catch (err) {
         if (err instanceof ApiError) {
           const msg =

@@ -26,13 +26,16 @@ from app.ocr.preprocess import (
     ImageSizeError,
     validate_and_sanitize_image,
 )
+from app.ocr.qr_engine import QREngine
 from app.schemas.ocr import OCRResult
+from app.schemas.qr import QRResult
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["ocr"])
 
 # Simple in-memory sliding-window rate limiter per client IP: ip -> list[timestamp]
 _rate_limit_history: dict[str, list[float]] = defaultdict(list)
+_qr_engine = QREngine()
 
 
 def _check_rate_limit(client_ip: str) -> None:
@@ -128,11 +131,24 @@ async def extract_text_from_screenshot(
             detail=str(e),
         ) from e
 
-    # 4. Perform OCR extraction
+    # 4. Perform QR detection and OCR extraction
+    qr_result = _qr_engine.scan_image(clean_img)
+
     engine = get_ocr_engine()
     try:
         result = engine.extract(clean_img)
     except OCRBinaryNotFoundError as e:
+        # If Tesseract binary is not installed, but a QR code was decoded, return the QR result cleanly!
+        if qr_result and qr_result.found and qr_result.raw_text:
+            clean_img.close()
+            return OCRResult(
+                text=f"[QR Code: {qr_result.qr_type.upper()}] {qr_result.raw_text}",
+                language_guess="en",
+                confidence=1.0,
+                low_confidence=False,
+                warnings=["Text decoded directly from QR code payload."],
+                qr_result=qr_result,
+            )
         logger.error("OCR binary not found: error=%s", str(e))
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -153,6 +169,13 @@ async def extract_text_from_screenshot(
     finally:
         clean_img.close()
 
+    if qr_result and qr_result.found:
+        result.qr_result = qr_result
+        if not result.text:
+            result.text = f"[QR Code: {qr_result.qr_type.upper()}] {qr_result.raw_text}"
+            result.confidence = 1.0
+            result.low_confidence = False
+
     duration = time.monotonic() - start_time
     logger.info(
         "OCR processed: size_bytes=%d duration_sec=%.3f confidence=%.2f lang=%s",
@@ -170,3 +193,51 @@ async def extract_text_from_screenshot(
         )
 
     return result
+
+
+@router.post("/analyze-qr", response_model=QRResult)
+async def analyze_qr_code(
+    request: Request,
+    file: Annotated[UploadFile, File(...)],
+) -> QRResult:
+    """Analyze a QR code directly from an uploaded image in memory."""
+    client_ip = request.client.host if request.client else "unknown"
+    _check_rate_limit(client_ip)
+
+    try:
+        content = await file.read(MAX_IMAGE_BYTES + 1024)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed to read uploaded file.",
+        ) from e
+
+    if not content:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Uploaded file is empty.",
+        )
+
+    if len(content) > MAX_IMAGE_BYTES:
+        max_mb = MAX_IMAGE_BYTES // (1024 * 1024)
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"File exceeds maximum allowed size of {max_mb} MB.",
+        )
+
+    try:
+        clean_img = validate_and_sanitize_image(content)
+    except (ImageSizeError, ImageFormatError, ImageCorruptError) as e:
+        status_code = (
+            status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+            if isinstance(e, ImageSizeError)
+            else status.HTTP_400_BAD_REQUEST
+        )
+        raise HTTPException(status_code=status_code, detail=str(e)) from e
+
+    try:
+        qr_result = _qr_engine.scan_image(clean_img)
+    finally:
+        clean_img.close()
+
+    return qr_result

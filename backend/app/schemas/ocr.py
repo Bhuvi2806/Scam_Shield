@@ -4,6 +4,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from app.schemas.qr import QRResult
+
 
 class OCRResult(BaseModel):
     """Result of OCR extraction from an uploaded screenshot."""
@@ -29,4 +31,8 @@ class OCRResult(BaseModel):
     warnings: list[str] = Field(
         default_factory=list,
         description="Advisory notes (e.g. low resolution, blurred text, non-standard fonts)",
+    )
+    qr_result: QRResult | None = Field(
+        default=None,
+        description="Detailed QR code scan and UPI fraud analysis if a QR code was detected in the image",
     )

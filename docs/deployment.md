@@ -155,3 +155,4 @@ Deployments must preserve the architectural privacy guarantees defined in `AGENT
 2. **Untrusted Input Protection**: Screenshot uploads are limited to 5MB and 25MP decompression-bomb limits, sanitized in memory, stripped of EXIF metadata, and never persisted to filesystem temp directories.
 3. **Defensive Response Headers**: All HTTP responses enforce `nosniff`, `DENY` clickjacking protection, `strict-origin-when-cross-origin`, and `Permissions-Policy`.
 4. **CORS Lockdown**: Only requests from the explicitly designated `FRONTEND_ORIGIN` are permitted.
+

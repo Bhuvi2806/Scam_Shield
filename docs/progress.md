@@ -1,5 +1,39 @@
 # Scam Shield — Progress Log
 
+## Stretch Milestone: QR-Code & UPI Scam Detection + WhatsApp Web Browser Extension
+
+### Plan
+1. Sub-task 1: Backend QR Code & UPI Scam Detection Engine:
+   - Add `zxing-cpp==3.1.1` to `backend/requirements.txt`.
+   - Create `backend/app/detectors/upi_parser.py`: parses `upi://pay` query params (`pa`, `pn`, `am`, `tn`, `mc`), checks against known UPI fraud patterns ("scan to receive" trap, deceptive refund/reward notes, personal accounts masquerading as corporate merchants).
+   - Create `backend/app/ocr/qr_engine.py`: decodes QR codes from Pillow images using `zxingcpp`, routes UPI payloads, URLs, and text to respective detectors.
+   - Define schema in `backend/app/schemas/qr.py`: `QRResult`, `UPIPayload`, `QRVerdict`.
+   - Extend `backend/app/api/ocr.py` (and add `POST /api/analyze-qr`) to automatically inspect uploaded screenshots for QR codes and include QR threat findings.
+   - Comprehensive unit tests in `backend/tests/test_qr_detection.py`.
+2. Sub-task 2: Frontend QR Code Scam UI & Warning Card:
+   - Create `frontend/src/components/QRResultCard.jsx`: visual card presenting decoded QR details (payee VPA, payee name, requested amount), red flag warnings, and the golden UPI rule in English and Hindi ("Scanning a QR or entering a PIN is ALWAYS to SEND money, never to receive").
+   - Integrate into `HomePage.jsx` and `ImageUploadSection.jsx`.
+   - Frontend unit tests for QR card rendering.
+3. Sub-task 3: WhatsApp Web Browser Extension (Manifest V3):
+   - Create `extension/` directory with `manifest.json`, `content.js`, `content.css`, `popup.html`, `popup.js`, and `README.md`.
+   - Manifest V3 compliant, non-intrusive message hover action `[🛡️ Scam Shield]`.
+   - Calls `/api/analyze` and displays inline verdict overlay without modifying chat structure.
+   - Zero background scraping or persistent storage; opt-in click-to-analyze only.
+4. Sub-task 4: Verification, Documentation & Decisions:
+   - Update `docs/decisions.md` with stretch architecture choices.
+   - Update `README.md` highlighting QR detection and WhatsApp Web extension.
+   - Run full test suite (`pytest`, `ruff`, `pip-audit`, `npm test`, `npm run lint`, `npm run build`).
+
+### Phase Log
+- [Phase 0] understand: Stretch requirements analyzed; scoped QR code / UPI scam detection and Manifest V3 WhatsApp Web extension.
+- [Phase 1] plan: Plan written at top of docs/progress.md covering UPI parser, QREngine, UI QR card, and extension.
+- [Phase 2] implement: Built upi_parser.py, qr_engine.py, QRResultCard.jsx, extension (manifest.json, content.js, popup.js, popup.html) on branch feat/stretch-features.
+- [Phase 3] test: 124 passed in pytest (1 skipped), 60 passed in vitest; ruff check/format clean, pip-audit 0 vulnerabilities, eslint clean, vite build clean.
+- [Phase 4] review: Self-review done; git diff reviewed; privacy guarantees intact (RAM-only processing, no chat scraping).
+- [Phase 5] document & report: Updated docs/decisions.md (#41-42), README.md, docs/progress.md, final report delivered.
+
+---
+
 ## M4 Step 10: Final Evaluation, Privacy Page, Hardening, Deployment Setup, README and Demo Kit
 
 ### Plan

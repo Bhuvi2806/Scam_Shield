@@ -13,6 +13,8 @@ Users paste suspicious SMS, WhatsApp messages, or call transcripts — or upload
 - **Hybrid 3-Layer Detection**: Combines deterministic regular expression pattern scoring, real-time Google Safe Browsing URL intelligence with local heuristics, and Claude LLM semantic reasoning.
 - **Asymmetric Safety Posture**: Prioritizes avoiding false negatives (missing a scam) over false positives. When in doubt, the system leans toward *Suspicious*, and verdicts never claim "100% safe".
 - **Screenshot OCR (Hindi + English)**: Upload screenshots of SMS or WhatsApp chats. In-memory Tesseract OCR extracts bilingual Devanagari and Latin script text for user review before running analysis.
+- **QR Code & UPI Scam Detection**: Decodes QR codes from uploaded images using in-memory `zxing-cpp`. Automatically parses NPCI `upi://pay` payment URIs, flags deceptive "scan-to-receive refund" traps, warns against corporate impersonation, and enforces India's Golden Rule of UPI.
+- **WhatsApp Web Extension (Manifest V3)**: Chromium browser extension injects a non-intrusive `[🛡️ Check]` button onto incoming WhatsApp Web messages for instant 1-click verification directly in chat.
 - **Interactive Red-Flag Highlighting**: Client-side pure React text rendering highlights deceptive spans (urgency cues, authority impersonation, financial demands) without DOM injection vulnerabilities.
 - **Bilingual Accessibility**: Instant one-click toggle between plain English and Hindi (Devanagari script), tailored for elderly users with WCAG AA high-contrast design.
 - **Actionable Next Steps**: Direct tap-to-call link for India's National Cyber Crime Helpline (`tel:1930`) and reporting guidance for `cybercrime.gov.in`.
@@ -239,8 +241,8 @@ Analyzes input text across rule patterns, Claude LLM, and Google Safe Browsing U
 }
 ```
 
-### 2. Extract Screenshot Text: `POST /api/ocr`
-Extracts text from an image using Tesseract OCR with Hindi and English language support.
+### 2. Extract Screenshot Text & QR Analysis: `POST /api/ocr`
+Extracts text from an image using Tesseract OCR with Hindi and English language support, automatically detecting and analyzing any embedded QR codes.
 
 **Request (`multipart/form-data`):**
 - Field: `file` (PNG, JPEG, or WEBP image; max 5MB, max 25MP)
@@ -248,15 +250,38 @@ Extracts text from an image using Tesseract OCR with Hindi and English language 
 **Response (`200 OK`):**
 ```json
 {
-  "text": "प्रिय ग्राहक, आपका बिजली बिल बकाया है। आज रात 9:30 बजे बिजली काट दी जाएगी...",
-  "language_guess": "hi",
-  "confidence": 0.88,
+  "text": "[QR Code: UPI] upi://pay?pa=refund99@ybl&pn=PhonePe&am=4500.00&tn=Refund",
+  "language_guess": "en",
+  "confidence": 1.0,
   "low_confidence": false,
-  "warnings": []
+  "warnings": [],
+  "qr_result": {
+    "found": true,
+    "qr_type": "upi",
+    "verdict": "likely_scam",
+    "score": 90,
+    "upi_payload": {
+      "payee_vpa": "refund99@ybl",
+      "payee_name": "PhonePe",
+      "amount": 4500.0,
+      "transaction_note": "Refund"
+    },
+    "red_flags": [
+      {
+        "category": "UPI Scan-to-Receive Trap",
+        "reason": "Deceptive 'Refund / Cashback' note in a debit QR code. Scanning will deduct money, NOT credit it.",
+        "severity": "critical"
+      }
+    ],
+    "safety_rule_en": "In India's UPI system, scanning a QR code or entering your UPI PIN is ONLY for SENDING money. You NEVER need to scan a QR code or enter a PIN to receive money."
+  }
 }
 ```
 
-### 3. Health Check: `GET /health`
+### 3. Dedicated QR Scam Analysis: `POST /api/analyze-qr`
+Directly decodes QR codes from an uploaded screenshot or image in memory, evaluating UPI payment parameters, preset debit amounts, and phishing links.
+
+### 4. Health Check: `GET /health`
 Returns `{"status": "ok"}` for container health monitoring.
 
 ---
@@ -300,8 +325,8 @@ Scam Shield was evaluated against an untuned, held-out synthetic test suite (`ba
 - [x] Screenshot OCR supporting Devanagari Hindi and English (M3)
 - [x] In-browser WhatsApp Family Mode share card generator (M3)
 - [x] Held-out accuracy benchmark, security hardening & Docker setup (M4)
-- [ ] **Stretch**: WhatsApp Web browser extension for inline scam alerts.
-- [ ] **Stretch**: Malicious QR code detection and UPI string parsing.
+- [x] **Stretch**: WhatsApp Web browser extension for inline scam alerts (`extension/` Manifest V3)
+- [x] **Stretch**: Malicious QR code detection and UPI string parsing (`zxing-cpp` + `upi_parser`)
 
 ---
 

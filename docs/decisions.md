@@ -42,4 +42,7 @@
 | 38 | In-app bilingual privacy modal with client-side state | Transparently details RAM-only processing, third-party API data boundaries (Claude API & Safe Browsing), zero logging, and client-side share card generation without persistent storage or external trackers. |
 | 39 | Defense-in-depth API security hardening | Restricts CORS to `FRONTEND_ORIGIN`, enforces defensive HTTP headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, CSP), limits payload sizes (1MB for `/api/analyze`), enforces sliding-window rate limiting (60 req/min), sanitizes 500 error responses, and emits degraded startup warnings if API keys are absent. |
 | 40 | Exact dependency pinning and vulnerability auditing | Pinned exact package versions in `requirements.txt`, upgraded `pip` to 26.3 (0 vulnerabilities found via `pip-audit`), and audited frontend dependencies (noting `minimatch` devDependency inside `eslint` does not affect client production build). |
+| 41 | In-memory QR code detection & UPI deep link analysis | Uses `zxing-cpp` for multi-pass QR decoding directly on in-memory Pillow buffers, parses NPCI `upi://pay` deep link parameters, and flags "scan-to-receive" fraud traps while enforcing the core Indian UPI safety rule. |
+| 42 | Opt-in Manifest V3 WhatsApp Web browser extension | Injects non-intrusive `[🛡️ Check]` buttons onto WhatsApp Web message containers, performing ephemeral message verification via `/api/analyze` only upon explicit user click, guaranteeing zero passive chat scraping or persistent message storage. |
+
 

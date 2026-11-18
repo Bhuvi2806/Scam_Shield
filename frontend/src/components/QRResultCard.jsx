@@ -217,3 +217,4 @@ QRResultCard.propTypes = {
   }),
   onDismiss: PropTypes.func,
 };
+

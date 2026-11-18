@@ -61,3 +61,4 @@ Click the Scam Shield shield icon in your browser toolbar:
 1. **Opt-In Only**: The extension does not read, store, or monitor your conversations in the background. It reads message text only when you explicitly click the `[🛡️ Check]` button.
 2. **RAM-Only Processing**: The backend analyzes text in memory and discards it immediately upon response.
 3. **No External Trackers**: The extension contains zero third-party analytics or tracking scripts.
+

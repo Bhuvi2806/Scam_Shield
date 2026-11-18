@@ -254,3 +254,4 @@
 
   console.log("Scam Shield: WhatsApp Web protection initialized.");
 })();
+

@@ -83,3 +83,4 @@ describe("QRResultCard Component", () => {
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 });
+
